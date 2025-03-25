@@ -1,0 +1,67 @@
+<app-base nameOption="Immobilisations">
+  <div class="row">
+    <div class="col-12">
+      <div class="card mb-4">
+        <div class="card-header pb-0">
+          <h6>Immobilisations table</h6>
+        </div>
+        <div class="card-body px-0 pt-0 pb-2">
+          <div class="table-responsive p-0">
+            <table class="table align-items-center mb-0">
+              <thead>
+                <tr>
+                  <th class="text-uppercase text-center text-secondary text-xxs font-weight-bolder opacity-7 px-5" style="background-color: red;">Code</th>
+                  <th class="text-uppercase text-center text-secondary text-xxs font-weight-bolder opacity-7">Name</th>
+                  <th class="text-uppercase text-center text-secondary text-xxs font-weight-bolder opacity-7">quantity</th>
+                  <th class="text-uppercase text-center text-secondary text-xxs font-weight-bolder opacity-7">Categorie</th>
+                  <th class="text-uppercase text-center text-secondary text-xxs font-weight-bolder opacity-7">Structure</th>
+                  <th class="text-uppercase text-center text-secondary text-xxs font-weight-bolder opacity-7">Fournisseur</th>
+                  <th class="text-uppercase text-center text-secondary text-xxs font-weight-bolder opacity-7">Unit Price</th>
+                  <th class="text-uppercase text-center text-secondary text-xxs font-weight-bolder opacity-7">status</th>
+                </tr>
+              </thead>
+              <tbody>
+                @if(immobilisations$|async;as immobilisations){
+                  @for (immobilisation of immobilisations; track $index) {
+                    <tr>
+                      <td class="text-center">{{immobilisation.code}}
+                      </td>
+                      <td class="text-center">{{immobilisation.name}}
+                      </td>
+                      <td class="text-center">
+                        {{immobilisation.quantity}}
+                      </td>
+                      <td class="text-center">
+                        {{immobilisation.categorie.name}}
+                      </td>
+                      <td class="text-center">
+                        {{immobilisation.structure.name}}
+                      </td>
+                      <td class="text-center">
+                        {{immobilisation.fournisseur.name}}
+                      </td>
+                      <td class="text-center">
+                        {{immobilisation.unit_price}}
+                      </td>
+                      <td class="text-center">
+                        <span class="badge badge-sm bg-gradient-secondary">{{immobilisation.status}}</span>
+    
+                      </td>
+                    </tr>
+                  }
+                }
+
+              </tbody>
+            </table>
+            <mat-paginator #paginator [length]="totaElement" (page)="pageEvent=pageChange($event)"
+        [pageSize]="itemsPerPage"
+       [pageSizeOptions]="pageArray"
+       
+       aria-label="Select page">
+       </mat-paginator>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</app-base>

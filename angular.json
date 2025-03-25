@@ -37,9 +37,19 @@
               }
             ],
             "styles": [
-              "src/styles.css"
+              "node_modules/ngx-spinner/animations/ball-scale-multiple.css",
+              "@angular/material/prebuilt-themes/azure-blue.css",
+              "src/styles.css",
+              "src/assets/css/argon-dashboard.css"
             ],
-            "scripts": []
+            "scripts": [
+              "src/assets/js/core/popper.min.js",
+              "src/assets/js/core/bootstrap.min.js",
+              "src/assets/js/plugins/perfect-scrollbar.min.js",
+              "src/assets/js/plugins/smooth-scrollbar.min.js",
+              "src/assets/js/plugins/chartjs.min.js",
+             "src/assets/js/argon-dashboard.js"
+            ]
           },
           "configurations": {
             "production": {
@@ -95,7 +105,6 @@
               }
             ],
             "styles": [
-              "src/styles.css"
             ],
             "scripts": []
           }

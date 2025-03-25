@@ -1,0 +1,56 @@
+<app-base nameOption="Structures">
+    <div class="row">
+      <div class="w-1/2">
+        <button  class="btn btn-primary btn-round" (click)="createStructure()">{{"AddU"|translate}} {{"Structure"|translate}}</button>
+        
+    </div>
+      <div class="col-12">
+        <div class="card mb-4">
+          <div class="card-header pb-0">
+            <h6>Structures table</h6>
+          </div>
+          <div class="card-body px-0 pt-0 pb-2">
+            <div class="table-responsive p-0">
+              <table class="table align-items-center mb-0">
+                <thead>
+                  <tr>
+                    <th class="text-uppercase text-center text-secondary text-xxs font-weight-bolder opacity-7">{{"No"|translate}}</th>
+                    <th class="text-uppercase text-center text-secondary text-xxs font-weight-bolder opacity-7">{{"Name"|translate}}</th>
+                    <th class="text-uppercase text-center text-secondary text-xxs font-weight-bolder opacity-7">{{"Short Name"|translate}}</th>
+                    <th class="text-uppercase text-center text-secondary text-xxs font-weight-bolder opacity-7">{{"User"|translate}}</th>
+                    <th class="text-uppercase text-center text-secondary text-xxs font-weight-bolder opacity-7">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @if(structures$|async;as structures){
+                    @for (structure of structures; track $index) {
+                      <tr>
+                        <td class="text-center">{{$index+1}}
+                        <td class="text-center">{{structure.name}}
+                        </td>
+                        <td class="text-center">{{structure.short_name}}
+                        </td>
+                        <td class="text-center">
+                          {{structure.user.first_name}}
+                        </td>
+                        <td class="text-center input-group-sm">
+                          <button ngbTooltip="{{'Edit'|translate}} {{'Structure'|translate}}" class="btn btn-group-small btn-warning btn-sm" (click)="updateStructure(structure.id)" data-toggle="tooltip"><i class="fa fa-pencil btn-warning"></i></button>
+                        </td>
+                      </tr>
+                    }
+                  }
+  
+                </tbody>
+              </table>
+              <mat-paginator #paginator [length]="totaElement" (page)="pageEvent=pageChange($event)"
+          [pageSize]="itemsPerPage"
+         [pageSizeOptions]="pageArray"
+         
+         aria-label="Select page">
+         </mat-paginator>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </app-base>

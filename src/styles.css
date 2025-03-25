@@ -1,1 +1,22 @@
 /* You can add global styles to this file, and also import other style files */
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+ngb-modal-backdrop {
+    z-index: 2 !important; /* ou une autre valeur que tu souhaites */
+  }
+  .primary-color{
+    color:#5E72E4
+   }
+   .secondary-color{
+    color:#344767
+   }
+   .secondary-bg-color{
+    background-color:#344767
+   }
+   .btn-app{
+    margin-bottom: 1px;
+    font-size: 10px; /* Taille du texte */
+    padding: 8px 5px; 
+   }

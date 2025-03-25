@@ -1,0 +1,39 @@
+<div class="">
+    <div class="modal-header">
+        <h5 class="modal-title">{{structureId?"Update":"CreateU"|translate}} {{"Structure"|translate}}</h5>
+        <button  type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="dismiss()" style="background-color: #344767;"></button>
+        
+    </div>
+    
+    <div class="body p-4">
+        @if(error$|async;as error){
+            <span class="text-danger">{{error.message}}</span>
+        }
+        <form [formGroup]="structureForm">
+            <!-- Name input -->
+            <div  class="form-outline mb-4">
+                <label class="form-label" for="name">{{"name"|translate}}</label>
+                <input type="text" id="name" class="form-control"  formControlName="name" />
+                @if(btnSubmit&&structureForm.invalid&&structureForm.get('name')?.invalid)
+                    {
+                        <span class="text-danger">{{getFormControlErrorText(structureForm.get('name'))}}</span>
+                    }
+            </div>
+            <div  class="form-outline mb-4">
+                <label class="form-label" for="short_name">{{"Short Name"|translate}}</label>
+                <input type="text" id="short_name" class="form-control" formControlName="short_name" />
+                @if(btnSubmit&&structureForm.invalid&&structureForm.get('short_name')?.invalid)
+                    {
+                        <span class="text-danger">{{getFormControlErrorText(structureForm.get('short_name'))}}</span>
+                    }
+            </div>
+        </form>
+        <div  class="form-outline mb-4">
+            
+            @if(loading$|async){
+                <app-custom-spinner></app-custom-spinner>
+            }
+            <button type="submit" style="margin-top :25px;width: 100%;" class="btn {{structureId?'btn-warning':'btn-primary'}}" (click)="submitForm()"> {{structureId?"Update":"Create"|translate|titlecase}} </button>
+        </div>
+    </div>
+</div>

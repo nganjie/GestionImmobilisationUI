@@ -1,0 +1,23 @@
+<li (click)="logOut()">
+    <a href="#">
+        <i class="fa fa-sign-out"></i> {{"LogOut"|translate}}
+    </a>
+</li>
+<li>
+    <mat-form-field class="mat-select-hide-underline m-0 p-0">
+        <mat-select [value]="language.value" (valueChange)="selectLanguage($event)">
+          <mat-select-trigger>
+            <div >
+              <img [src]="language.img" class="flag"/>
+              <span>{{ language.label }}</span>
+            </div>
+          </mat-select-trigger>
+          <mat-option *ngFor="let opt of languages" [value]="opt.value">
+            <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
+              <img [src]="opt.img" class="flag" /> 
+              <span>{{ opt.label }}</span>
+            </div>
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+</li>

@@ -1,0 +1,55 @@
+<div class="">
+    <div class="modal-header">
+        <h5 class="modal-title">{{fournisseurId?"Update":"Create"|translate}} {{"fournisseur"|translate}}</h5>
+        <button  type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="dismiss()" style="background-color: #344767;"></button>
+        
+    </div>
+    
+    <div class="body p-4">
+        @if(error$|async;as error){
+            <span class="text-danger">{{error.message}}</span>
+        }
+        <form [formGroup]="fournisseurForm">
+            <!-- Name input -->
+            <div  class="form-outline mb-4">
+                <label class="form-label" for="name">{{"name"|translate}}</label>
+                <input type="text" id="name" class="form-control"  formControlName="name" />
+                @if(btnSubmit&&fournisseurForm.invalid&&fournisseurForm.get('name')?.invalid)
+                    {
+                        <span class="text-danger">{{getFormControlErrorText(fournisseurForm.get('name'))}}</span>
+                    }
+            </div>
+            <div  class="form-outline mb-4">
+                <label class="form-label" for="short_name">{{"raison social"|translate}}</label>
+                <input type="text" id="short_name" class="form-control" formControlName="raison_social" />
+                @if(btnSubmit&&fournisseurForm.invalid&&fournisseurForm.get('raison_social')?.invalid)
+                    {
+                        <span class="text-danger">{{getFormControlErrorText(fournisseurForm.get('raison_social'))}}</span>
+                    }
+            </div>
+            <div  class="form-outline mb-4">
+                <label class="form-label" for="short_name">{{"adresse"|translate}}</label>
+                <input type="text" id="short_name" class="form-control" formControlName="adresse" />
+                @if(btnSubmit&&fournisseurForm.invalid&&fournisseurForm.get('adresse')?.invalid)
+                    {
+                        <span class="text-danger">{{getFormControlErrorText(fournisseurForm.get('adresse'))}}</span>
+                    }
+            </div>
+            <div  class="form-outline mb-4">
+                <label class="form-label" for="short_name">{{"nui"|translate}}</label>
+                <input type="text" id="short_name" class="form-control" formControlName="nui" />
+                @if(btnSubmit&&fournisseurForm.invalid&&fournisseurForm.get('nui')?.invalid)
+                    {
+                        <span class="text-danger">{{getFormControlErrorText(fournisseurForm.get('nui'))}}</span>
+                    }
+            </div>
+        </form>
+        <div  class="form-outline mb-4">
+            
+            @if(loading$|async){
+                <app-custom-spinner></app-custom-spinner>
+            }
+            <button type="submit" style="margin-top :25px;width: 100%;" class="btn {{fournisseurId?'btn-warning':'btn-primary'}}" (click)="submitForm()"> {{fournisseurId?"Update":"Create"|translate|titlecase}} </button>
+        </div>
+    </div>
+</div>
