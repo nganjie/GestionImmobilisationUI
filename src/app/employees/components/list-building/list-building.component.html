@@ -1,7 +1,7 @@
-<app-base nameOption="categories">
+<app-base nameOption="Building">
     <div class="row">
         <div class="w-1/2">
-            <button  class="btn btn-primary btn-round" (click)="createCategorie()">{{"AddU"|translate}} {{"Categorie"|translate}}</button>
+            <button  class="btn btn-primary btn-round" (click)="createBuilding()">{{"Add"|translate}} {{"Building"|translate}}</button>
             
         </div>
       <div class="col-12">
@@ -10,7 +10,7 @@
             @if(loading$|async){
                 <app-custom-spinner></app-custom-spinner>
             }
-            <h6>Categories table</h6>
+            <h6>Building table</h6>
           </div>
           <div class="card-body px-0 pt-0 pb-2">
             <div class="table-responsive p-0">
@@ -19,25 +19,29 @@
                   <tr>
                     <th class="text-uppercase text-center text-secondary text-xxs font-weight-bolder opacity-7">{{"No"|translate}}</th>
                     <th class="text-uppercase text-center text-secondary text-xxs font-weight-bolder opacity-7">{{"Name"|translate}}</th>
-                    <th class="text-uppercase text-center text-secondary text-xxs font-weight-bolder opacity-7">{{"Short Name"|translate}}</th>
+                    <th class="text-uppercase text-center text-secondary text-xxs font-weight-bolder opacity-7">{{"country"|translate}}</th>
+                    <th class="text-uppercase text-center text-secondary text-xxs font-weight-bolder opacity-7">{{"city"|translate}}</th>
+                    <th class="text-uppercase text-center text-secondary text-xxs font-weight-bolder opacity-7">{{"Nb Etage"|translate}}</th>
                     <th class="text-uppercase text-center text-secondary text-xxs font-weight-bolder opacity-7">{{"User"|translate}}</th>
+                    <th class="text-uppercase text-center text-secondary text-xxs font-weight-bolder opacity-7">{{"create_at"|translate}}</th>
                     <th class="text-uppercase text-center text-secondary text-xxs font-weight-bolder opacity-7">Action</th>
                   </tr>
                 </thead>
                 <tbody>
-                  @if(categories$|async;as categories){
-                    @for (categorie of categories; track $index) {
+                  @if(buildings$|async;as buildings){
+                    @for (building of buildings; track $index) {
                       <tr>
                         <td class="text-center">{{$index+1}}
-                        <td class="text-center">{{categorie.name}}
+                        <td class="text-center">{{building.name}}
                         </td>
-                        <td class="text-center">{{categorie.short_name}}
+                        <td class="text-center">{{building.country}}
                         </td>
-                        <td class="text-center">
-                          {{categorie.user.first_name}}
-                        </td>
+                        <td class="text-center">{{building.city}}</td>
+                        <td class="text-center">{{building.nb_etage}}</td>
+                        <td class="text-center">{{building.user.first_name}}</td>
+                        <td class="text-center">{{building.created_at|date:'short'}}</td>
                         <td class="text-center input-group-sm">
-                          <button ngbTooltip="{{'Edit'|translate}} {{'Categorie'|translate}}" class="btn btn-group-small btn-warning btn-sm" (click)="updateCategorie(categorie.id)" data-toggle="tooltip"><i class="fa fa-pencil btn-warning"></i></button>
+                          <button ngbTooltip="{{'Edit'|translate}} {{'Building'|translate}}" class="btn btn-group-small btn-warning btn-sm" (click)="updateBuilding(building.id)" data-toggle="tooltip"><i class="fa fa-pencil btn-warning"></i></button>
                         </td>
                       </tr>
                     }

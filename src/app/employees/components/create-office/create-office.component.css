@@ -1,0 +1,10 @@
+.form-horizontal .form-group {
+    margin-bottom: 15px;
+}
+.form-horizontal .form-group label {
+    color: #8b8b8b;
+}
+.form-horizontal .control-label {
+    padding-top: 7px;
+    margin-bottom: 0;
+}

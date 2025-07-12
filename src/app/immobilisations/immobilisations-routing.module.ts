@@ -4,12 +4,17 @@ import { ListImmobilisationComponent } from './components/list-immobilisation/li
 import { ListCategorieComponent } from './components/list-categorie/list-categorie.component';
 import { ListStructureComponent } from './components/list-structure/list-structure.component';
 import { ListFournisseurComponent } from './components/list-fournisseur/list-fournisseur.component';
+import { CreateImmobilisationComponent } from './components/create-immobilisation/create-immobilisation.component';
+import { DetailImmobilisationComponent } from './components/detail-immobilisation/detail-immobilisation.component';
 
 const routes: Routes = [
   {path:'',component:ListImmobilisationComponent},
   {path:'categories',component:ListCategorieComponent},
   {path:'structures',component:ListStructureComponent},
-  {path:'fournisseurs',component:ListFournisseurComponent}
+  {path:'fournisseurs',component:ListFournisseurComponent},
+  {path:'create',component:CreateImmobilisationComponent},
+  {path:'detail/:id',component:DetailImmobilisationComponent},
+  {path:'edit/:id',component:CreateImmobilisationComponent},
 ];
 
 @NgModule({

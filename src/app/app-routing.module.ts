@@ -11,7 +11,8 @@ const routes: Routes = [
     children: [
      
       {path:'',component:DashboardComponent},
-      {path:'immobilisations',loadChildren:()=>import('./immobilisations/immobilisations.module').then(m=>m.ImmobilisationsModule)}
+      {path:'immobilisations',loadChildren:()=>import('./immobilisations/immobilisations.module').then(m=>m.ImmobilisationsModule)},
+      {path:"employees",loadChildren:()=>import('./employees/employees.module').then(m=>m.EmployeesModule)}
       //{path:'client-accounts',loadChildren:()=>import('./client-accounts/client-accounts.module').then(m=>m.ClientAccountsModule),canActivate:[authRoleGuard],data:{roles:ClientsRouteRole}}
     ]
     },

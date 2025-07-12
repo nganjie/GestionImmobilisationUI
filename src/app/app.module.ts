@@ -11,6 +11,7 @@ import { HttpClient, provideHttpClient } from '@angular/common/http';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { LanguageService } from './services/language/language.service';
+import { MatSelectModule } from '@angular/material/select';
 export function createTranslateLoader(http:HttpClient){
   return new TranslateHttpLoader(http,'./i18n/','.json');
 }
@@ -30,7 +31,8 @@ export function createTranslateLoader(http:HttpClient){
         deps:[HttpClient]
       }
     }
-    )
+    ),
+    MatSelectModule
   ],
   providers: [
     AuthService,

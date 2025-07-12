@@ -1,5 +1,5 @@
 import { NgModule,CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DecimalPipe } from '@angular/common';
 import { ImmobilisationsRoutingModule } from './immobilisations-routing.module';
 import { ListImmobilisationComponent } from './components/list-immobilisation/list-immobilisation.component';
 import { SharedModule } from "../shared/shared.module";
@@ -17,6 +17,9 @@ import { ImmoService } from './services/immo.service';
 import { CreateStructureComponent } from './components/create-structure/create-structure.component';
 import { CreateFournisseurComponent } from './components/create-fournisseur/create-fournisseur.component';
 import { CreateImmobilisationComponent } from './components/create-immobilisation/create-immobilisation.component';
+import { MatSelectModule } from '@angular/material/select';
+import { NgSelectModule } from '@ng-select/ng-select';
+import { DetailImmobilisationComponent } from './components/detail-immobilisation/detail-immobilisation.component';
 
 
 @NgModule({
@@ -28,7 +31,8 @@ import { CreateImmobilisationComponent } from './components/create-immobilisatio
     CreateCategorieComponent,
     CreateStructureComponent,
     CreateFournisseurComponent,
-    CreateImmobilisationComponent
+    CreateImmobilisationComponent,
+    DetailImmobilisationComponent
   ],
   imports: [
     CommonModule,
@@ -36,6 +40,7 @@ import { CreateImmobilisationComponent } from './components/create-immobilisatio
     SharedModule,
     MatPaginatorModule,
     MatIconModule,
+    DecimalPipe,
     TranslateModule.forRoot({
       loader:{
         provide:TranslateLoader,
@@ -44,6 +49,8 @@ import { CreateImmobilisationComponent } from './components/create-immobilisatio
       }
     }
     ),
+    NgSelectModule,
+    MatSelectModule,
 ],
 providers:[
   LanguageService,

@@ -40,7 +40,8 @@
               "node_modules/ngx-spinner/animations/ball-scale-multiple.css",
               "@angular/material/prebuilt-themes/azure-blue.css",
               "src/styles.css",
-              "src/assets/css/argon-dashboard.css"
+              "src/assets/css/argon-dashboard.css",
+              "node_modules/@ng-select/ng-select/themes/default.theme.css"
             ],
             "scripts": [
               "src/assets/js/core/popper.min.js",

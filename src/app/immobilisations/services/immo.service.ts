@@ -9,6 +9,7 @@ import { ApiPaginatedResponse, ApiResponse } from '../../models/data-server.mode
 import { environment } from '../../../environments/environment';
 import { PaginateData } from '../../models/paginate-data.model';
 import { FormGroup } from '@angular/forms';
+import { EmployeeDetail } from '../../employees/models/employee-detail.model';
 
 @Injectable({
   providedIn: 'root'
@@ -34,7 +35,7 @@ export class ImmoService extends GlobalServices {
   get fournisseurs$():Observable<Fournisseur[]>{
     return this._fournisseurs$.asObservable();
   }
-  getImmoFromServer(paginateD:PaginateData){
+  getImmoFromServer(paginateD:PaginateData=this.emptyPaginate){
     const header =this.getHearder();
     let pagin =this.explosePaginationOption(paginateD);
     this.setLoadStatus(true)
@@ -51,7 +52,18 @@ export class ImmoService extends GlobalServices {
       })
     ).subscribe()
   }
-  getCategoriesFromServer(paginateD:PaginateData){
+  getImmoFullFromServer(){
+    const header =this.getHearder();
+    this.setLoadStatus(true)
+    this.http.get<ApiResponse<ImmobilisationDetail[]>>(`${environment.apiUrlFirst}/admin/immo/immo/full-all?`,header).pipe(
+      map(data=>{
+        this.setLoadStatus(false);
+        console.log(data)
+        this._immobilisations$.next(data.data??[]);
+      })
+    ).subscribe()
+  }
+  getCategoriesFromServer(paginateD:PaginateData=this.emptyPaginate){
     const header =this.getHearder();
     let pagin =this.explosePaginationOption(paginateD);
     this.setLoadStatus(true)
@@ -68,7 +80,18 @@ export class ImmoService extends GlobalServices {
       })
     ).subscribe()
   }
-  getStructuresFromServer(paginateD:PaginateData){
+  getCategoriesFullFromServer(){
+    const header =this.getHearder();
+    this.setLoadStatus(true)
+    this.http.get<ApiResponse<Categorie[]>>(`${environment.apiUrlFirst}/admin/immo/categories/full-all?`,header).pipe(
+      map(data=>{
+        this.setLoadStatus(false);
+        console.log(data)
+        this._categories$.next(data.data??[]);
+      })
+    ).subscribe()
+  }
+  getStructuresFromServer(paginateD:PaginateData=this.emptyPaginate){
     const header =this.getHearder();
     let pagin =this.explosePaginationOption(paginateD);
     this.setLoadStatus(true)
@@ -86,7 +109,19 @@ export class ImmoService extends GlobalServices {
 
     ).subscribe()
   }
-  getFournisseursFromServer(paginateD:PaginateData){
+  getStructuresFullFromServer(){
+    const header =this.getHearder();
+    this.setLoadStatus(true)
+    this.http.get<ApiResponse<Structure[]>>(`${environment.apiUrlFirst}/admin/immo/structures/full-all?`,header).pipe(
+      map(data=>{
+        this.setLoadStatus(false);
+        console.log(data)
+        this._structures$.next(data.data??[]);
+      })
+
+    ).subscribe()
+  }
+  getFournisseursFromServer(paginateD:PaginateData=this.emptyPaginate){
     const header =this.getHearder();
     let pagin =this.explosePaginationOption(paginateD);
     this.setLoadStatus(true)
@@ -102,6 +137,24 @@ export class ImmoService extends GlobalServices {
         })
       })
     ).subscribe()
+  }
+  getFournisseursFullFromServer(){
+    const header =this.getHearder();
+    this.setLoadStatus(true)
+    this.http.get<ApiResponse<Fournisseur[]>>(`${environment.apiUrlFirst}/admin/immo/fournisseurs/full-all`,header).pipe(
+      map(data=>{
+        this.setLoadStatus(false);
+        console.log(data)
+        this._fournisseurs$.next(data.data??[]);
+      })
+    ).subscribe()
+  }
+  getImmoDetailFromServer(id:string):Observable<ImmobilisationDetail>{
+    const header =this.getHearder();
+    //this.setLoadStatus(true)
+    return this.http.get<ApiResponse<ImmobilisationDetail>>(`${environment.apiUrlFirst}/admin/immo/immo/${id}`,header).pipe(
+      map(data => data.data as ImmobilisationDetail)
+    )
   }
   getCategorieDetailFromServer(id:string):Observable<Categorie>{
     const header =this.getHearder();
@@ -123,6 +176,38 @@ export class ImmoService extends GlobalServices {
     return this.http.get<ApiResponse<Fournisseur>>(`${environment.apiUrlFirst}/admin/immo/fournisseurs/${id}`,header).pipe(
       map(data => data.data as Fournisseur)
     )
+  }
+  createImmo(form:FormGroup){
+    const header =this.getHearder();
+    this.setLoadStatus(true)
+    this.http.post<ApiResponse<EmployeeDetail>>(`${environment.apiUrlFirst}/admin/immo/immo/create`,form.value,header).pipe(
+      map(data=>{
+        this.setLoadStatus(false)
+                console.log(data)
+        if(data.success){
+          this.setSnackMesage('Employee create successfully')
+          this.setConfirmSubmit(true)
+        }else{
+          this.setSnackMesage(`${data.error}`,'btn-warning');
+        }
+      })
+    ).subscribe()
+  }
+  updateImmo(form:FormGroup,id:string){
+    const header =this.getHearder();
+    this.setLoadStatus(true)
+    this.http.put<ApiResponse<EmployeeDetail>>(`${environment.apiUrlFirst}/admin/immo/immo/update/${id}`,form.value,header).pipe(
+      map(data=>{
+        this.setLoadStatus(false)
+                console.log(data)
+        if(data.success){
+          this.setSnackMesage('Categorie Updated successfully')
+          this.setConfirmSubmit(true)
+        }else{
+          this.setSnackMesage(`${data.error}`,'btn-warning');
+        }
+      })
+    ).subscribe()
   }
   createCategorie(form:FormGroup){
     const header =this.getHearder();

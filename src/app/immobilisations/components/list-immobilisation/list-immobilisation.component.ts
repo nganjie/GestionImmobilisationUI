@@ -5,6 +5,10 @@ import { BaseComponent } from '../../../shared/components/base/base.component';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { ImmobilisationDetail } from '../../models/immobilisation-detail.model';
 import { PaginateData } from '../../../models/paginate-data.model';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { LanguageService } from '../../../services/language/language.service';
+import { CreateImmobilisationComponent } from '../create-immobilisation/create-immobilisation.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-list-immobilisation',
@@ -23,7 +27,12 @@ export class ListImmobilisationComponent extends BaseComponent implements OnInit
     itemsPerPage$=new BehaviorSubject<number>(this.itemsPerPage)
     page$ =new BehaviorSubject<number>(1);
   immobilisations$!:Observable<ImmobilisationDetail[]>
-  constructor(private immoService:ImmoService){
+  
+  // Nouvelles propriétés
+  searchTerm: string = '';
+  selectedCategory: string = '';
+  selectedStatus: string = '';
+  constructor(private languageService:LanguageService,private immoService:ImmoService,private modalService:NgbModal, private router: Router){
     super();
     
     console.log('init constructor')
@@ -36,6 +45,39 @@ export class ListImmobilisationComponent extends BaseComponent implements OnInit
     //this.setnameMenu('Immobilisations');
 
   }
+  createImmobilisation(){
+      const modalRef =this.modalService.open(CreateImmobilisationComponent,{
+            centered:true,
+            backdrop:'static',
+            //backdrop: false
+          });
+          var reloadPgae:Observable<boolean>;
+          reloadPgae=modalRef.componentInstance.realod;
+          reloadPgae.subscribe(
+            (b)=>{
+              if(b){
+                this.immoService.getFournisseursFromServer(this.paginateData);
+              }
+            }
+          )
+    }
+    updateImmobilisation(id:string) {
+        const modalRef =this.modalService.open(CreateImmobilisationComponent,{
+          centered:true,
+          backdrop:'static',
+          //backdrop: false
+        });
+        modalRef.componentInstance.immobilisationId=id;
+        var reloadPgae:Observable<boolean>;
+        reloadPgae=modalRef.componentInstance.realod;
+        reloadPgae.subscribe(
+          (b)=>{
+            if(b){
+              this.immoService.getFournisseursFromServer(this.paginateData);
+            }
+          }
+        )
+      }
   pageChange(event:PageEvent):PageEvent {
     //if(event.pageSize!=this.itemsPerPage){}
     //this.itemsPerPage=event.pageSize;
@@ -45,6 +87,67 @@ export class ListImmobilisationComponent extends BaseComponent implements OnInit
     this.immoService.getImmoFromServer(this.paginateData)
     console.log(this.paginateData)
     return event;
+  }
+  changeChoiceItemPage(){
+    let arr:number[]=[];
+    console.log(this.pageArray)
+    if(this.totaElement<=2)
+    {
+      console.log('total',this.totaElement)
+      arr.push(this.totaElement)
+  
+    }else{
+      for(let i=1;i<this.totaElement/2;i++)
+        {
+          arr.push(i*2)
+        }
+        if(this.totaElement%2>0){
+          arr.push(this.totaElement)
+        }
+    }
+    console.log(arr);
+    this.pageArray=arr;
+  }
+
+  /**
+   * Afficher les détails d'une immobilisation
+   */
+  viewDetails(id: string) {
+    this.router.navigate(['/admin/immobilisations/detail', id]);
+  }
+
+  /**
+   * Supprimer une immobilisation
+   */
+  deleteImmobilisation(id: string) {
+    if (confirm('Êtes-vous sûr de vouloir supprimer cette immobilisation ?')) {
+      // Logique de suppression
+      console.log('Delete immobilisation:', id);
+    }
+  }
+
+  /**
+   * Rechercher dans la liste
+   */
+  onSearch() {
+    // Logique de recherche
+    console.log('Search term:', this.searchTerm);
+  }
+
+  /**
+   * Filtrer par catégorie
+   */
+  onCategoryFilter() {
+    // Logique de filtrage
+    console.log('Filter by category:', this.selectedCategory);
+  }
+
+  /**
+   * Filtrer par statut
+   */
+  onStatusFilter() {
+    // Logique de filtrage
+    console.log('Filter by status:', this.selectedStatus);
   }
 
 }

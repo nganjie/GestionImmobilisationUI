@@ -8,3 +8,12 @@ export interface User {
     created_at: string;
     updated_at: string;
   }
+
+  export interface EntityValue{
+    name:string;
+    value:string;
+  }
+  export const CountryData:EntityValue[]=[
+    {name:'CAMEROUN',value:'CM'},
+    {name:'TCHAD',value:'TD'}
+  ]

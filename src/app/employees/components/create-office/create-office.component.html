@@ -1,0 +1,65 @@
+<div class="">
+    <div class="modal-header">
+        <h5 class="modal-title">{{officeId?"Update":"Create"|translate}} {{"Office"|translate}}</h5>
+        <button  type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="dismiss()" style="background-color: #344767;"></button>
+        
+    </div>
+    
+    <div class="body p-4">
+        @if(error$|async;as error){
+            <span class="text-danger">{{error.message}}</span>
+        }
+        <form [formGroup]="employeeForm" class="form-horizontal">
+            <!-- Name input -->
+            <div  class="form-outline mb-4">
+                <label class="form-label" for="name">{{"Name"|translate}}</label>
+                <input type="text" id="name" class="form-control"  formControlName="name" />
+                @if(btnSubmit&&employeeForm.invalid&&employeeForm.get('name')?.invalid)
+                    {
+                        <span class="text-danger">{{getFormControlErrorText(employeeForm.get('name'))}}</span>
+                    }
+            </div>
+            <div  class="form-outline mb-4">
+                <label class="form-label" for="num_office">{{"Num Office"|translate}}</label>
+                <input type="text" id="num_office" class="form-control"  formControlName="num_office" />
+                @if(btnSubmit&&employeeForm.invalid&&employeeForm.get('num_office')?.invalid)
+                    {
+                        <span class="text-danger">{{getFormControlErrorText(employeeForm.get('num_office'))}}</span>
+                    }
+            </div>
+            <div  class="form-outline mb-4" id="allSiteId">
+                <label class="form-label" for="building_id">{{"Building"|translate}}</label>
+                <ng-select
+  [items]="buildings$|async"
+  bindLabel="name"
+  bindValue="id"
+  [addTag]="addTagNowRef"
+  [(ngModel)]="selectedOption"
+  formControlName="building_id"
+  [closeOnSelect]="false"
+  [searchable]="true">
+</ng-select>
+                
+                @if(btnSubmit&&employeeForm.invalid&&employeeForm.get('num_office')?.invalid)
+                    {
+                        <span class="text-danger">{{getFormControlErrorText(employeeForm.get('num_office'))}}</span>
+                    }
+            </div>
+            <div  class="form-outline mb-4">
+                <label class="form-label" for="num_etage">{{"Num Etage"|translate}}</label>
+                <input type="text" id="num_etage" class="form-control" formControlName="num_etage" />
+                @if(btnSubmit&&employeeForm.invalid&&employeeForm.get('num_etage')?.invalid)
+                    {
+                        <span class="text-danger">{{getFormControlErrorText(employeeForm.get('num_etage'))}}</span>
+                    }
+            </div>
+        </form>
+        <div  class="form-outline mb-4">
+            
+            @if(loading$|async){
+                <app-custom-spinner></app-custom-spinner>
+            }
+            <button type="submit" style="margin-top :25px;width: 100%;" class="btn {{officeId?'btn-warning':'btn-primary'}}" (click)="submitForm()"> {{officeId?"Update":"Create"|translate|titlecase}} </button>
+        </div>
+    </div>
+</div>

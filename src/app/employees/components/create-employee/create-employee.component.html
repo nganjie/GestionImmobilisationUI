@@ -1,0 +1,81 @@
+<div class="">
+    <div class="modal-header">
+        <h5 class="modal-title">{{employeeId?"Update":"Create"|translate}} {{"Employee"|translate}}</h5>
+        <button  type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="dismiss()" style="background-color: #344767;"></button>
+        
+    </div>
+    
+    <div class="body p-4">
+        @if(error$|async;as error){
+            <span class="text-danger">{{error.message}}</span>
+        }
+        <form [formGroup]="employeeForm" style="grid-template-columns: 1fr 1fr;" class="d-grid gap-3">
+            <!-- Name input -->
+            <div  class="form-outline mb-4">
+                <label class="form-label" for="first_name">{{"First Name"|translate}}</label>
+                <input type="text" id="first_name" class="form-control"  formControlName="first_name" />
+                @if(btnSubmit&&employeeForm.invalid&&employeeForm.get('first_name')?.invalid)
+                    {
+                        <span class="text-danger">{{getFormControlErrorText(employeeForm.get('first_name'))}}</span>
+                    }
+            </div>
+            <div  class="form-outline mb-4">
+                <label class="form-label" for="last_name">{{"Last name"|translate}}</label>
+                <input type="text" id="last_name" class="form-control"  formControlName="last_name" />
+                @if(btnSubmit&&employeeForm.invalid&&employeeForm.get('last_name')?.invalid)
+                    {
+                        <span class="text-danger">{{getFormControlErrorText(employeeForm.get('last_name'))}}</span>
+                    }
+            </div>
+            <div  class="form-outline mb-4">
+                <label class="form-label" for="matricule">{{"matricule"|translate}}</label>
+                <input type="text" id="matricule" class="form-control"  formControlName="matricule" />
+                @if(btnSubmit&&employeeForm.invalid&&employeeForm.get('matricule')?.invalid)
+                    {
+                        <span class="text-danger">{{getFormControlErrorText(employeeForm.get('matricule'))}}</span>
+                    }
+            </div>
+            <div  class="form-outline mb-4">
+                <label class="form-label" for="fonction">{{"fonction"|translate}}</label>
+                <input type="text" id="fonction" class="form-control"  formControlName="fonction" />
+                @if(btnSubmit&&employeeForm.invalid&&employeeForm.get('fonction')?.invalid)
+                    {
+                        <span class="text-danger">{{getFormControlErrorText(employeeForm.get('fonction'))}}</span>
+                    }
+            </div>
+            <div  class="form-outline mb-4">
+                <label class="form-label" for="departement">{{"departement"|translate}}</label>
+                <input type="text" id="departement" class="form-control"  formControlName="departement" />
+                @if(btnSubmit&&employeeForm.invalid&&employeeForm.get('departement')?.invalid)
+                    {
+                        <span class="text-danger">{{getFormControlErrorText(employeeForm.get('departement'))}}</span>
+                    }
+            </div>
+            <div  class="form-outline mb-4" id="allSiteId">
+                <label class="form-label" for="office_id">{{"Office"|translate}}</label>
+                <div class="col-sm-9"></div>
+                <ng-select
+  [items]="offices$|async"
+  bindLabel="name"
+  bindValue="id"
+  [addTag]="addTagNowRef"
+  formControlName="office_id"
+  [closeOnSelect]="false"
+  [searchable]="true">
+</ng-select>
+                
+                @if(btnSubmit&&employeeForm.invalid&&employeeForm.get('num_office')?.invalid)
+                    {
+                        <span class="text-danger">{{getFormControlErrorText(employeeForm.get('num_office'))}}</span>
+                    }
+            </div>
+        </form>
+        <div  class="form-outline mb-4">
+            
+            @if(loading$|async){
+                <app-custom-spinner></app-custom-spinner>
+            }
+            <button type="submit" style="margin-top :25px;width: 100%;" class="btn {{employeeId?'btn-warning':'btn-primary'}}" (click)="submitForm()"> {{employeeId?"Update":"Create"|translate|titlecase}} </button>
+        </div>
+    </div>
+</div>

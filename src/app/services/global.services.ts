@@ -9,6 +9,8 @@ import { User } from "../models/user.model";
 export class GlobalServices{
     headers!:{headers:HttpHeaders};
     currentUser!:User;
+    emptyPaginate={ current_page:0,
+        per_page:10}
     _nameMenue$=new BehaviorSubject<string>('');
     get nameMenu$():Observable<string>{
         return this._nameMenue$.asObservable();

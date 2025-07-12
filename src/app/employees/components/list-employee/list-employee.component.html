@@ -1,0 +1,68 @@
+<app-base nameOption="Employee">
+    <div class="row">
+        <div class="w-1/2">
+            <button  class="btn btn-primary btn-round" (click)="createEmployee()">{{"Add"|translate}} {{"Employee"|translate}}</button>
+            
+        </div>
+      <div class="col-12">
+        <div class="card mb-4">
+          <div class="card-header pb-0">
+            @if(loading$|async){
+                <app-custom-spinner></app-custom-spinner>
+            }
+            <h6>Employee table</h6>
+            
+          </div>
+          <div class="card-body px-0 pt-0 pb-2">
+            <div class="table-responsive p-0">
+              <table class="table table-responsive align-items-center mb-0">
+                <thead>
+                  <tr>
+                    <th class="text-uppercase text-center text-secondary text-xxs font-weight-bolder opacity-7">{{"No"|translate}}</th>
+                    <th class="text-uppercase text-center text-secondary text-xxs font-weight-bolder opacity-7">{{"First Name"|translate}}</th>
+                    <th class="text-uppercase text-center text-secondary text-xxs font-weight-bolder opacity-7">{{"Last Name"|translate}}</th>
+                    <th class="text-uppercase text-center text-secondary text-xxs font-weight-bolder opacity-7">{{"matricule"|translate}}</th>
+                    <th class="text-uppercase text-center text-secondary text-xxs font-weight-bolder opacity-7">{{"fonction"|translate}}</th>
+                    <th class="text-uppercase text-center text-secondary text-xxs font-weight-bolder opacity-7">{{"departement"|translate}}</th>
+                    <th class="text-uppercase text-center text-secondary text-xxs font-weight-bolder opacity-7">{{"Office"|translate}}</th>
+                    <th class="text-uppercase text-center text-secondary text-xxs font-weight-bolder opacity-7">{{"User"|translate}}</th>
+                    <th class="text-uppercase text-center text-secondary text-xxs font-weight-bolder opacity-7">{{"create_at"|translate}}</th>
+                    <th class="text-uppercase text-center text-secondary text-xxs font-weight-bolder opacity-7">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @if(employees$|async;as employees){
+                    @for (employee of employees; track $index) {
+                      <tr>
+                        <td class="text-center">{{$index+1}}
+                        <td class="text-center">{{employee.first_name}}
+                        </td>
+                        <td class="text-center">{{employee.last_name}}
+                        </td>
+                        <td class="text-center">{{employee.matricule}}</td>
+                        <td class="text-center">{{employee.fonction}}</td>
+                        <td class="text-center">{{employee.departement}}</td>
+                        <td class="text-center">{{employee.office.name}}</td>
+                        <td class="text-center">{{employee.user.first_name}}</td>
+                        <td class="text-center">{{employee.created_at|date:'short'}}</td>
+                        <td class="text-center input-group-sm">
+                          <button ngbTooltip="{{'Edit'|translate}} {{'Employee'|translate}}" class="btn btn-group-small btn-warning btn-sm" (click)="updateEmployee(employee.id)" data-toggle="tooltip"><i class="fa fa-pencil btn-warning"></i></button>
+                        </td>
+                      </tr>
+                    }
+                  }
+  
+                </tbody>
+              </table>
+              <mat-paginator #paginator [length]="totaElement" (page)="pageEvent=pageChange($event)"
+          [pageSize]="itemsPerPage"
+         [pageSizeOptions]="pageArray"
+         
+         aria-label="Select page">
+         </mat-paginator>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </app-base>
