@@ -1,0 +1,161 @@
+/* ===== STYLES MODERNES POUR LES LISTES ===== */
+
+/* Effet hover sur les lignes de tableau */
+.hover-row {
+  transition: all 0.3s ease;
+}
+
+.hover-row:hover {
+  background-color: rgba(0, 0, 0, 0.02);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+/* Styles pour les badges */
+.badge-sm {
+  font-size: 0.75rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.375rem;
+}
+
+/* Avatar avec initiales */
+.avatar-initial {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: white;
+  text-transform: uppercase;
+}
+
+/* Header avec compteur d'éléments */
+.badge.bg-gradient-info {
+  background: linear-gradient(87deg, #11cdef 0, #1171ef 100%);
+}
+
+/* Amélioration des boutons d'action */
+.dropdown-toggle::after {
+  display: none;
+}
+
+.dropdown-menu {
+  border: none;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  border-radius: 0.5rem;
+}
+
+.dropdown-item {
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+}
+
+.dropdown-item:hover {
+  background-color: #f8f9fa;
+  transform: translateX(2px);
+}
+
+.dropdown-item.text-danger:hover {
+  background-color: #fff5f5;
+  color: #dc3545;
+}
+
+/* Icônes avec espacement */
+.dropdown-item i {
+  width: 1rem;
+  text-align: center;
+}
+
+/* Amélioration des filtres */
+.form-group .form-label {
+  margin-bottom: 0.25rem;
+  font-weight: 500;
+  color: #6c757d;
+}
+
+.input-group-text {
+  background-color: #f8f9fa;
+  border-color: #dee2e6;
+  color: #6c757d;
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: #344767;
+  box-shadow: 0 0 0 0.2rem rgba(52, 71, 103, 0.25);
+}
+
+/* État vide avec icône */
+.text-center .fas {
+  opacity: 0.5;
+}
+
+/* Animation pour les icônes de tri */
+.cursor-pointer i {
+  transition: transform 0.2s ease;
+}
+
+.cursor-pointer:hover i {
+  transform: translateY(-1px);
+}
+
+/* Responsive amélioré */
+@media (max-width: 768px) {
+  .table-responsive {
+    border: none;
+  }
+  
+  .dropdown-menu {
+    min-width: 160px;
+  }
+  
+  .badge {
+    font-size: 0.7rem;
+  }
+}
+
+/* Loading spinner dans le header */
+.card-header app-custom-spinner {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+/* Pagination moderne */
+.mat-paginator {
+  background: transparent;
+  border: none;
+}
+
+/* Checkbox amélioré */
+.form-check-input:checked {
+  background-color: #344767;
+  border-color: #344767;
+}
+
+.form-check-input:focus {
+  border-color: #344767;
+  box-shadow: 0 0 0 0.25rem rgba(52, 71, 103, 0.25);
+}
+
+/* Amélioration des couleurs de badge */
+.bg-gradient-secondary {
+  background: linear-gradient(87deg, #6c757d 0, #8fa0a3 100%);
+}
+
+.bg-gradient-primary {
+  background: linear-gradient(87deg, #344767 0, #5a6c82 100%);
+}
+
+/* Effet de focus sur les boutons */
+.btn:focus {
+  box-shadow: 0 0 0 0.2rem rgba(52, 71, 103, 0.25);
+}
+
+/* Export dropdown amélioré */
+.dropdown-menu .dropdown-item i {
+  color: #6c757d;
+  margin-right: 0.5rem;
+}

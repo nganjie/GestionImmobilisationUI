@@ -1,0 +1,32 @@
+/* ===== PERSONNALISATIONS SPÉCIFIQUES AU DASHBOARD ===== */
+
+/* Variables pour les dimensions du sidebar */
+:root {
+  --sidebar-width: 280px;
+  --sidebar-collapsed-width: 80px;
+  --transition-duration: 0.3s;
+}
+
+/* Sidebar collapsé */
+.sidenav.sidenav-collapsed {
+  width: var(--sidebar-collapsed-width);
+}
+
+/* Contenu principal adaptatif */
+.main-content {
+  margin-left: var(--sidebar-width);
+  transition: margin-left var(--transition-duration) ease;
+}
+
+.main-content.main-content-expanded {
+  margin-left: var(--sidebar-collapsed-width);
+}
+
+/* Animation des chevrons pour les sous-menus */
+.rotate-180 {
+  transform: rotate(180deg);
+}
+
+.transition-all {
+  transition: all var(--transition-duration) ease;
+}

@@ -1,39 +1,134 @@
-<div class="">
-    <div class="modal-header">
-        <h5 class="modal-title">{{categorieId?"Update":"CreateU"|translate}} {{"Categorie"|translate}}</h5>
-        <button  type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="dismiss()" style="background-color: #344767;"></button>
-        
+<!-- Modern Category Form Modal -->
+<div class="modal-content">
+  <!-- Header with gradient background -->
+  <div class="modal-header bg-gradient-primary text-white border-0">
+    <div class="d-flex align-items-center">
+      <div class="icon icon-shape icon-sm bg-white text-primary rounded-circle me-3">
+        <i class="fas fa-tags"></i>
+      </div>
+      <div>
+        <h5 class="modal-title mb-0 text-white">
+          {{categorieId ? "Update" : "Create" | translate}} {{"Category" | translate}}
+        </h5>
+        <p class="text-white-50 mb-0 text-sm">
+          {{categorieId ? "ModifyCategoryDetails" : "AddNewCategoryToSystem" | translate}}
+        </p>
+      </div>
     </div>
-    
-    <div class="body p-4">
-        @if(error$|async;as error){
-            <span class="text-danger">{{error.message}}</span>
-        }
-        <form [formGroup]="categorieForm">
-            <!-- Name input -->
-            <div  class="form-outline mb-4">
-                <label class="form-label" for="name">{{"name"|translate}}</label>
-                <input type="text" id="name" class="form-control"  formControlName="name" />
-                @if(btnSubmit&&categorieForm.invalid&&categorieForm.get('name')?.invalid)
-                    {
-                        <span class="text-danger">{{getFormControlErrorText(categorieForm.get('name'))}}</span>
-                    }
-            </div>
-            <div  class="form-outline mb-4">
-                <label class="form-label" for="short_name">{{"Short Name"|translate}}</label>
-                <input type="text" id="short_name" class="form-control" formControlName="short_name" />
-                @if(btnSubmit&&categorieForm.invalid&&categorieForm.get('short_name')?.invalid)
-                    {
-                        <span class="text-danger">{{getFormControlErrorText(categorieForm.get('short_name'))}}</span>
-                    }
-            </div>
-        </form>
-        <div  class="form-outline mb-4">
-            
-            @if(loading$|async){
-                <app-custom-spinner></app-custom-spinner>
-            }
-            <button type="submit" style="margin-top :25px;width: 100%;" class="btn {{categorieId?'btn-warning':'btn-primary'}}" (click)="submitForm()"> {{categorieId?"Update":"Create"|translate|titlecase}} </button>
+    <button type="button" 
+            class="btn-close btn-close-white" 
+            data-bs-dismiss="modal" 
+            aria-label="Close" 
+            (click)="dismiss()">
+    </button>
+  </div>
+
+  <!-- Body with improved styling -->
+  <div class="modal-body p-4">
+    <!-- Error Alert -->
+    @if(error$ | async; as error) {
+      @if(error.status){
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+          <div class="d-flex align-items-center">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            <span>{{error.message}}</span>
+          </div>
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
+      }
+    }
+
+    <!-- Form -->
+    <form [formGroup]="categorieForm" class="needs-validation" novalidate>
+      <div class="row">
+        <!-- Category Name -->
+        <div class="col-12 mb-4">
+          <div class="form-group">
+            <label class="form-label text-dark font-weight-bold">
+              <i class="fas fa-tag text-primary me-2"></i>
+              {{"CategoryName" | translate}} <span class="text-danger">*</span>
+            </label>
+            <div class="input-group">
+              <span class="input-group-text bg-light">
+                <i class="fas fa-folder text-muted"></i>
+              </span>
+              <input type="text" 
+                     id="name" 
+                     class="form-control"
+                     [class.is-invalid]="btnSubmit && categorieForm.get('name')?.invalid"
+                     [class.is-valid]="categorieForm.get('name')?.valid"
+                     formControlName="name"
+                     placeholder="{{'EnterCategoryName' | translate}}" />
+            </div>
+            @if(btnSubmit && categorieForm.invalid && categorieForm.get('name')?.invalid) {
+              <div class="invalid-feedback d-block">
+                <i class="fas fa-exclamation-circle me-1"></i>
+                {{getFormControlErrorText(categorieForm.get('name'))}}
+              </div>
+            }
+          </div>
+        </div>
+
+        <!-- Short Name -->
+        <div class="col-12 mb-4">
+          <div class="form-group">
+            <label class="form-label text-dark font-weight-bold">
+              <i class="fas fa-font text-primary me-2"></i>
+              {{"ShortName" | translate}}
+            </label>
+            <div class="input-group">
+              <span class="input-group-text bg-light">
+                <i class="fas fa-compress-alt text-muted"></i>
+              </span>
+              <input type="text" 
+                     id="short_name" 
+                     class="form-control"
+                     [class.is-invalid]="btnSubmit && categorieForm.get('short_name')?.invalid"
+                     [class.is-valid]="categorieForm.get('short_name')?.valid"
+                     formControlName="short_name"
+                     placeholder="{{'EnterShortName' | translate}}" />
+            </div>
+            @if(btnSubmit && categorieForm.invalid && categorieForm.get('short_name')?.invalid) {
+              <div class="invalid-feedback d-block">
+                <i class="fas fa-exclamation-circle me-1"></i>
+                {{getFormControlErrorText(categorieForm.get('short_name'))}}
+              </div>
+            }
+            <div class="form-text text-muted">
+              <i class="fas fa-info-circle me-1"></i>
+              {{"ShortNameOptional" | translate}}
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <!-- Footer with action buttons -->
+  <div class="modal-footer bg-light border-0">
+    <div class="d-flex w-100 gap-2">
+      <button type="button" 
+              class="btn btn-outline-secondary flex-fill" 
+              (click)="dismiss()"
+              [disabled]="loading$ | async">
+        <i class="fas fa-times me-2"></i>
+        {{"Cancel" | translate}}
+      </button>
+      
+      <button type="submit" 
+              class="btn flex-fill"
+              [class]="categorieId ? 'btn-warning' : 'btn-primary'"
+              (click)="submitForm()"
+              [disabled]="loading$ | async">
+        @if(loading$ | async) {
+          <div class="spinner-border spinner-border-sm me-2" role="status">
+            <span class="visually-hidden">{{"Loading" | translate}}</span>
+          </div>
+        } @else {
+          <i class="fas" [class]="categorieId ? 'fa-edit' : 'fa-plus'" class="me-2"></i>
+        }
+        {{categorieId ? "Update" : "Create" | translate}}
+      </button>
     </div>
+  </div>
 </div>

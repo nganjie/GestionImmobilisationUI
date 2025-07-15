@@ -3,20 +3,64 @@
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
+/* Styles pour que les modals soient au-dessus de tous les éléments, y compris la sidebar */
 ngb-modal-backdrop {
-    z-index: 2 !important; /* ou une autre valeur que tu souhaites */
-  }
-  .primary-color{
+    z-index: 9998 !important;
+}
+
+.modal {
+    z-index: 9999 !important;
+}
+
+.modal-dialog {
+    z-index: 10000 !important;
+}
+
+/* Améliorer l'apparence du modal */
+.modal-content {
+    border: none;
+    border-radius: 1rem;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+}
+
+.modal-header {
+    border-bottom: none;
+    border-radius: 1rem 1rem 0 0;
+}
+
+.modal-footer {
+    border-top: none;
+    border-radius: 0 0 1rem 1rem;
+}
+
+/* S'assurer que le backdrop couvre bien toute la page */
+.modal-backdrop {
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(2px);
+}
+
+/* Animation d'entrée améliorée */
+.modal.fade .modal-dialog {
+    transform: translate(0, -50px);
+    transition: transform 0.3s ease-out;
+}
+
+.modal.show .modal-dialog {
+    transform: none;
+}
+
+/* Classes utilitaires personnalisées */
+.primary-color{
     color:#5E72E4
-   }
-   .secondary-color{
+}
+.secondary-color{
     color:#344767
-   }
-   .secondary-bg-color{
+}
+.secondary-bg-color{
     background-color:#344767
-   }
-   .btn-app{
+}
+.btn-app{
     margin-bottom: 1px;
     font-size: 10px; /* Taille du texte */
     padding: 8px 5px; 
-   }
+}

@@ -1,3 +1,5 @@
+import { ImmobilisationStatusEnum } from "../../enums/immobilisation-status.enum"
+
 export interface ImmobilisationDetail {
     id: string
     user_id: string
@@ -10,7 +12,7 @@ export interface ImmobilisationDetail {
     model: string
     quantity: number
     unit_price: number
-    status: string
+    status: ImmobilisationStatusEnum
     num_bon_commande: string
     num_proces_verbal: string
     date_of_receipt: string
@@ -45,7 +47,6 @@ export interface ImmobilisationDetail {
   export interface Fournisseur {
     id: string
     user_id: string
-    name: string
     raison_social: string
     adresse: string
     nui: string

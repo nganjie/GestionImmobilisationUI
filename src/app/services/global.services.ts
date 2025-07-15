@@ -138,5 +138,6 @@ export class GlobalServices{
         //console.error(errorMessage); // Log de l'erreur (optionnel)
         return throwError(() => error); // Retourne une erreur observable
       }
+      
     
 }

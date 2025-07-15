@@ -4,9 +4,13 @@ import { ListCategorieComponent } from '../immobilisations/components/list-categ
 import { ListBuildingComponent } from './components/list-building/list-building.component';
 import { ListOfficeComponent } from './components/list-office/list-office.component';
 import { ListEmployeeComponent } from './components/list-employee/list-employee.component';
+import { DetailEmployeeComponent } from './components/detail-employee/detail-employee.component';
+import { GenererFicheDetenteurComponent } from './components/generer-fiche-detenteur/generer-fiche-detenteur.component';
 
 const routes: Routes = [
   {path:'',component:ListEmployeeComponent},
+  {path:'fiche-detenteur/:id',component:GenererFicheDetenteurComponent},
+  {path:'detail/:id',component:DetailEmployeeComponent},
   {path:'buildings',component:ListBuildingComponent},
   {path:'offices',component:ListOfficeComponent},
 ];

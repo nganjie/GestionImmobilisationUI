@@ -136,17 +136,17 @@ export class CreateOfficeComponent implements OnInit{
     }
   }
   getFormControlErrorText(ctrl:AbstractControl|null){
-    
     if(ctrl?.hasError('required')){
-      return "ce champ est réquis";
+      return this.languageSservice.instant("FieldRequired");
     }else if(ctrl?.hasError('email')){
-      return "merci d'entre une adresse mail valide"
+      return this.languageSservice.instant("ValidEmailRequired");
     }else if(ctrl?.hasError('minlength')){
-      return 'Ce numéro de téléphone ne contient pas assez de chiffre'
+      return this.languageSservice.instant("PhoneNumberTooShort");
     }else if(ctrl?.hasError('maxlength')){
-      return 'Ce numéro de téléphone contient trop de chiffre'
+      return this.languageSservice.instant("PhoneNumberTooLong");
     }else if(ctrl?.hasError('max')){
-      return "Merci d'entrer un nombre inferrieur aux maximun :"+this.buildingsData.find(a=>a.id==this.employeeForm?.get('building_id')?.value)?.nb_etage
+      const maxFloors = this.buildingsData.find(a=>a.id==this.employeeForm?.get('building_id')?.value)?.nb_etage;
+      return this.languageSservice.instant("FloorNumberTooHigh").replace('{max}', maxFloors?.toString() || '');
     }else{
       return '';
     }

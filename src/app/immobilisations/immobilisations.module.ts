@@ -1,5 +1,6 @@
 import { NgModule,CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule, DecimalPipe } from '@angular/common';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ImmobilisationsRoutingModule } from './immobilisations-routing.module';
 import { ListImmobilisationComponent } from './components/list-immobilisation/list-immobilisation.component';
 import { SharedModule } from "../shared/shared.module";
@@ -20,6 +21,7 @@ import { CreateImmobilisationComponent } from './components/create-immobilisatio
 import { MatSelectModule } from '@angular/material/select';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { DetailImmobilisationComponent } from './components/detail-immobilisation/detail-immobilisation.component';
+import { GenerateCodeBareImmobilisationsComponent } from './components/generate-code-bare-immobilisations/generate-code-bare-immobilisations.component';
 
 
 @NgModule({
@@ -32,10 +34,13 @@ import { DetailImmobilisationComponent } from './components/detail-immobilisatio
     CreateStructureComponent,
     CreateFournisseurComponent,
     CreateImmobilisationComponent,
-    DetailImmobilisationComponent
+    DetailImmobilisationComponent,
+    GenerateCodeBareImmobilisationsComponent
   ],
   imports: [
     CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
     ImmobilisationsRoutingModule,
     SharedModule,
     MatPaginatorModule,
@@ -50,11 +55,12 @@ import { DetailImmobilisationComponent } from './components/detail-immobilisatio
     }
     ),
     NgSelectModule,
-    MatSelectModule,
+    MatSelectModule
 ],
 providers:[
   LanguageService,
   ImmoService
-]
+],
+schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class ImmobilisationsModule { }

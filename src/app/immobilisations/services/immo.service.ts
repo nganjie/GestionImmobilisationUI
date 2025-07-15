@@ -3,13 +3,14 @@ import { GlobalServices } from '../../services/global.services';
 import { HttpClient } from '@angular/common/http';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
-import { BehaviorSubject, map, Observable } from 'rxjs';
+import { BehaviorSubject, catchError, map, Observable } from 'rxjs';
 import { Categorie, Fournisseur, ImmobilisationDetail, Structure } from '../models/immobilisation-detail.model';
 import { ApiPaginatedResponse, ApiResponse } from '../../models/data-server.model';
 import { environment } from '../../../environments/environment';
 import { PaginateData } from '../../models/paginate-data.model';
 import { FormGroup } from '@angular/forms';
 import { EmployeeDetail } from '../../employees/models/employee-detail.model';
+import { exploseSearchOption, searchOption } from '../../models/search-element.model';
 
 @Injectable({
   providedIn: 'root'
@@ -35,9 +36,11 @@ export class ImmoService extends GlobalServices {
   get fournisseurs$():Observable<Fournisseur[]>{
     return this._fournisseurs$.asObservable();
   }
-  getImmoFromServer(paginateD:PaginateData=this.emptyPaginate){
+  getImmoFromServer(paginateD:PaginateData=this.emptyPaginate,searchOptions:searchOption[]=[]){
     const header =this.getHearder();
     let pagin =this.explosePaginationOption(paginateD);
+    let search =exploseSearchOption(searchOptions);
+    pagin += search ? `&${search}` : '';
     this.setLoadStatus(true)
     this.http.get<ApiPaginatedResponse<ImmobilisationDetail>>(`${environment.apiUrlFirst}/admin/immo/immo/all?${pagin}`,header).pipe(
       map(data=>{
@@ -52,10 +55,36 @@ export class ImmoService extends GlobalServices {
       })
     ).subscribe()
   }
-  getImmoFullFromServer(){
+  getImmoEmployeeFromServer(employeeId:string,paginateD:PaginateData=this.emptyPaginate,searchOptions:searchOption[]=[]){
+    const header =this.getHearder();
+    let pagin =this.explosePaginationOption(paginateD);
+    let search =exploseSearchOption(searchOptions);
+    pagin += search ? `&${search}` : '';
+    this.setLoadStatus(true)
+    this.http.get<ApiPaginatedResponse<ImmobilisationDetail>>(`${environment.apiUrlFirst}/admin/immo/immo/employee/${employeeId}?${pagin}`,header).pipe(
+      map(data=>{
+        this.setLoadStatus(false);
+        console.log(data)
+        this._immobilisations$.next(data.data?.data??[]);
+        this._paginateData$.next({
+          current_page:data.data?.current_page??1,
+          per_page:data.data?.per_page??1,
+          total:data.data?.total??1,
+        })
+      }),
+      catchError(error => {
+        this.setLoadStatus(false);
+        this.setSnackMesage('Error loading immobilisations for employee', 'btn-danger');
+        return [];
+      })
+    ).subscribe()
+
+  }
+  getImmoFullFromServer(searchOptions:searchOption[]=[]){
     const header =this.getHearder();
     this.setLoadStatus(true)
-    this.http.get<ApiResponse<ImmobilisationDetail[]>>(`${environment.apiUrlFirst}/admin/immo/immo/full-all?`,header).pipe(
+    let search =exploseSearchOption(searchOptions);
+    this.http.get<ApiResponse<ImmobilisationDetail[]>>(`${environment.apiUrlFirst}/admin/immo/immo/full-all?${search}`,header).pipe(
       map(data=>{
         this.setLoadStatus(false);
         console.log(data)
@@ -63,9 +92,11 @@ export class ImmoService extends GlobalServices {
       })
     ).subscribe()
   }
-  getCategoriesFromServer(paginateD:PaginateData=this.emptyPaginate){
+  getCategoriesFromServer(paginateD:PaginateData=this.emptyPaginate,searchOptions:searchOption[]=[]){
     const header =this.getHearder();
     let pagin =this.explosePaginationOption(paginateD);
+    let search =exploseSearchOption(searchOptions);
+    pagin += search ? `&${search}` : '';
     this.setLoadStatus(true)
     this.http.get<ApiPaginatedResponse<Categorie>>(`${environment.apiUrlFirst}/admin/immo/categories/all?${pagin}`,header).pipe(
       map(data=>{
@@ -80,9 +111,10 @@ export class ImmoService extends GlobalServices {
       })
     ).subscribe()
   }
-  getCategoriesFullFromServer(){
+  getCategoriesFullFromServer(searchOptions:searchOption[]=[]){
     const header =this.getHearder();
     this.setLoadStatus(true)
+    
     this.http.get<ApiResponse<Categorie[]>>(`${environment.apiUrlFirst}/admin/immo/categories/full-all?`,header).pipe(
       map(data=>{
         this.setLoadStatus(false);
@@ -91,9 +123,11 @@ export class ImmoService extends GlobalServices {
       })
     ).subscribe()
   }
-  getStructuresFromServer(paginateD:PaginateData=this.emptyPaginate){
+  getStructuresFromServer(paginateD:PaginateData=this.emptyPaginate,searchOptions:searchOption[]=[]){
     const header =this.getHearder();
     let pagin =this.explosePaginationOption(paginateD);
+    let search =exploseSearchOption(searchOptions);
+    pagin += search ? `&${search}` : '';
     this.setLoadStatus(true)
     this.http.get<ApiPaginatedResponse<Structure>>(`${environment.apiUrlFirst}/admin/immo/structures/all?${pagin}`,header).pipe(
       map(data=>{
@@ -109,7 +143,7 @@ export class ImmoService extends GlobalServices {
 
     ).subscribe()
   }
-  getStructuresFullFromServer(){
+  getStructuresFullFromServer(searchOptions:searchOption[]=[]){
     const header =this.getHearder();
     this.setLoadStatus(true)
     this.http.get<ApiResponse<Structure[]>>(`${environment.apiUrlFirst}/admin/immo/structures/full-all?`,header).pipe(
@@ -121,9 +155,11 @@ export class ImmoService extends GlobalServices {
 
     ).subscribe()
   }
-  getFournisseursFromServer(paginateD:PaginateData=this.emptyPaginate){
+  getFournisseursFromServer(paginateD:PaginateData=this.emptyPaginate,searchOptions:searchOption[]=[]){
     const header =this.getHearder();
     let pagin =this.explosePaginationOption(paginateD);
+    let search =exploseSearchOption(searchOptions);
+    pagin += search ? `&${search}` : '';
     this.setLoadStatus(true)
     this.http.get<ApiPaginatedResponse<Fournisseur>>(`${environment.apiUrlFirst}/admin/immo/fournisseurs/all?${pagin}`,header).pipe(
       map(data=>{
@@ -138,7 +174,7 @@ export class ImmoService extends GlobalServices {
       })
     ).subscribe()
   }
-  getFournisseursFullFromServer(){
+  getFournisseursFullFromServer(searchOptions:searchOption[]=[]){
     const header =this.getHearder();
     this.setLoadStatus(true)
     this.http.get<ApiResponse<Fournisseur[]>>(`${environment.apiUrlFirst}/admin/immo/fournisseurs/full-all`,header).pipe(

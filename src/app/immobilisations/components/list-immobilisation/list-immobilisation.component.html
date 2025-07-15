@@ -27,40 +27,75 @@
                 <label class="form-label text-xs">{{"Search"|translate}}</label>
                 <div class="input-group">
                   <span class="input-group-text"><i class="fas fa-search"></i></span>
-                  <input type="text" class="form-control" placeholder="{{'SearchByNameOrCode'|translate}}" [(ngModel)]="searchTerm">
+                  <input type="text" class="form-control" 
+                         placeholder="{{'SearchByNameOrCode'|translate}}" 
+                         [formControl]="searchCtrl">
                 </div>
               </div>
             </div>
             <div class="col-lg-2 col-md-6 col-12">
               <div class="form-group mb-0">
                 <label class="form-label text-xs">{{"Category"|translate}}</label>
-                <select class="form-select">
+                <select class="form-select" [formControl]="categoriesCtrl">
                   <option value="">{{"All"|translate}}</option>
-                  <!-- Categories options -->
+                  @for (category of categories$ | async; track category.id) {
+                    <option [value]="category.id">{{category.name}}</option>
+                  }
                 </select>
               </div>
             </div>
             <div class="col-lg-2 col-md-6 col-12">
               <div class="form-group mb-0">
                 <label class="form-label text-xs">{{"Status"|translate}}</label>
-                <select class="form-select">
+                <select class="form-select" [formControl]="statusCtrl">
                   <option value="">{{"All"|translate}}</option>
-                  <option value="active">{{"Active"|translate}}</option>
-                  <option value="inactive">{{"Inactive"|translate}}</option>
+                  @for (status of listImmobilisationStatusEnum; track status) {
+                    <option [value]="status">{{getStatusLabel(status) | translate}}</option>
+                  }
                 </select>
-              </div>
-            </div>
-            <div class="col-lg-3 col-md-6 col-12">
-              <div class="form-group mb-0">
-                <label class="form-label text-xs">{{"DateRange"|translate}}</label>
-                <input type="date" class="form-control">
               </div>
             </div>
             <div class="col-lg-2 col-md-6 col-12">
               <div class="form-group mb-0">
+                <label class="form-label text-xs">{{"Supplier"|translate}}</label>
+                <select class="form-select" [formControl]="fournisseCtrl">
+                  <option value="">{{"All"|translate}}</option>
+                  @for (fournisseur of fournisseurs$ | async; track fournisseur.id) {
+                    <option [value]="fournisseur.id">{{fournisseur.raison_social}}</option>
+                  }
+                </select>
+              </div>
+            </div>
+            <div class="col-lg-2 col-md-6 col-12">
+              <div class="form-group mb-0">
+                <label class="form-label text-xs">{{"Structure"|translate}}</label>
+                <select class="form-select" [formControl]="structureCtrl">
+                  <option value="">{{"All"|translate}}</option>
+                  @for (structure of structures$ | async; track structure.id) {
+                    <option [value]="structure.id">{{structure.name}}</option>
+                  }
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="row align-items-center mt-3">
+            <div class="col-lg-2 col-md-6 col-12">
+              <div class="form-group mb-0">
+                <label class="form-label text-xs">{{"DateFrom"|translate}}</label>
+                <input type="date" class="form-control" [(ngModel)]="startDate" (change)="applyFilters()">
+              </div>
+            </div>
+            <div class="col-lg-2 col-md-6 col-12">
+              <div class="form-group mb-0">
+                <label class="form-label text-xs">{{"DateTo"|translate}}</label>
+                <input type="date" class="form-control" [(ngModel)]="endDate" (change)="applyFilters()">
+              </div>
+            </div>
+            <div class="col-lg-1 col-md-6 col-12">
+              <div class="form-group mb-0">
                 <label class="form-label text-xs opacity-0">Action</label>
-                <button class="btn btn-outline-primary btn-sm w-100">
-                  <i class="fas fa-filter me-1"></i>{{"Filter"|translate}}
+                <button class="btn btn-outline-secondary btn-sm w-100" (click)="resetFilters()" title="{{'ResetFilters'|translate}}">
+                  <i class="fas fa-undo"></i>
                 </button>
               </div>
             </div>
@@ -85,9 +120,9 @@
                   <i class="fas fa-download me-1"></i>{{"Export"|translate}}
                 </button>
                 <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" href="#"><i class="fas fa-file-excel me-2"></i>Excel</a></li>
-                  <li><a class="dropdown-item" href="#"><i class="fas fa-file-pdf me-2"></i>PDF</a></li>
-                  <li><a class="dropdown-item" href="#"><i class="fas fa-file-csv me-2"></i>CSV</a></li>
+                  <li><a class="dropdown-item" ><i class="fas fa-file-excel me-2"></i>Excel</a></li>
+                  <li><a class="dropdown-item" ><i class="fas fa-file-pdf me-2"></i>PDF</a></li>
+                  <li><a class="dropdown-item" ><i class="fas fa-file-csv me-2"></i>CSV</a></li>
                 </ul>
               </div>
             </div>
@@ -101,23 +136,33 @@
                   <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
                     <input type="checkbox" class="form-check-input">
                   </th>
-                  <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                  <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 cursor-pointer" 
+                      (click)="sortBy('name')">
                     {{"Asset"|translate}}
+                    <i [class]="getSortIcon('name')" class="ms-1"></i>
                   </th>
                   <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
                     {{"Details"|translate}}
                   </th>
-                  <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                  <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 cursor-pointer"
+                      (click)="sortBy('quantity')">
                     {{"Quantity"|translate}}
+                    <i [class]="getSortIcon('quantity')" class="ms-1"></i>
                   </th>
-                  <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                  <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 cursor-pointer"
+                      (click)="sortBy('unit_price')">
                     {{"Value"|translate}}
+                    <i [class]="getSortIcon('unit_price')" class="ms-1"></i>
                   </th>
-                  <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                  <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 cursor-pointer"
+                      (click)="sortBy('status')">
                     {{"Status"|translate}}
+                    <i [class]="getSortIcon('status')" class="ms-1"></i>
                   </th>
-                  <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                    {{"AssignedTo"|translate}}
+                  <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 cursor-pointer"
+                      (click)="sortBy('created_at')">
+                    {{"CreatedAt"|translate}}
+                    <i [class]="getSortIcon('created_at')" class="ms-1"></i>
                   </th>
                   <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                     {{"Actions"|translate}}
@@ -150,7 +195,7 @@
                             <i class="fas fa-building me-1"></i>{{immobilisation.structure.name}}
                           </span>
                           <span class="text-xs text-secondary">
-                            <i class="fas fa-truck me-1"></i>{{immobilisation.fournisseur.name}}
+                            <i class="fas fa-truck me-1"></i>{{immobilisation.fournisseur.raison_social}}
                           </span>
                         </div>
                       </td>
@@ -162,13 +207,8 @@
                       </td>
                       <td class="text-center">
                         <span class="badge badge-sm" 
-                              [ngClass]="{
-                                'bg-gradient-success': immobilisation.status === 'active',
-                                'bg-gradient-warning': immobilisation.status === 'maintenance',
-                                'bg-gradient-danger': immobilisation.status === 'inactive',
-                                'bg-gradient-secondary': immobilisation.status === 'pending'
-                              }">
-                          {{immobilisation.status | titlecase}}
+                              [ngClass]="getStatusBadgeClass(immobilisation.status)">
+                          {{getStatusLabel(immobilisation.status) | translate}}
                         </span>
                       </td>
                       <td class="text-center">
@@ -193,7 +233,7 @@
                           </button>
                           <ul class="dropdown-menu">
                             <li>
-                              <a class="dropdown-item" href="#" (click)="viewDetails(immobilisation.id)">
+                              <a class="dropdown-item"  (click)="viewDetails(immobilisation.id)">
                                 <i class="fas fa-eye me-2"></i>{{"View"|translate}}
                               </a>
                             </li>
@@ -203,13 +243,13 @@
                               </a>
                             </li>
                             <li>
-                              <a class="dropdown-item" href="#">
+                              <a class="dropdown-item" >
                                 <i class="fas fa-copy me-2"></i>{{"Duplicate"|translate}}
                               </a>
                             </li>
                             <li><hr class="dropdown-divider"></li>
                             <li>
-                              <a class="dropdown-item text-danger" href="#" (click)="deleteImmobilisation(immobilisation.id)">
+                              <a class="dropdown-item text-danger"  (click)="deleteImmobilisation(immobilisation.id)">
                                 <i class="fas fa-trash me-2"></i>{{"Delete"|translate}}
                               </a>
                             </li>

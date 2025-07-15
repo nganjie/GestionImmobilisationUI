@@ -1,0 +1,265 @@
+<!-- Modal pour assigner des immobilisations à un employé -->
+<div class="modal-content">
+  <!-- Header avec fond dégradé -->
+  <div class="modal-header bg-gradient-primary text-white border-0">
+    <div class="d-flex align-items-center">
+      <div class="icon icon-shape icon-sm bg-white text-primary rounded-circle me-3">
+        <i class="fas fa-boxes"></i>
+      </div>
+      <div>
+        <h5 class="modal-title mb-0 text-white">
+          {{"AssignAsset" | translate}}
+        </h5>
+        <p class="text-white-50 mb-0 text-sm">
+          {{"SelectImmobilisations" | translate}}
+        </p>
+      </div>
+    </div>
+    <button type="button" 
+            class="btn-close btn-close-white" 
+            data-bs-dismiss="modal" 
+            aria-label="Close" 
+            (click)="dismiss()">
+    </button>
+  </div>
+
+  <!-- Corps du modal -->
+  <div class="modal-body p-4">
+    <!-- Alert d'erreur -->
+    @if(error$ | async; as error) {
+      @if(error.status){
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <div class="d-flex align-items-center">
+          <i class="fas fa-exclamation-triangle me-2"></i>
+          <span>{{error.message}}</span>
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+      </div>
+      }
+      
+    }
+
+    <!-- Loading State -->
+    @if(loading$ | async) {
+      <div class="text-center py-5">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">{{"Loading" | translate}}...</span>
+        </div>
+        <p class="text-muted mt-3">{{"Loading" | translate}} {{"Immobilisations" | translate}}...</p>
+      </div>
+    } @else {
+      <!-- Formulaire -->
+      <form [formGroup]="immoForm" class="needs-validation" novalidate>
+        
+        <!-- Sélection employé (si pas d'employeeId en input) -->
+        @if(!employeeId) {
+          <div class="row mb-4">
+            <div class="col-12">
+              <div class="form-group">
+                <label class="form-label text-dark font-weight-bold">
+                  <i class="fas fa-user text-primary me-2"></i>
+                  {{"Employee" | translate}} <span class="text-danger">*</span>
+                </label>
+                <div class="input-group">
+                  <span class="input-group-text bg-light">
+                    <i class="fas fa-user text-muted"></i>
+                  </span>
+                  <ng-select class="form-select"
+                        [items]="employees$|async"
+                        bindLabel="first_name"
+                        bindValue="id"
+                        formControlName="employee_id"
+                        [closeOnSelect]="true"
+                        [searchable]="true"
+                        [clearable]="true"
+                        (search)="onSearchEmployee($event)"
+                        placeholder="{{'SelectEmployee'|translate}}"
+                        [class.is-invalid]="btnSubmit && immoForm.get('employee_id')?.invalid"
+                        [class.is-valid]="immoForm.get('employee_id')?.valid">
+                      </ng-select>
+                  
+                </div>
+                @if(btnSubmit && immoForm.get('employee_id')?.invalid) {
+                  <div class="invalid-feedback d-block">
+                    <i class="fas fa-exclamation-circle me-1"></i>
+                    {{"FieldRequired" | translate}}
+                  </div>
+                }
+              </div>
+            </div>
+          </div>
+        }
+
+        <!-- Section des immobilisations disponibles -->
+        <div class="row">
+          <div class="col-12">
+            <h6 class="text-dark font-weight-bold mb-3">
+              <i class="fas fa-list text-primary me-2"></i>
+              {{"Immobilisations" | translate}} {{"Available" | translate}}
+            </h6>
+            
+            <!-- Recherche rapide -->
+            <div class="form-group mb-3">
+              <div class="input-group">
+                <span class="input-group-text bg-light">
+                  <i class="fas fa-search text-muted"></i>
+                </span>
+                <input type="text" 
+                       class="form-control" 
+                       placeholder="{{'SearchByNameOrCode' | translate}}"
+                       #searchInput
+                       (input)="filterImmobilisations(searchInput.value)">
+              </div>
+            </div>
+
+            <!-- Liste des immobilisations avec checkboxes -->
+            <div class="card border-light shadow-sm">
+              <div class="card-body p-0">
+                @if(immobilisations$ | async; as immobilisations) {
+                  @if(immobilisations.length > 0) {
+                    <div class="table-responsive">
+                      <table class="table table-hover align-items-center mb-0">
+                        <thead>
+                          <tr>
+                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-3">
+                              <input type="checkbox" 
+                                     class="form-check-input"
+                                     (change)="toggleSelectAll($event)"
+                                     #selectAllCheckbox>
+                            </th>
+                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                              {{"Asset" | translate}}
+                            </th>
+                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                              {{"Code" | translate}}
+                            </th>
+                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                              {{"Category" | translate}}
+                            </th>
+                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                              {{"Status" | translate}}
+                            </th>
+                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                              {{"Value" | translate}}
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          @for(immobilisation of filteredImmobilisations || immobilisations; track immobilisation.id) {
+                            <tr class="border-bottom">
+                              <td class="ps-3">
+                                <div class="form-check">
+                                  <input class="form-check-input" 
+                                         type="checkbox" 
+                                         [value]="immobilisation.id"
+                                         (change)="onImmobilisationSelect($event, immobilisation.id)"
+                                         [id]="'immo-' + immobilisation.id">
+                                </div>
+                              </td>
+                              <td>
+                                <div class="d-flex px-2 py-1">
+                                  <div class="d-flex flex-column justify-content-center">
+                                    <h6 class="mb-0 text-sm font-weight-bold">{{immobilisation.name}}</h6>
+                                    <p class="text-xs text-muted mb-0">{{immobilisation.mark}} {{immobilisation.model}}</p>
+                                  </div>
+                                </div>
+                              </td>
+                              <td>
+                                <span class="badge bg-gradient-secondary font-weight-bold">
+                                  {{immobilisation.code}}
+                                </span>
+                              </td>
+                              <td>
+                                <span class="text-xs font-weight-bold">
+                                  {{immobilisation.categorie.name}}
+                                </span>
+                              </td>
+                              <td>
+                                <span class="badge"
+                                      [ngClass]="{
+                                        'bg-gradient-success': immobilisation.status === 'active',
+                                        'bg-gradient-warning': immobilisation.status === 'broken',
+                                        'bg-gradient-info': immobilisation.status === 'stock',
+                                        'bg-gradient-secondary': immobilisation.status === 'created',
+                                        'bg-gradient-primary': immobilisation.status === 'cession',
+                                        'bg-gradient-dark': immobilisation.status === 'sale'
+                                      }">
+                                  {{immobilisation.status | translate}}
+                                </span>
+                              </td>
+                              <td>
+                                <span class="text-sm font-weight-bold">
+                                  {{immobilisation.unit_price * immobilisation.quantity | currency:'XAF':'symbol':'1.0-0'}}
+                                </span>
+                              </td>
+                            </tr>
+                          }
+                        </tbody>
+                      </table>
+                    </div>
+                  } @else {
+                    <div class="text-center py-5">
+                      <div class="avatar avatar-xl mx-auto mb-3">
+                        <div class="avatar-initial rounded-circle bg-gradient-light">
+                          <i class="fas fa-boxes text-muted fa-2x"></i>
+                        </div>
+                      </div>
+                      <h6 class="text-muted">{{"NoImmobilisationsAvailable" | translate}}</h6>
+                      <p class="text-sm text-muted mb-0">{{"NoImmobilisationsForAssignment" | translate}}</p>
+                    </div>
+                  }
+                } @else {
+                  <div class="text-center py-5">
+                    <div class="spinner-border text-primary" role="status">
+                      <span class="visually-hidden">{{"Loading" | translate}}...</span>
+                    </div>
+                  </div>
+                }
+              </div>
+            </div>
+
+            <!-- Résumé de la sélection -->
+            @if(selectedImmobilisations.length > 0) {
+              <div class="alert alert-info mt-3" role="alert">
+                <div class="d-flex align-items-center">
+                  <i class="fas fa-info-circle me-2"></i>
+                  <span>
+                    <strong>{{selectedImmobilisations.length}}</strong> 
+                    {{"ImmobilisationSelected" | translate}}
+                  </span>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      </form>
+    }
+  </div>
+
+  <!-- Footer avec actions -->
+  <div class="modal-footer border-0 px-4 pb-4">
+    <div class="d-flex justify-content-between w-100">
+      <button type="button" 
+              class="btn btn-outline-secondary" 
+              (click)="dismiss()"
+              [disabled]="(loading$ | async)">
+        <i class="fas fa-times me-2"></i>
+        {{"Cancel" | translate}}
+      </button>
+      
+      <button type="button" 
+              class="btn btn-primary"
+              (click)="submitForm()"
+              [disabled]="(loading$ | async) || selectedImmobilisations.length === 0 || btnSubmit">
+        @if(loading$|async) {
+          <div class="spinner-border spinner-border-sm me-2" role="status">
+            <span class="visually-hidden">{{"Loading" | translate}}...</span>
+          </div>
+        } @else {
+          <i class="fas fa-check me-2"></i>
+        }
+        {{"Apply" | translate}}
+      </button>
+    </div>
+  </div>
+</div>

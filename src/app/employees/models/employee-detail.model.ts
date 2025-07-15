@@ -1,3 +1,4 @@
+import { ImmobilisationDetail } from "../../immobilisations/models/immobilisation-detail.model";
 import { User } from "../../models/user.model";
 import { OfficeDetail } from "./office-detail.model";
 
@@ -13,5 +14,6 @@ export interface EmployeeDetail {
     created_at: string;
     updated_at: string;
     office: OfficeDetail;
-    user:User
+    immobilisations: ImmobilisationDetail[];
+    user:User,
   }

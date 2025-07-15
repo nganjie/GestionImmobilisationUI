@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
 
 import { CoreRoutingModule } from './core-routing.module';
 import { SidebarLeftComponent } from './components/sidebar-left/sidebar-left.component';
@@ -24,6 +25,7 @@ import { RouterOutlet } from '@angular/router';
     FormsModule,
     ReactiveFormsModule,
     RouterOutlet,
+    TranslateModule
   ],
   providers:[
     AuthService

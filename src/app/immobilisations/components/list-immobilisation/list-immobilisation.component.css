@@ -1,5 +1,26 @@
 /* Styles personnalisés pour la liste des immobilisations */
 
+/* Curseur pointer pour les colonnes triables */
+.cursor-pointer {
+  cursor: pointer;
+  user-select: none;
+}
+
+.cursor-pointer:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+/* Icônes de tri */
+.table th i {
+  font-size: 0.75rem;
+  opacity: 0.7;
+  transition: all 0.2s ease;
+}
+
+.table th:hover i {
+  opacity: 1;
+}
+
 .hover-row:hover {
   background-color: rgba(94, 114, 228, 0.05);
   transform: translateY(-1px);

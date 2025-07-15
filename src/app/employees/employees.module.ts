@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule } from '@angular/forms';
 
 import { EmployeesRoutingModule } from './employees-routing.module';
 import { ListEmployeeComponent } from './components/list-employee/list-employee.component';
@@ -20,6 +21,9 @@ import { LanguageService } from '../services/language/language.service';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { NgSelectModule } from '@ng-select/ng-select';
+import { DetailEmployeeComponent } from './components/detail-employee/detail-employee.component';
+import { AddImmobilisationToEmployeeComponent } from './components/add-immobilisation-to-employee/add-immobilisation-to-employee.component';
+import { GenererFicheDetenteurComponent } from './components/generer-fiche-detenteur/generer-fiche-detenteur.component';
 
 
 @NgModule({
@@ -29,10 +33,14 @@ import { NgSelectModule } from '@ng-select/ng-select';
     ListBuildingComponent,
     CreateBuildingComponent,
     ListOfficeComponent,
-    CreateOfficeComponent
+    CreateOfficeComponent,
+    DetailEmployeeComponent,
+    AddImmobilisationToEmployeeComponent,
+    GenererFicheDetenteurComponent
   ],
   imports: [
     CommonModule,
+    ReactiveFormsModule,
     EmployeesRoutingModule,
     SharedModule,
     MatPaginatorModule,

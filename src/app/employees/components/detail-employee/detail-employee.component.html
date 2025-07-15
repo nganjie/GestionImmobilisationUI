@@ -1,0 +1,342 @@
+<div class="container-fluid py-4">
+  @if(loading$ | async) {
+    <div class="row">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-body text-center">
+            <app-custom-spinner></app-custom-spinner>
+            <p class="text-muted mt-3">{{"LoadingEmployeeDetails"|translate}}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  } @else {
+    @if(employeeDetail$ | async; as employee) {
+      <!-- Header Section -->
+      <div class="row">
+        <div class="col-12">
+          <div class="card mb-4">
+            <div class="card-header pb-0 bg-gradient-primary">
+              <div class="row align-items-center">
+                <div class="col-lg-6 col-7">
+                  <h6 class="mb-0 text-white">{{"EmployeeDetails"|translate}}</h6>
+                  <p class="text-sm mb-0 text-white opacity-8">{{"DetailedInformation"|translate}}</p>
+                </div>
+                <div class="col-lg-6 col-5 text-end">
+                  <button class="btn btn-outline-white btn-sm mb-0 me-2" 
+                          [routerLink]="['/admin/employees/fiche-detenteur', employeeId]">
+                    <i class="fas fa-file-pdf me-2"></i>
+                    Fiche Détenteur
+                  </button>
+                  <button class="btn btn-outline-white btn-sm mb-0" [routerLink]="['/admin/employees']">
+                    <i class="fas fa-arrow-left me-2"></i>
+                    {{"BackToList"|translate}}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Employee Profile Section -->
+      <div class="row">
+        <div class="col-xl-4 col-lg-5 col-md-6 col-12">
+          <div class="card h-100">
+            <div class="card-header pb-0">
+              <h6>{{"PROFILEINFORMATION"|translate}}</h6>
+            </div>
+            <div class="card-body pt-0">
+              <div class="text-center">
+                <!-- Profile Avatar -->
+                <div class="avatar avatar-xl position-relative mx-auto mb-3">
+                  <div class="avatar-initial rounded-circle bg-gradient-primary">
+                    <span class="text-white font-weight-bold">
+                      {{employee.first_name.charAt(0)}}{{employee.last_name.charAt(0)}}
+                    </span>
+                  </div>
+                </div>
+                <h5 class="mb-1">{{employee.first_name}} {{employee.last_name}}</h5>
+                <p class="text-sm text-muted mb-3">{{employee.fonction | translate}}</p>
+                <span class="badge bg-gradient-success">
+                  <i class="fas fa-check me-1"></i>{{"Active"|translate}}
+                </span>
+              </div>
+
+              <hr class="horizontal dark my-4">
+
+              <!-- Basic Information -->
+              <div class="row">
+                <div class="col-12">
+                  <h6 class="text-xs text-uppercase text-muted font-weight-bolder opacity-7">
+                    {{"BASICINFORMATION"|translate}}
+                  </h6>
+                </div>
+              </div>
+
+              <div class="row mb-2">
+                <div class="col-5">
+                  <span class="text-xs font-weight-bold">{{"Matricule"|translate}}:</span>
+                </div>
+                <div class="col-7">
+                  <span class="text-xs text-secondary">{{employee.matricule}}</span>
+                </div>
+              </div>
+
+              <div class="row mb-2">
+                <div class="col-5">
+                  <span class="text-xs font-weight-bold">{{"Department"|translate}}:</span>
+                </div>
+                <div class="col-7">
+                  <span class="text-xs text-secondary">{{employee.departement | translate}}</span>
+                </div>
+              </div>
+
+              <div class="row mb-2">
+                <div class="col-5">
+                  <span class="text-xs font-weight-bold">{{"Function"|translate}}:</span>
+                </div>
+                <div class="col-7">
+                  <span class="text-xs text-secondary">{{employee.fonction | translate}}</span>
+                </div>
+              </div>
+
+              <div class="row mb-2">
+                <div class="col-5">
+                  <span class="text-xs font-weight-bold">{{"JoinedDate"|translate}}:</span>
+                </div>
+                <div class="col-7">
+                  <span class="text-xs text-secondary">{{employee.created_at | date:'mediumDate'}}</span>
+                </div>
+              </div>
+
+              <!-- Action Buttons -->
+              <div class="row mt-4">
+                <div class="col-12">
+                  <div class="d-grid gap-2">
+                    <button class="btn btn-primary btn-sm" type="button">
+                      <i class="fas fa-edit me-2"></i>{{"EditProfile"|translate}}
+                    </button>
+                    <button class="btn btn-outline-secondary btn-sm" type="button">
+                      <i class="fas fa-print me-2"></i>{{"PrintDetails"|translate}}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Office Information -->
+        <div class="col-xl-4 col-lg-7 col-md-6 col-12">
+          <div class="card h-100">
+            <div class="card-header pb-0">
+              <h6>{{"OFFICEINFORMATION"|translate}}</h6>
+            </div>
+            <div class="card-body pt-0">
+              @if(employee.office; as office) {
+                <div class="d-flex align-items-center mb-3">
+                  <div class="avatar avatar-sm bg-gradient-info me-3">
+                    <i class="fas fa-door-open text-white"></i>
+                  </div>
+                  <div>
+                    <h6 class="mb-0">{{office.name}}</h6>
+                    <p class="text-xs text-muted mb-0">{{"Office"|translate}} #{{office.num_office}}</p>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-12">
+                    <h6 class="text-xs text-uppercase text-muted font-weight-bolder opacity-7">
+                      {{"LocationDetails"|translate}}
+                    </h6>
+                  </div>
+                </div>
+
+                <div class="row mb-2">
+                  <div class="col-5">
+                    <span class="text-xs font-weight-bold">{{"Building"|translate}}:</span>
+                  </div>
+                  <div class="col-7">
+                    <span class="text-xs text-secondary">{{office.building.name}}</span>
+                  </div>
+                </div>
+
+                <div class="row mb-2">
+                  <div class="col-5">
+                    <span class="text-xs font-weight-bold">{{"Floor"|translate}}:</span>
+                  </div>
+                  <div class="col-7">
+                    <span class="text-xs text-secondary">{{"Floor"|translate}} {{office.num_etage}}</span>
+                  </div>
+                </div>
+
+                <div class="row mb-2">
+                  <div class="col-5">
+                    <span class="text-xs font-weight-bold">{{"Location"|translate}}:</span>
+                  </div>
+                  <div class="col-7">
+                    <span class="text-xs text-secondary">{{office.building.city}}, {{office.building.country}}</span>
+                  </div>
+                </div>
+
+                <div class="row mb-2">
+                  <div class="col-5">
+                    <span class="text-xs font-weight-bold">{{"Status"|translate}}:</span>
+                  </div>
+                  <div class="col-7">
+                    <span class="badge badge-sm bg-gradient-success">{{office.status | translate}}</span>
+                  </div>
+                </div>
+              } @else {
+                <div class="text-center py-4">
+                  <i class="fas fa-door-closed text-muted mb-3" style="font-size: 2rem;"></i>
+                  <p class="text-muted">{{"NoOfficeAssigned"|translate}}</p>
+                  <button class="btn btn-primary btn-sm">
+                    <i class="fas fa-plus me-2"></i>{{"AssignOffice"|translate}}
+                  </button>
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+
+        <!-- Immobilizations Section -->
+        <div class="col-xl-4 col-lg-12 col-md-12 col-12">
+          <div class="card h-100">
+            <div class="card-header pb-0">
+              <div class="row align-items-center">
+                <div class="col-8">
+                  <h6>{{"ASSIGNEDASSETS"|translate}}</h6>
+                </div>
+                <div class="col-4 text-end">
+                  <span class="badge bg-gradient-info">{{employee.immobilisations.length || 0}}</span>
+                </div>
+              </div>
+            </div>
+            <div class="card-body pt-0">
+              @if(employee.immobilisations && employee.immobilisations.length > 0) {
+                <div class="table-responsive">
+                  <table class="table align-items-center mb-0">
+                    <tbody>
+                      @for(immobilisation of employee.immobilisations; track immobilisation.id) {
+                        <tr>
+                          <td class="ps-0">
+                            <div class="d-flex px-2 py-1">
+                              <div class="avatar avatar-sm bg-gradient-secondary me-3">
+                                <i class="fas fa-laptop text-white"></i>
+                              </div>
+                              <div class="d-flex flex-column justify-content-center">
+                                <h6 class="mb-0 text-sm">{{immobilisation.name}}</h6>
+                                <p class="text-xs text-secondary mb-0">{{immobilisation.code}}</p>
+                              </div>
+                            </div>
+                          </td>
+                          <td class="text-end">
+                            <span class="badge badge-sm" 
+                                  [class]="'bg-gradient-' + (immobilisation.status === 'active' ? 'success' : immobilisation.status === 'broken' ? 'danger' : immobilisation.status === 'stock' ? 'warning' : 'secondary')">
+                              {{immobilisation.status | translate}}
+                            </span>
+                          </td>
+                        </tr>
+                      }
+                    </tbody>
+                  </table>
+                </div>
+                <div class="text-center mt-3">
+                  <button class="btn btn-outline-primary btn-sm me-2" 
+                          [routerLink]="['/admin/immobilisations']" 
+                          [queryParams]="{ employee_id: employee.id }">
+                    <i class="fas fa-eye me-2"></i>{{"ViewAllAssets"|translate}}
+                  </button>
+                  <button class="btn btn-primary btn-sm" (click)="openAssignImmobilisationModal()">
+                    <i class="fas fa-plus me-2"></i>{{"AssignAsset"|translate}}
+                  </button>
+                </div>
+              } @else {
+                <div class="text-center py-4">
+                  <i class="fas fa-laptop text-muted mb-3" style="font-size: 2rem;"></i>
+                  <p class="text-muted">{{"NoAssetsAssigned"|translate}}</p>
+                  <button class="btn btn-primary btn-sm" (click)="openAssignImmobilisationModal()">
+                    <i class="fas fa-plus me-2"></i>{{"AssignAsset"|translate}}
+                  </button>
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Activity Timeline -->
+      <div class="row mt-4">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-header pb-0">
+              <h6>{{"RECENTACTIVITY"|translate}}</h6>
+            </div>
+            <div class="card-body pt-0">
+              <div class="timeline timeline-one-side">
+                <div class="timeline-block mb-3">
+                  <span class="timeline-step">
+                    <i class="fas fa-user-plus text-success"></i>
+                  </span>
+                  <div class="timeline-content">
+                    <h6 class="text-dark text-sm font-weight-bold mb-0">{{"EmployeeCreated"|translate}}</h6>
+                    <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">{{employee.created_at | date:'medium'}}</p>
+                  </div>
+                </div>
+                @if(employee.office) {
+                  <div class="timeline-block mb-3">
+                    <span class="timeline-step">
+                      <i class="fas fa-door-open text-info"></i>
+                    </span>
+                    <div class="timeline-content">
+                      <h6 class="text-dark text-sm font-weight-bold mb-0">{{"OfficeAssigned"|translate}}</h6>
+                      <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">{{employee.office.name}}</p>
+                    </div>
+                  </div>
+                }
+                @if(employee.immobilisations && employee.immobilisations.length > 0) {
+                  <div class="timeline-block mb-3">
+                    <span class="timeline-step">
+                      <i class="fas fa-laptop text-warning"></i>
+                    </span>
+                    <div class="timeline-content">
+                      <h6 class="text-dark text-sm font-weight-bold mb-0">{{"AssetsAssigned"|translate}}</h6>
+                      <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">{{employee.immobilisations.length}} {{"assets"|translate}}</p>
+                    </div>
+                  </div>
+                }
+                <div class="timeline-block mb-3">
+                  <span class="timeline-step">
+                    <i class="fas fa-edit text-primary"></i>
+                  </span>
+                  <div class="timeline-content">
+                    <h6 class="text-dark text-sm font-weight-bold mb-0">{{"LastUpdated"|translate}}</h6>
+                    <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">{{employee.updated_at | date:'medium'}}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    } @else {
+      <!-- Employee Not Found -->
+      <div class="row">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-body text-center py-5">
+              <i class="fas fa-user-times text-muted mb-3" style="font-size: 4rem;"></i>
+              <h5 class="text-muted">{{"EmployeeNotFound"|translate}}</h5>
+              <p class="text-secondary">{{"EmployeeNotFoundMessage"|translate}}</p>
+              <button class="btn btn-primary" [routerLink]="['/admin/employees']">
+                <i class="fas fa-arrow-left me-2"></i>{{"BackToEmployees"|translate}}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+  }
+</div>

@@ -126,7 +126,21 @@ export class CreateImmobilisationComponent implements OnInit{
         }
       }
     )
-    this.immoForm=this.formBuilder.group({
+    if(this.immoId){
+       this.immoForm=this.formBuilder.group({
+      name:[''],
+      mark:[''],
+      model:[''],
+      unit_price:[''],
+      num_bon_commande:[''],
+      num_proces_verbal:[''],
+      date_of_receipt:[''],
+      categorie_id:[''],
+      fournisseur_id:[''],
+      structure_id:[''],
+    })
+    }else{
+       this.immoForm=this.formBuilder.group({
       name:['',Validators.required],
       mark:['',Validators.required],
       model:['',Validators.required],
@@ -139,6 +153,8 @@ export class CreateImmobilisationComponent implements OnInit{
       fournisseur_id:['',Validators.required],
       structure_id:['',Validators.required],
     })
+    }
+   
     if(this.immoId){
       const detail =this.immoService.getImmoDetailFromServer(this.immoId);
       detail.subscribe(
@@ -177,5 +193,17 @@ export class CreateImmobilisationComponent implements OnInit{
     }else{
       return '';
     }
+  }
+
+  /**
+   * Vérifie si un champ du formulaire est obligatoire
+   */
+  isFieldRequired(fieldName: string): boolean {
+    const control = this.immoForm?.get(fieldName);
+    if (control?.validator) {
+      const validator = control.validator({} as AbstractControl);
+      return validator && validator['required'];
+    }
+    return false;
   }
 }

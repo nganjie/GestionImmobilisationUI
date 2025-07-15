@@ -1,9 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { Form, FormGroup } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Observable, map } from 'rxjs';
+import { BehaviorSubject, Observable, catchError, map } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { ApiPaginatedResponse, ApiResponse } from '../../models/data-server.model';
 import { PaginateData } from '../../models/paginate-data.model';
@@ -11,6 +11,7 @@ import { GlobalServices } from '../../services/global.services';
 import { BuildingDetail } from '../models/building-detail.model';
 import { EmployeeDetail } from '../models/employee-detail.model';
 import { OfficeDetail } from '../models/office-detail.model';
+import { exploseSearchOption, searchOption } from '../../models/search-element.model';
 
 @Injectable({
   providedIn: 'root'
@@ -32,9 +33,11 @@ export class EmployeeService extends GlobalServices {
   get offices$():Observable<OfficeDetail[]>{
     return this._offices$.asObservable();
   }
-  getEmployeeFromServer(paginateD:PaginateData=this.emptyPaginate){
+  getEmployeeFromServer(paginateD:PaginateData=this.emptyPaginate,searchOptions:searchOption[]=[]){
     const header =this.getHearder();
     let pagin =this.explosePaginationOption(paginateD);
+    let search =exploseSearchOption(searchOptions);
+        pagin += search ? `&${search}` : '';
     this.setLoadStatus(true)
     this.http.get<ApiPaginatedResponse<EmployeeDetail>>(`${environment.apiUrlFirst}/admin/employees/all?${pagin}`,header).pipe(
       map(data=>{
@@ -49,20 +52,20 @@ export class EmployeeService extends GlobalServices {
       })
     ).subscribe()
   }
-  getEmployeeFullFromServer(){
+  getEmployeeFullFromServer(searchOptions:searchOption[]=[]){
     const header =this.getHearder();
-    this.setLoadStatus(true)
     this.http.get<ApiResponse<EmployeeDetail[]>>(`${environment.apiUrlFirst}/admin/employees/full-all?`,header).pipe(
       map(data=>{
-        this.setLoadStatus(false);
         console.log(data)
         this._employees$.next(data.data??[]);
       })
     ).subscribe()
   }
-  getBuildingsFromServer(paginateD:PaginateData=this.emptyPaginate){
+  getBuildingsFromServer(paginateD:PaginateData=this.emptyPaginate,searchOptions:searchOption[]=[]){
     const header =this.getHearder();
     let pagin =this.explosePaginationOption(paginateD);
+    let search =exploseSearchOption(searchOptions);
+        pagin += search ? `&${search}` : '';
     this.setLoadStatus(true)
     this.http.get<ApiPaginatedResponse<BuildingDetail>>(`${environment.apiUrlFirst}/admin/buildings/all?${pagin}`,header).pipe(
       map(data=>{
@@ -77,20 +80,20 @@ export class EmployeeService extends GlobalServices {
       })
     ).subscribe()
   }
-  getBuildingsFullFromServer(){
+  getBuildingsFullFromServer(searchOptions:searchOption[]=[]){
     const header =this.getHearder();
-    this.setLoadStatus(true)
     this.http.get<ApiResponse<BuildingDetail[]>>(`${environment.apiUrlFirst}/admin/buildings/full-all`,header).pipe(
       map(data=>{
-        this.setLoadStatus(false);
         console.log(data)
         this._buildings$.next(data.data??[]);
       })
     ).subscribe()
   }
-  getOfficesFromServer(paginateD:PaginateData=this.emptyPaginate){
+  getOfficesFromServer(paginateD:PaginateData=this.emptyPaginate,searchOptions:searchOption[]=[]){
     const header =this.getHearder();
     let pagin =this.explosePaginationOption(paginateD);
+    let search =exploseSearchOption(searchOptions);
+        pagin += search ? `&${search}` : '';
     this.setLoadStatus(true)
     this.http.get<ApiPaginatedResponse<OfficeDetail>>(`${environment.apiUrlFirst}/admin/offices/all?${pagin}`,header).pipe(
       map(data=>{
@@ -106,12 +109,10 @@ export class EmployeeService extends GlobalServices {
 
     ).subscribe()
   }
-  getOfficesFullFromServer(){
+  getOfficesFullFromServer(searchOptions:searchOption[]=[]){
     const header =this.getHearder();
-    this.setLoadStatus(true)
     this.http.get<ApiResponse<OfficeDetail[]>>(`${environment.apiUrlFirst}/admin/offices/full-all?`,header).pipe(
       map(data=>{
-        this.setLoadStatus(false);
         console.log(data)
         this._offices$.next(data.data??[]);
       })
@@ -240,5 +241,23 @@ export class EmployeeService extends GlobalServices {
         }
       })
     ).subscribe()
+  }
+  assignImmobilisationToEmployee(formdData:FormData,employe_id:string){
+    const header =this.getHearder();
+    this.setLoadStatus(true);
+    this.http.post<ApiResponse<EmployeeDetail>>(`${environment.apiUrlFirst}/admin/employees/assign-immo/${employe_id}`,formdData,header).pipe(
+      map(data=>{
+        this.setLoadStatus(false);
+        console.log(data);
+        if(data.success){
+          this.setSnackMesage('Immobilisation assigned successfully');
+          this.setConfirmSubmit(true);
+        }
+        else{
+          this.setSnackMesage(`${data.error}`,'btn-warning');
+        }
+      }),
+      catchError(this.handleError)
+    ).subscribe();
   }
 }

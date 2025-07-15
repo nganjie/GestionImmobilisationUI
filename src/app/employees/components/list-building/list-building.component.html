@@ -1,63 +1,254 @@
 <app-base nameOption="Building">
-    <div class="row">
-        <div class="w-1/2">
-            <button  class="btn btn-primary btn-round" (click)="createBuilding()">{{"Add"|translate}} {{"Building"|translate}}</button>
-            
-        </div>
-      <div class="col-12">
-        <div class="card mb-4">
-          <div class="card-header pb-0">
-            @if(loading$|async){
-                <app-custom-spinner></app-custom-spinner>
-            }
-            <h6>Building table</h6>
-          </div>
-          <div class="card-body px-0 pt-0 pb-2">
-            <div class="table-responsive p-0">
-              <table class="table table-responsive align-items-center mb-0">
-                <thead>
-                  <tr>
-                    <th class="text-uppercase text-center text-secondary text-xxs font-weight-bolder opacity-7">{{"No"|translate}}</th>
-                    <th class="text-uppercase text-center text-secondary text-xxs font-weight-bolder opacity-7">{{"Name"|translate}}</th>
-                    <th class="text-uppercase text-center text-secondary text-xxs font-weight-bolder opacity-7">{{"country"|translate}}</th>
-                    <th class="text-uppercase text-center text-secondary text-xxs font-weight-bolder opacity-7">{{"city"|translate}}</th>
-                    <th class="text-uppercase text-center text-secondary text-xxs font-weight-bolder opacity-7">{{"Nb Etage"|translate}}</th>
-                    <th class="text-uppercase text-center text-secondary text-xxs font-weight-bolder opacity-7">{{"User"|translate}}</th>
-                    <th class="text-uppercase text-center text-secondary text-xxs font-weight-bolder opacity-7">{{"create_at"|translate}}</th>
-                    <th class="text-uppercase text-center text-secondary text-xxs font-weight-bolder opacity-7">Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  @if(buildings$|async;as buildings){
-                    @for (building of buildings; track $index) {
-                      <tr>
-                        <td class="text-center">{{$index+1}}
-                        <td class="text-center">{{building.name}}
-                        </td>
-                        <td class="text-center">{{building.country}}
-                        </td>
-                        <td class="text-center">{{building.city}}</td>
-                        <td class="text-center">{{building.nb_etage}}</td>
-                        <td class="text-center">{{building.user.first_name}}</td>
-                        <td class="text-center">{{building.created_at|date:'short'}}</td>
-                        <td class="text-center input-group-sm">
-                          <button ngbTooltip="{{'Edit'|translate}} {{'Building'|translate}}" class="btn btn-group-small btn-warning btn-sm" (click)="updateBuilding(building.id)" data-toggle="tooltip"><i class="fa fa-pencil btn-warning"></i></button>
-                        </td>
-                      </tr>
-                    }
+  <!-- Header Section with Actions -->
+  <div class="row mb-4">
+    <div class="col-lg-8 col-md-6 col-12">
+      <div class="d-flex align-items-center">
+        <h4 class="mb-0 text-dark">{{"Building"|translate}}</h4>
+        <span class="badge bg-gradient-info ms-2">{{(buildings$ | async)?.length || 0}} {{"items"|translate}}</span>
+      </div>
+      <p class="text-sm text-secondary mb-0">{{"ManageYourBuildings"|translate}}</p>
+    </div>
+    <div class="col-lg-4 col-md-6 col-12 text-end">
+      <button class="btn btn-primary btn-sm mb-0" (click)="createBuilding()">
+        <i class="fas fa-plus me-2"></i>
+        {{"Add"|translate}} {{"Building"|translate}}
+      </button>
+    </div>
+  </div>
+
+  <!-- Filters Section -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-body p-3">
+          <div class="row align-items-center">
+            <div class="col-lg-4 col-md-6 col-12">
+              <div class="form-group mb-0">
+                <label class="form-label text-xs">{{"Search"|translate}}</label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="fas fa-search"></i></span>
+                  <input type="text" class="form-control" 
+                         placeholder="{{'SearchByName'|translate}}" 
+                         [formControl]="searchCtrl">
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-3 col-md-6 col-12">
+              <div class="form-group mb-0">
+                <label class="form-label text-xs">{{"Country"|translate}}</label>
+                <select class="form-select" [formControl]="countryCtrl">
+                  <option value="">{{"All"|translate}}</option>
+                  @for (country of availableCountries; track country) {
+                    <option [value]="country">{{country}}</option>
                   }
-  
-                </tbody>
-              </table>
-              <mat-paginator #paginator [length]="totaElement" (page)="pageEvent=pageChange($event)"
-          [pageSize]="itemsPerPage"
-         [pageSizeOptions]="pageArray"
-         
-         aria-label="Select page">
-         </mat-paginator>
+                </select>
+              </div>
+            </div>
+            <div class="col-lg-3 col-md-6 col-12">
+              <div class="form-group mb-0">
+                <label class="form-label text-xs">{{"City"|translate}}</label>
+                <select class="form-select" [formControl]="cityCtrl">
+                  <option value="">{{"All"|translate}}</option>
+                  @for (city of availableCities; track city) {
+                    <option [value]="city">{{city}}</option>
+                  }
+                </select>
+              </div>
+            </div>
+            <div class="col-lg-2 col-md-6 col-12">
+              <div class="form-group mb-0">
+                <label class="form-label text-xs opacity-0">Action</label>
+                <button class="btn btn-outline-secondary btn-sm w-100" (click)="resetFilters()" title="{{'ResetFilters'|translate}}">
+                  <i class="fas fa-undo"></i>
+                </button>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-  </app-base>
+  </div>
+
+  <!-- Table Section -->
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header pb-0">
+          <div class="row align-items-center">
+            <div class="col-lg-6 col-7">
+              
+              <h6 class="mb-0">{{"BuildingsList"|translate}}</h6>
+            </div>
+            <div class="col-lg-6 col-5 text-end">
+              <div class="dropdown">
+                <button class="btn btn-sm btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                  <i class="fas fa-download me-1"></i>{{"Export"|translate}}
+                </button>
+                <ul class="dropdown-menu">
+                  <li><a class="dropdown-item" ><i class="fas fa-file-excel me-2"></i>Excel</a></li>
+                  <li><a class="dropdown-item" ><i class="fas fa-file-pdf me-2"></i>PDF</a></li>
+                  <li><a class="dropdown-item" ><i class="fas fa-file-csv me-2"></i>CSV</a></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card-body px-0 pt-0 pb-2">
+          @if(loading$|async){
+                <app-custom-spinner></app-custom-spinner>
+              }
+          <div class="table-responsive p-0">
+            <table class="table align-items-center mb-0">
+              <thead>
+                <tr>
+                  <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                    <input type="checkbox" class="form-check-input">
+                  </th>
+                  <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 cursor-pointer"
+                      (click)="sortBy('name')">
+                    {{"Building"|translate}}
+                    <i [class]="getSortIcon('name')" class="ms-1"></i>
+                  </th>
+                  <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                    {{"Location"|translate}}
+                  </th>
+                  <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 cursor-pointer"
+                      (click)="sortBy('nb_etage')">
+                    {{"Floors"|translate}}
+                    <i [class]="getSortIcon('nb_etage')" class="ms-1"></i>
+                  </th>
+                  <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                    {{"CreatedBy"|translate}}
+                  </th>
+                  <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 cursor-pointer"
+                      (click)="sortBy('created_at')">
+                    {{"CreatedAt"|translate}}
+                    <i [class]="getSortIcon('created_at')" class="ms-1"></i>
+                  </th>
+                  <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                    {{"Actions"|translate}}
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                @if(buildings$|async;as buildings){
+                  @for (building of buildings; track building.id) {
+                    <tr class="hover-row">
+                      <td class="ps-2">
+                        <input type="checkbox" class="form-check-input">
+                      </td>
+                      <td>
+                        <div class="d-flex px-2 py-1">
+                          <div class="d-flex flex-column justify-content-center">
+                            <h6 class="mb-0 text-sm">{{building.name}}</h6>
+                            <p class="text-xs text-secondary mb-0">
+                              <i class="fas fa-building me-1"></i>Building #{{$index + 1}}
+                            </p>
+                          </div>
+                        </div>
+                      </td>
+                      <td class="ps-2">
+                        <div class="d-flex flex-column justify-content-center">
+                          <span class="text-xs text-secondary">
+                            <i class="fas fa-globe me-1"></i>{{building.country}}
+                          </span>
+                          <span class="text-xs text-secondary">
+                            <i class="fas fa-map-marker-alt me-1"></i>{{building.city}}
+                          </span>
+                        </div>
+                      </td>
+                      <td class="text-center">
+                        <span class="badge badge-sm bg-gradient-info">{{building.nb_etage}} {{"floors"|translate}}</span>
+                      </td>
+                      <td class="text-center">
+                        <div class="d-flex align-items-center justify-content-center">
+                          <div class="avatar avatar-xs me-2">
+                            <div class="avatar-initial rounded-circle bg-gradient-primary">
+                              {{building.user.first_name.charAt(0)}}{{building.user.last_name.charAt(0) || building.user.first_name.charAt(1) || ''}}
+                            </div>
+                          </div>
+                          <div class="d-flex flex-column">
+                            <h6 class="mb-0 text-xs">{{building.user.first_name}}</h6>
+                          </div>
+                        </div>
+                      </td>
+                      <td class="text-center">
+                        <span class="text-xs text-secondary">{{building.created_at | date:'shortDate'}}</span>
+                      </td>
+                      <td class="text-center">
+                        <div class="dropdown">
+                          <button class="btn btn-link text-secondary p-0 dropdown-toggle" 
+                                  type="button" 
+                                  data-bs-toggle="dropdown">
+                            <i class="fas fa-ellipsis-v"></i>
+                          </button>
+                          <ul class="dropdown-menu">
+                            <li>
+                              <a class="dropdown-item"  (click)="viewDetails(building.id)">
+                                <i class="fas fa-eye me-2"></i>{{"View"|translate}}
+                              </a>
+                            </li>
+                            <li>
+                              <a class="dropdown-item"  (click)="updateBuilding(building.id)">
+                                <i class="fas fa-edit me-2"></i>{{"Edit"|translate}}
+                              </a>
+                            </li>
+                            <li>
+                              <a class="dropdown-item" >
+                                <i class="fas fa-copy me-2"></i>{{"Duplicate"|translate}}
+                              </a>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                              <a class="dropdown-item text-danger"  (click)="deleteBuilding(building.id)">
+                                <i class="fas fa-trash me-2"></i>{{"Delete"|translate}}
+                              </a>
+                            </li>
+                          </ul>
+                        </div>
+                      </td>
+                    </tr>
+                  }
+                } @else {
+                  <tr>
+                    <td colspan="7" class="text-center py-4">
+                      <div class="d-flex flex-column align-items-center">
+                        <i class="fas fa-building text-muted mb-3" style="font-size: 3rem;"></i>
+                        <h6 class="text-muted mb-2">{{"NoDataFound"|translate}}</h6>
+                        <p class="text-sm text-secondary">{{"NoBuildingsAvailable"|translate}}</p>
+                        <button class="btn btn-primary btn-sm" (click)="createBuilding()">
+                          <i class="fas fa-plus me-2"></i>{{"AddFirst"|translate}}
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+          
+          <!-- Pagination -->
+          <div class="row mt-3">
+            <div class="col-sm-6">
+              <div class="d-flex align-items-center">
+                <span class="text-sm text-secondary">
+                  {{"Showing"|translate}} {{(buildings$ | async)?.length || 0}} {{"entries"|translate}}
+                </span>
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <mat-paginator #paginator 
+                           [length]="totaElement" 
+                           (page)="pageEvent=pageChange($event)"
+                           [pageSize]="itemsPerPage"
+                           [pageSizeOptions]="pageArray"
+                           [showFirstLastButtons]="true"
+                           aria-label="Select page">
+              </mat-paginator>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</app-base>

@@ -1,0 +1,391 @@
+<div class="container-fluid py-4">
+  <!-- Interface de sélection et filtres (non imprimée) -->
+  <div class="no-print">
+    @if(loading$ | async) {
+      <div class="row">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-body text-center">
+              <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">{{"Loading"|translate}}...</span>
+              </div>
+              <p class="text-muted mt-3">{{"LoadingEmployeeDetails"|translate}}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    } @else {
+      <!-- Header avec actions -->
+      <div class="row mb-4">
+        <div class="col-lg-8 col-md-6 col-12">
+          <div class="d-flex align-items-center">
+            <h4 class="mb-0 text-dark">{{"HolderSheet"|translate}}</h4>
+            @if(employee$ | async; as employee) {
+              <span class="badge bg-gradient-info ms-2">{{employee.first_name}} {{employee.last_name}}</span>
+            }
+          </div>
+          <p class="text-sm text-secondary mb-0">
+            {{"GenerateHolderSheet"|translate}}
+          </p>
+        </div>
+        <div class="col-lg-4 col-md-6 col-12 text-end">
+          <button class="btn btn-outline-primary btn-sm me-2" (click)="togglePreview()">
+            <i class="fas fa-eye me-2"></i>
+            {{showPreview ? ("Hide"|translate) : ("Preview"|translate)}}
+          </button>
+          <button class="btn btn-primary btn-sm" 
+                  (click)="printOrDownloadPDF()" 
+                  [disabled]="selectedImmobilisations.length === 0">
+            <i class="fas fa-print me-2"></i>
+            {{"PrintPDF"|translate}}
+          </button>
+        </div>
+      </div>
+
+      <!-- Filtres et sélection -->
+      <div class="row mb-4">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-header">
+              <h6 class="mb-0">{{"FiltersAndSelection"|translate}}</h6>
+            </div>
+            <div class="card-body">
+              <!-- Filtres -->
+              <div class="row mb-3">
+                <div class="col-lg-2 col-md-4 col-6">
+                  <label class="form-label text-xs">{{"Search"|translate}}</label>
+                  <input type="text" class="form-control form-control-sm" 
+                         placeholder="Nom, code..." [formControl]="searchCtrl">
+                </div>
+                <div class="col-lg-2 col-md-4 col-6">
+                  <label class="form-label text-xs">{{"Status"|translate}}</label>
+                  <select class="form-select form-select-sm" [formControl]="statusCtrl">
+                    <option value="">{{"All"|translate}}</option>
+                    <option value="active">{{"Active"|translate}}</option>
+                    <option value="broken">{{"broken"|translate}}</option>
+                    <option value="stock">{{"stock"|translate}}</option>
+                  </select>
+                </div>
+                <div class="col-lg-2 col-md-4 col-6">
+                  <label class="form-label text-xs">{{"Category"|translate}}</label>
+                  <select class="form-select form-select-sm" [formControl]="categorieCtrl">
+                    <option value="">{{"All"|translate}}</option>
+                    @if(categories$ | async; as categories) {
+                      @for(category of categories; track category.id) {
+                        <option [value]="category.id">{{category.name}}</option>
+                      }
+                    }
+                  </select>
+                </div>
+                <div class="col-lg-2 col-md-4 col-6">
+                  <label class="form-label text-xs">{{"Structure"|translate}}</label>
+                  <select class="form-select form-select-sm" [formControl]="structureCtrl">
+                    <option value="">{{"All"|translate}}</option>
+                    @if(structures$ | async; as structures) {
+                      @for(structure of structures; track structure.id) {
+                        <option [value]="structure.id">{{structure.name}}</option>
+                      }
+                    }
+                  </select>
+                </div>
+                <div class="col-lg-2 col-md-4 col-6">
+                  <label class="form-label text-xs">{{"Supplier"|translate}}</label>
+                  <select class="form-select form-select-sm" [formControl]="fournisseurCtrl">
+                    <option value="">{{"All"|translate}}</option>
+                    @if(fournisseurs$ | async; as fournisseurs) {
+                      @for(fournisseur of fournisseurs; track fournisseur.id) {
+                        <option [value]="fournisseur.id">{{fournisseur.raison_social}}</option>
+                      }
+                    }
+                  </select>
+                </div>
+                <div class="col-lg-2 col-md-4 col-6 d-flex align-items-end">
+                  <button class="btn btn-outline-secondary btn-sm w-100" (click)="resetFilters()">
+                    <i class="fas fa-undo me-1"></i>{{"Reset"|translate}}
+                  </button>
+                </div>
+              </div>
+
+              <!-- Actions de sélection -->
+              <div class="row mb-3">
+                <div class="col-12">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                      <button class="btn btn-success btn-sm me-2" (click)="selectAllDisplayedImmobilisations()">
+                        <i class="fas fa-check me-1"></i>{{"SelectDisplayed"|translate}}
+                      </button>
+                      <button class="btn btn-info btn-sm me-2" (click)="selectAllImmobilisations()">
+                        <i class="fas fa-check-double me-1"></i>{{"SelectAll"|translate}}
+                      </button>
+                      <button class="btn btn-outline-danger btn-sm" (click)="clearSelection()">
+                        <i class="fas fa-times me-1"></i>{{"UnselectAll"|translate}}
+                      </button>
+                    </div>
+                    <div class="text-end">
+                      <span class="badge bg-gradient-primary">
+                        {{selectedImmobilisations.length}} {{"Selected"|translate}}
+                      </span>
+                      <span class="badge bg-gradient-success ms-2">
+                        {{"Total"|translate}}: {{totalValue | currency:'XAF':'symbol':'1.0-0'}}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Liste des immobilisations disponibles -->
+              <div class="table-responsive">
+                <table class="table table-hover align-items-center mb-0">
+                  <thead>
+                    <tr>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                        <input type="checkbox" class="form-check-input">
+                      </th>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 cursor-pointer" 
+                          (click)="sortBy('name')">
+                        {{"Immobilisation"|translate}}
+                        <i [class]="getSortIcon('name')"></i>
+                      </th>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 cursor-pointer" 
+                          (click)="sortBy('code')">
+                        {{"Code"|translate}}
+                        <i [class]="getSortIcon('code')"></i>
+                      </th>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 cursor-pointer" 
+                          (click)="sortBy('categorie.name')">
+                        {{"Category"|translate}}
+                        <i [class]="getSortIcon('categorie.name')"></i>
+                      </th>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 cursor-pointer" 
+                          (click)="sortBy('status')">
+                        {{"Status"|translate}}
+                        <i [class]="getSortIcon('status')"></i>
+                      </th>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 cursor-pointer" 
+                          (click)="sortBy('unit_price')">
+                        {{"Value"|translate}}
+                        <i [class]="getSortIcon('unit_price')"></i>
+                      </th>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 cursor-pointer" 
+                          (click)="sortBy('created_at')">
+                        {{"Date"|translate}}
+                        <i [class]="getSortIcon('created_at')"></i>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @if(immobilisations$ | async; as immobilisations) {
+                      @for(immobilisation of immobilisations; track immobilisation.id) {
+                        <tr [class.table-active]="isImmobilisationSelected(immobilisation)">
+                          <td>
+                            <input type="checkbox" 
+                                   class="form-check-input"
+                                   [checked]="isImmobilisationSelected(immobilisation)"
+                                   (change)="toggleImmobilisationSelection(immobilisation)">
+                          </td>
+                          <td>
+                            <div class="d-flex flex-column">
+                              <h6 class="mb-0 text-sm font-weight-bold">{{immobilisation.name}}</h6>
+                              <p class="text-xs text-muted mb-0">{{immobilisation.mark}} {{immobilisation.model}}</p>
+                            </div>
+                          </td>
+                          <td>
+                            <span class="badge bg-gradient-secondary">{{immobilisation.code}}</span>
+                          </td>
+                          <td>
+                            <span class="text-xs">{{immobilisation.categorie.name}}</span>
+                          </td>
+                          <td>
+                            <span class="badge"
+                                  [ngClass]="{
+                                    'bg-gradient-success': immobilisation.status === 'active',
+                                    'bg-gradient-warning': immobilisation.status === 'broken',
+                                    'bg-gradient-info': immobilisation.status === 'stock',
+                                    'bg-gradient-secondary': immobilisation.status === 'created'
+                                  }">
+                              {{getStatusLabel(immobilisation.status)}}
+                            </span>
+                          </td>
+                          <td>
+                            <span class="text-sm font-weight-bold">
+                              {{immobilisation.unit_price * immobilisation.quantity | currency:'XAF':'symbol':'1.0-0'}}
+                            </span>
+                          </td>
+                          <td>
+                            <span class="text-xs text-muted">
+                              {{immobilisation.created_at | date:'dd/MM/yyyy'}}
+                            </span>
+                          </td>
+                        </tr>
+                      }
+                    }
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+
+  <!-- Prévisualisation ou Fiche à imprimer -->
+  <div [class.d-none]="!showPreview" class="print-section" id="ficheDetenteur">
+    @if(employee$ | async; as employee) {
+      <div class="fiche-container">
+        <!-- En-tête de la fiche -->
+        <div class="fiche-header">
+          <div class="row mb-4">
+            <div class="col-3">
+              <div class="header-left">
+                <p class="header-country">REPUBLIQUE DU CAMEROUN</p>
+                <p class="header-motto">PAIX-TRAVAIL-PATRIE</p>
+                <div class="separator-line-small"></div>
+                <p class="header-org">PORT AUTONOME DE DOUALA</p>
+                <p class="header-abbr">(PAD)</p>
+                <div class="separator-line-small"></div>
+                <p class="header-direction">DIRECTION GENERALE</p>
+                <div class="separator-line-small"></div>
+                <p class="header-department">DIRECTION DES AFFAIRES GENERALES</p>
+                <div class="separator-line-small"></div>
+              </div>
+            </div>
+            <div class="col-6 text-center">
+              <img src="/assets/img/logo-port.png" alt="Logo PAD" class="fiche-logo-center">
+            </div>
+            <div class="col-3">
+              <div class="header-right">
+                <p class="header-country">REPUBLIC OF CAMEROON</p>
+                <p class="header-motto">PEACE-WORK-FATHERLAND</p>
+                <div class="separator-line-small"></div>
+                <p class="header-org">PORT AUTHORITY OF DOUALA</p>
+                <p class="header-abbr">(PAD)</p>
+                <div class="separator-line-small"></div>
+                <p class="header-office">HEAD OFFICE</p>
+                <div class="separator-line-small"></div>
+                <p class="header-department">DIRECTORATE OF CORPORATE AFFAIRS</p>
+                <div class="separator-line-small"></div>
+              </div>
+            </div>
+          </div>
+          <!-- Titre du document -->
+          <div class="row mt-4">
+            <div class="col-12 text-center">
+              <h4 class="fiche-title">{{"HolderSheetTitle"|translate}}</h4>
+              <h5 class="fiche-subtitle">{{"ImmobilisationAssignment"|translate}}</h5>
+            </div>
+          </div>
+        </div>
+
+        <!-- Informations de la fiche -->
+        <div class="fiche-info mb-4">
+          <div class="row">
+            <div class="col-6">
+              <p><strong>{{"SheetNumber"|translate}}:</strong> {{getFicheNumber()}}</p>
+              <p><strong>{{"PrintDate"|translate}}:</strong> {{currentDate | date:'dd/MM/yyyy'}}</p>
+            </div>
+            <div class="col-6 text-end">
+              <p><strong>{{"NumberOfItems"|translate}}:</strong> {{selectedImmobilisations.length}}</p>
+              <p><strong>{{"TotalValue"|translate}}:</strong> {{totalValue | currency:'XAF':'symbol':'1.0-0'}}</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Informations du détenteur -->
+        <div class="fiche-employee mb-4">
+          <h5 class="section-title">{{"HolderInformation"|translate}}</h5>
+          <div class="row">
+            <div class="col-6">
+              <p><strong>{{"FullName"|translate}}:</strong> {{employee.first_name}} {{employee.last_name}}</p>
+              <p><strong>{{"EmployeeId"|translate}}:</strong> {{employee.matricule}}</p>
+              <p><strong>{{"Position"|translate}}:</strong> {{employee.fonction}}</p>
+              <p><strong>{{"Department"|translate}}:</strong> {{employee.departement}}</p>
+            </div>
+            <div class="col-6">
+              <p><strong>Email:</strong> {{employee.user.email}}</p>
+              <p><strong>{{"Office"|translate}}:</strong> {{employee.office && employee.office.name || (('NotAssigned'|translate))}}</p>
+              <p><strong>{{"Building"|translate}}:</strong> {{employee.office && employee.office.building && employee.office.building.name || (('NotSpecified'|translate))}}</p>
+              <p><strong>{{"Floor"|translate}}:</strong> {{employee.office && employee.office.num_etage || (('NotSpecified'|translate))}}</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tableau des immobilisations -->
+        <div class="fiche-immobilisations">
+          <h5 class="section-title">{{"AssignedImmobilisations"|translate}}</h5>
+          <table class="fiche-table">
+            <thead>
+              <tr>
+                <th>{{"Number"|translate}}</th>
+                <th>{{"Code"|translate}}</th>
+                <th>{{"Designation"|translate}}</th>
+                <th>{{"BrandModel"|translate}}</th>
+                <th>{{"Category"|translate}}</th>
+                <th>{{"Quantity"|translate}}</th>
+                <th>{{"UnitValue"|translate}}</th>
+                <th>{{"TotalValue"|translate}}</th>
+                <th>{{"Status"|translate}}</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for(immobilisation of selectedImmobilisations; track immobilisation.id; let i = $index) {
+                <tr>
+                  <td>{{i + 1}}</td>
+                  <td>{{immobilisation.code}}</td>
+                  <td>{{immobilisation.name}}</td>
+                  <td>{{immobilisation.mark}} {{immobilisation.model}}</td>
+                  <td>{{immobilisation.categorie.name}}</td>
+                  <td>{{immobilisation.quantity}}</td>
+                  <td>{{immobilisation.unit_price | currency:'XAF':'symbol':'1.0-0'}}</td>
+                  <td>{{immobilisation.unit_price * immobilisation.quantity | currency:'XAF':'symbol':'1.0-0'}}</td>
+                  <td>{{getStatusLabel(immobilisation.status)}}</td>
+                </tr>
+              }
+            </tbody>
+            <tfoot>
+              <tr class="total-row">
+                <td colspan="5"><strong>TOTAL</strong></td>
+                <td><strong>{{totalQuantity}}</strong></td>
+                <td colspan="2"><strong>{{totalValue | currency:'XAF':'symbol':'1.0-0'}}</strong></td>
+                <td></td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+
+        <!-- Signatures -->
+        <div class="fiche-signatures mt-5">
+          <div class="row">
+            <div class="col-4 text-center">
+              <div class="signature-box">
+                <p class="signature-title">{{"TheHolder"|translate}}</p>
+                <div class="signature-line"></div>
+                <p class="signature-name">{{employee.first_name}} {{employee.last_name}}</p>
+                <p class="signature-date">{{"Date"|translate}}: ___________</p>
+              </div>
+            </div>
+            <div class="col-4 text-center">
+              <div class="signature-box">
+                <p class="signature-title">{{"AssetManager"|translate}}</p>
+                <div class="signature-line"></div>
+                <p class="signature-name">________________________</p>
+                <p class="signature-date">{{"Date"|translate}}: ___________</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pied de page -->
+        <div class="fiche-footer mt-4">
+          <p class="text-center">
+            <small>
+              (1) Le matériel ne doit pas être déplacé ni par le détenteur ni par une tierce personne sans l’avis de la structure en charge du patrimoine. En cas de changement de poste,
+      Le détenteur du matériel ci-dessus décrit devra aviser le Service de la Comptabilité Patrimoniale pour la mise à jour de la fiche de détenteur
+
+            </small>
+          </p>
+        </div>
+      </div>
+    }
+  </div>
+</div>

@@ -1,0 +1,258 @@
+<app-base nameOption="Entreprises">
+  <!-- Header Section with Actions -->
+  <div class="row mb-4">
+    <div class="col-lg-8 col-md-6 col-12">
+      <div class="d-flex align-items-center">
+        <h4 class="mb-0 text-dark">{{"Companies"|translate}}</h4>
+        <span class="badge bg-gradient-info ms-2">{{(entreprises$ | async)?.length || 0}} {{"items"|translate}}</span>
+      </div>
+      <p class="text-sm text-secondary mb-0">{{"ManageCompaniesForReforms"|translate}}</p>
+    </div>
+    <div class="col-lg-4 col-md-6 col-12 text-end">
+      <button class="btn btn-primary btn-sm mb-0" routerLink="create">
+        <i class="fas fa-plus me-2"></i>
+        {{"Add"|translate}} {{"Company"|translate}}
+      </button>
+    </div>
+  </div>
+
+  <!-- Filters Section -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-body p-3">
+          <div class="row align-items-center">
+            <div class="col-lg-4 col-md-6 col-12">
+              <div class="form-group mb-0">
+                <label class="form-label text-xs">{{"Search"|translate}}</label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="fas fa-search"></i></span>
+                  <input type="text" class="form-control" 
+                         placeholder="{{'SearchByNameOrNUI'|translate}}" 
+                         [formControl]="searchCtrl">
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-2 col-md-6 col-12">
+              <div class="form-group mb-0">
+                <label class="form-label text-xs">{{"DateFrom"|translate}}</label>
+                <input type="date" class="form-control" [(ngModel)]="startDate" (change)="applyFilters()">
+              </div>
+            </div>
+            <div class="col-lg-2 col-md-6 col-12">
+              <div class="form-group mb-0">
+                <label class="form-label text-xs">{{"DateTo"|translate}}</label>
+                <input type="date" class="form-control" [(ngModel)]="endDate" (change)="applyFilters()">
+              </div>
+            </div>
+            <div class="col-lg-1 col-md-6 col-12">
+              <div class="form-group mb-0">
+                <label class="form-label text-xs opacity-0">Action</label>
+                <button class="btn btn-outline-secondary btn-sm w-100" (click)="resetFilters()" title="{{'ResetFilters'|translate}}">
+                  <i class="fas fa-undo"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Table Section -->
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header pb-0">
+          <div class="row align-items-center">
+            <div class="col-lg-6 col-7">
+              <h6 class="mb-0">{{"CompaniesList"|translate}}</h6>
+            </div>
+            <div class="col-lg-6 col-5 text-end">
+              <div class="dropdown">
+                <button class="btn btn-sm btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                  <i class="fas fa-download me-1"></i>{{"Export"|translate}}
+                </button>
+                <ul class="dropdown-menu">
+                  <li><a class="dropdown-item" ><i class="fas fa-file-excel me-2"></i>Excel</a></li>
+                  <li><a class="dropdown-item" ><i class="fas fa-file-pdf me-2"></i>PDF</a></li>
+                  <li><a class="dropdown-item" ><i class="fas fa-file-csv me-2"></i>CSV</a></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card-body px-0 pt-0 pb-2">
+          <div class="table-responsive p-0">
+            <table class="table align-items-center mb-0">
+              <thead>
+                <tr>
+                  <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                    <input type="checkbox" class="form-check-input">
+                  </th>
+                  <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 cursor-pointer" 
+                      (click)="sortBy('name')">
+                    {{"Company"|translate}}
+                    <i [class]="getSortIcon('name')" class="ms-1"></i>
+                  </th>
+                  <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                    {{"Contact"|translate}}
+                  </th>
+                  <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 cursor-pointer"
+                      (click)="sortBy('is_physic')">
+                    {{"Type"|translate}}
+                    <i [class]="getSortIcon('is_physic')" class="ms-1"></i>
+                  </th>
+                  <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 cursor-pointer"
+                      (click)="sortBy('created_at')">
+                    {{"CreatedAt"|translate}}
+                    <i [class]="getSortIcon('created_at')" class="ms-1"></i>
+                  </th>
+                  <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                    {{"Actions"|translate}}
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                @if(entreprises$|async;as entreprises){
+                  @for (entreprise of entreprises; track entreprise.id) {
+                    <tr class="hover-row">
+                      <td class="ps-2">
+                        <input type="checkbox" class="form-check-input">
+                      </td>
+                      <td>
+                        <div class="d-flex px-2 py-1">
+                          <div class="d-flex flex-column justify-content-center">
+                            <h6 class="mb-0 text-sm">{{entreprise.name}}</h6>
+                            <p class="text-xs text-secondary mb-0">
+                              <i class="fas fa-id-card me-1"></i>{{"NUI"|translate}}: {{entreprise.nui}}
+                            </p>
+                          </div>
+                        </div>
+                      </td>
+                      <td class="ps-2">
+                        <div class="d-flex flex-column justify-content-center">
+                          <span class="text-xs text-secondary">
+                            <i class="fas fa-map-marker-alt me-1"></i>{{entreprise.adresse}}
+                          </span>
+                          <span class="text-xs text-secondary">
+                            <i class="fas fa-phone me-1"></i>{{entreprise.tel}}
+                          </span>
+                        </div>
+                      </td>
+                      <td class="text-center">
+                        <span class="badge badge-sm" 
+                              [ngClass]="getCompanyTypeBadgeClass(entreprise.is_physic)">
+                          {{getCompanyTypeLabel(entreprise.is_physic) | translate}}
+                        </span>
+                      </td>
+                      <td class="text-center">
+                        <div class="d-flex align-items-center justify-content-center">
+                          <div class="avatar avatar-xs me-2">
+                            <div class="avatar-initial rounded-circle bg-gradient-primary">
+                              {{entreprise.name.charAt(0)}}
+                            </div>
+                          </div>
+                          <div class="d-flex flex-column">
+                            <h6 class="mb-0 text-xs">{{entreprise.name}}</h6>
+                            <p class="text-xs text-secondary mb-0">{{entreprise.created_at | date:'shortDate'}}</p>
+                          </div>
+                        </div>
+                      </td>
+                      <td class="text-center">
+                        <div class="dropdown">
+                          <button class="btn btn-link text-secondary p-0 dropdown-toggle" 
+                                  type="button" 
+                                  data-bs-toggle="dropdown">
+                            <i class="fas fa-ellipsis-v"></i>
+                          </button>
+                          <ul class="dropdown-menu">
+                            <li>
+                              <a class="dropdown-item"  (click)="viewDetails(entreprise.id)">
+                                <i class="fas fa-eye me-2"></i>{{"View"|translate}}
+                              </a>
+                            </li>
+                            <li>
+                              <a class="dropdown-item" (click)="editEntreprise(entreprise.id)">
+                                <i class="fas fa-edit me-2"></i>{{"Edit"|translate}}
+                              </a>
+                            </li>
+                            <li>
+                              <a class="dropdown-item" >
+                                <i class="fas fa-copy me-2"></i>{{"Duplicate"|translate}}
+                              </a>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                              <a class="dropdown-item text-danger"  (click)="deleteEntreprise(entreprise.id)">
+                                <i class="fas fa-trash me-2"></i>{{"Delete"|translate}}
+                              </a>
+                            </li>
+                          </ul>
+                        </div>
+                      </td>
+                    </tr>
+                  }
+                } @else {
+                  <tr>
+                    <td colspan="6" class="text-center py-4">
+                      <div class="d-flex flex-column align-items-center">
+                        <i class="fas fa-building text-muted mb-3" style="font-size: 3rem;"></i>
+                        <h6 class="text-muted mb-2">{{"NoDataFound"|translate}}</h6>
+                        <p class="text-sm text-secondary">{{"NoCompaniesAvailable"|translate}}</p>
+                        <button class="btn btn-primary btn-sm" routerLink="create">
+                          <i class="fas fa-plus me-2"></i>{{"AddFirst"|translate}}
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+          
+          <!-- Pagination -->
+          <div class="row mt-3">
+            <div class="col-sm-6">
+              <div class="d-flex align-items-center">
+                <span class="text-sm text-secondary">
+                  {{"Showing"|translate}} {{(paginateData$ | async)?.current_page || 0}} {{"to"|translate}} {{(paginateData$ | async)?.per_page || 0}} 
+                  {{"of"|translate}} {{(paginateData$ | async)?.total || 0}} {{"entries"|translate}}
+                </span>
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <mat-paginator #paginator 
+                           [length]="totaElement" 
+                           (page)="pageEvent=pageChange($event)"
+                           [pageSize]="itemsPerPage"
+                           [pageSizeOptions]="pageArray"
+                           [showFirstLastButtons]="true"
+                           aria-label="Select page">
+              </mat-paginator>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bulk Actions Modal (if needed) -->
+  <div class="modal fade" id="bulkActionsModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">{{"BulkActions"|translate}}</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <p>{{"SelectBulkAction"|translate}}</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{"Cancel"|translate}}</button>
+          <button type="button" class="btn btn-primary">{{"Apply"|translate}}</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</app-base>

@@ -23,6 +23,7 @@ export class CreateFournisseurComponent implements OnInit{
   constructor(private languageSservice:LanguageService,@Optional() private readonly activeModal:NgbActiveModal,private formBuilder:FormBuilder,private immoService:ImmoService){}
   ngOnInit(): void {
     this.loading$=this.immoService.loading$
+    this.immoService.setLoadStatus(false);
     this.initForm()
   }
   confirm():void{
@@ -50,7 +51,6 @@ export class CreateFournisseurComponent implements OnInit{
       }
     )
     this.fournisseurForm=this.formBuilder.group({
-      name:['',Validators.required],
       raison_social:['',Validators.required],
       adresse:['',Validators.required],
       nui:['',Validators.required],

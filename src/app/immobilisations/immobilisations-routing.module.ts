@@ -6,6 +6,7 @@ import { ListStructureComponent } from './components/list-structure/list-structu
 import { ListFournisseurComponent } from './components/list-fournisseur/list-fournisseur.component';
 import { CreateImmobilisationComponent } from './components/create-immobilisation/create-immobilisation.component';
 import { DetailImmobilisationComponent } from './components/detail-immobilisation/detail-immobilisation.component';
+import { GenerateCodeBareImmobilisationsComponent } from './components/generate-code-bare-immobilisations/generate-code-bare-immobilisations.component';
 
 const routes: Routes = [
   {path:'',component:ListImmobilisationComponent},
@@ -15,6 +16,7 @@ const routes: Routes = [
   {path:'create',component:CreateImmobilisationComponent},
   {path:'detail/:id',component:DetailImmobilisationComponent},
   {path:'edit/:id',component:CreateImmobilisationComponent},
+  {path:'generate-barcodes',component:GenerateCodeBareImmobilisationsComponent},
 ];
 
 @NgModule({

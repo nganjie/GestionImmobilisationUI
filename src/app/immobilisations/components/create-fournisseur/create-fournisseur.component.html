@@ -1,55 +1,164 @@
-<div class="">
-    <div class="modal-header">
-        <h5 class="modal-title">{{fournisseurId?"Update":"Create"|translate}} {{"fournisseur"|translate}}</h5>
-        <button  type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="dismiss()" style="background-color: #344767;"></button>
-        
+<!-- Modern Supplier Form Modal -->
+<div class="modal-content">
+  <!-- Header with gradient background -->
+  <div class="modal-header bg-gradient-primary text-white border-0">
+    <div class="d-flex align-items-center">
+      <div class="icon icon-shape icon-sm bg-white text-primary rounded-circle me-3">
+        <i class="fas fa-truck"></i>
+      </div>
+      <div>
+        <h5 class="modal-title mb-0 text-white">
+          {{fournisseurId ? "Update" : "Create" | translate}} {{"Supplier" | translate}}
+        </h5>
+        <p class="text-white-50 mb-0 text-sm">
+          {{fournisseurId ? "ModifySupplierDetails" : "AddNewSupplierToSystem" | translate}}
+        </p>
+      </div>
     </div>
-    
-    <div class="body p-4">
-        @if(error$|async;as error){
-            <span class="text-danger">{{error.message}}</span>
-        }
-        <form [formGroup]="fournisseurForm">
-            <!-- Name input -->
-            <div  class="form-outline mb-4">
-                <label class="form-label" for="name">{{"name"|translate}}</label>
-                <input type="text" id="name" class="form-control"  formControlName="name" />
-                @if(btnSubmit&&fournisseurForm.invalid&&fournisseurForm.get('name')?.invalid)
-                    {
-                        <span class="text-danger">{{getFormControlErrorText(fournisseurForm.get('name'))}}</span>
-                    }
-            </div>
-            <div  class="form-outline mb-4">
-                <label class="form-label" for="short_name">{{"raison social"|translate}}</label>
-                <input type="text" id="short_name" class="form-control" formControlName="raison_social" />
-                @if(btnSubmit&&fournisseurForm.invalid&&fournisseurForm.get('raison_social')?.invalid)
-                    {
-                        <span class="text-danger">{{getFormControlErrorText(fournisseurForm.get('raison_social'))}}</span>
-                    }
-            </div>
-            <div  class="form-outline mb-4">
-                <label class="form-label" for="short_name">{{"adresse"|translate}}</label>
-                <input type="text" id="short_name" class="form-control" formControlName="adresse" />
-                @if(btnSubmit&&fournisseurForm.invalid&&fournisseurForm.get('adresse')?.invalid)
-                    {
-                        <span class="text-danger">{{getFormControlErrorText(fournisseurForm.get('adresse'))}}</span>
-                    }
-            </div>
-            <div  class="form-outline mb-4">
-                <label class="form-label" for="short_name">{{"nui"|translate}}</label>
-                <input type="text" id="short_name" class="form-control" formControlName="nui" />
-                @if(btnSubmit&&fournisseurForm.invalid&&fournisseurForm.get('nui')?.invalid)
-                    {
-                        <span class="text-danger">{{getFormControlErrorText(fournisseurForm.get('nui'))}}</span>
-                    }
-            </div>
-        </form>
-        <div  class="form-outline mb-4">
-            
-            @if(loading$|async){
-                <app-custom-spinner></app-custom-spinner>
-            }
-            <button type="submit" style="margin-top :25px;width: 100%;" class="btn {{fournisseurId?'btn-warning':'btn-primary'}}" (click)="submitForm()"> {{fournisseurId?"Update":"Create"|translate|titlecase}} </button>
+    <button type="button" 
+            class="btn-close btn-close-white" 
+            data-bs-dismiss="modal" 
+            aria-label="Close" 
+            (click)="dismiss()">
+    </button>
+  </div>
+
+  <!-- Body with improved styling -->
+  <div class="modal-body p-4">
+    <!-- Error Alert -->
+    @if(error$ | async; as error) {
+      @if(error.status){
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <div class="d-flex align-items-center">
+          <i class="fas fa-exclamation-triangle me-2"></i>
+          <span>{{error.message}}</span>
         </div>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+      </div>
+      }
+    }
+
+    <!-- Form -->
+    <form [formGroup]="fournisseurForm" class="needs-validation" novalidate>
+      <div class="row">
+        <!-- Company Name -->
+
+        <!-- Business Name -->
+        <div class="col-12 mb-4">
+          <div class="form-group">
+            <label class="form-label text-dark font-weight-bold">
+              <i class="fas fa-briefcase text-primary me-2"></i>
+              {{"BusinessName" | translate}}
+            </label>
+            <div class="input-group">
+              <span class="input-group-text bg-light">
+                <i class="fas fa-handshake text-muted"></i>
+              </span>
+              <input type="text" 
+                     id="raison_social" 
+                     class="form-control"
+                     [class.is-invalid]="btnSubmit && fournisseurForm.get('raison_social')?.invalid"
+                     [class.is-valid]="fournisseurForm.get('raison_social')?.valid"
+                     formControlName="raison_social"
+                     placeholder="{{'EnterBusinessName' | translate}}" />
+            </div>
+            @if(btnSubmit && fournisseurForm.invalid && fournisseurForm.get('raison_social')?.invalid) {
+              <div class="invalid-feedback d-block">
+                <i class="fas fa-exclamation-circle me-1"></i>
+                {{getFormControlErrorText(fournisseurForm.get('raison_social'))}}
+              </div>
+            }
+          </div>
+        </div>
+
+        <!-- Address -->
+        <div class="col-12 mb-4">
+          <div class="form-group">
+            <label class="form-label text-dark font-weight-bold">
+              <i class="fas fa-map-marker-alt text-primary me-2"></i>
+              {{"Address" | translate}}
+            </label>
+            <div class="input-group">
+              <span class="input-group-text bg-light">
+                <i class="fas fa-home text-muted"></i>
+              </span>
+              <input type="text" 
+                     id="adresse" 
+                     class="form-control"
+                     [class.is-invalid]="btnSubmit && fournisseurForm.get('adresse')?.invalid"
+                     [class.is-valid]="fournisseurForm.get('adresse')?.valid"
+                     formControlName="adresse"
+                     placeholder="{{'EnterAddress' | translate}}" />
+            </div>
+            @if(btnSubmit && fournisseurForm.invalid && fournisseurForm.get('adresse')?.invalid) {
+              <div class="invalid-feedback d-block">
+                <i class="fas fa-exclamation-circle me-1"></i>
+                {{getFormControlErrorText(fournisseurForm.get('adresse'))}}
+              </div>
+            }
+          </div>
+        </div>
+
+        <!-- Tax Number -->
+        <div class="col-12 mb-4">
+          <div class="form-group">
+            <label class="form-label text-dark font-weight-bold">
+              <i class="fas fa-file-invoice text-primary me-2"></i>
+              {{"TaxNumber" | translate}}
+            </label>
+            <div class="input-group">
+              <span class="input-group-text bg-light">
+                <i class="fas fa-hashtag text-muted"></i>
+              </span>
+              <input type="text" 
+                     id="nui" 
+                     class="form-control"
+                     [class.is-invalid]="btnSubmit && fournisseurForm.get('nui')?.invalid"
+                     [class.is-valid]="fournisseurForm.get('nui')?.valid"
+                     formControlName="nui"
+                     placeholder="{{'EnterTaxNumber' | translate}}" />
+            </div>
+            @if(btnSubmit && fournisseurForm.invalid && fournisseurForm.get('nui')?.invalid) {
+              <div class="invalid-feedback d-block">
+                <i class="fas fa-exclamation-circle me-1"></i>
+                {{getFormControlErrorText(fournisseurForm.get('nui'))}}
+              </div>
+            }
+            <div class="form-text text-muted">
+              <i class="fas fa-info-circle me-1"></i>
+              {{"TaxNumberOptional" | translate}}
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <!-- Footer with action buttons -->
+  <div class="modal-footer bg-light border-0">
+    <div class="d-flex w-100 gap-2">
+      <button type="button" 
+              class="btn btn-outline-secondary flex-fill" 
+              (click)="dismiss()"
+              [disabled]="loading$ | async">
+        <i class="fas fa-times me-2"></i>
+        {{"Cancel" | translate}}
+      </button>
+      
+      <button type="submit" 
+              class="btn flex-fill"
+              [class]="fournisseurId ? 'btn-warning' : 'btn-primary'"
+              (click)="submitForm()"
+              [disabled]="loading$ | async">
+        @if(loading$ | async) {
+          <div class="spinner-border spinner-border-sm me-2" role="status">
+            <span class="visually-hidden">{{"Loading" | translate}}</span>
+          </div>
+        } @else {
+          <i class="fas" [class]="fournisseurId ? 'fa-edit' : 'fa-plus'" class="me-2"></i>
+        }
+        {{fournisseurId ? "Update" : "Create" | translate}}
+      </button>
     </div>
+  </div>
 </div>
