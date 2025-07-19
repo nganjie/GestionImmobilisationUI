@@ -9,7 +9,7 @@
       <p class="text-sm text-secondary mb-0">{{"ManageCompaniesForReforms"|translate}}</p>
     </div>
     <div class="col-lg-4 col-md-6 col-12 text-end">
-      <button class="btn btn-primary btn-sm mb-0" routerLink="create">
+      <button class="btn btn-primary btn-sm mb-0" (click)="createEntreprise()">
         <i class="fas fa-plus me-2"></i>
         {{"Add"|translate}} {{"Company"|translate}}
       </button>
@@ -168,21 +168,10 @@
                           </button>
                           <ul class="dropdown-menu">
                             <li>
-                              <a class="dropdown-item"  (click)="viewDetails(entreprise.id)">
-                                <i class="fas fa-eye me-2"></i>{{"View"|translate}}
-                              </a>
-                            </li>
-                            <li>
-                              <a class="dropdown-item" (click)="editEntreprise(entreprise.id)">
+                              <a class="dropdown-item" (click)="updateEntreprise(entreprise.id)">
                                 <i class="fas fa-edit me-2"></i>{{"Edit"|translate}}
                               </a>
                             </li>
-                            <li>
-                              <a class="dropdown-item" >
-                                <i class="fas fa-copy me-2"></i>{{"Duplicate"|translate}}
-                              </a>
-                            </li>
-                            <li><hr class="dropdown-divider"></li>
                             <li>
                               <a class="dropdown-item text-danger"  (click)="deleteEntreprise(entreprise.id)">
                                 <i class="fas fa-trash me-2"></i>{{"Delete"|translate}}

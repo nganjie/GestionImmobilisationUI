@@ -1,0 +1,116 @@
+/* Detail Reforme Cession Component Styles */
+
+.cession-detail-container {
+  padding: 1rem;
+}
+
+.cession-info-card {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  transition: transform 0.2s ease-in-out;
+}
+
+.cession-info-card:hover {
+  transform: translateY(-2px);
+}
+
+.cession-status-badge {
+  font-size: 0.875rem;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+}
+
+.cession-documents-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.cession-document-card {
+  padding: 1rem;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  transition: box-shadow 0.2s ease-in-out;
+}
+
+.cession-document-card:hover {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.cession-document-link {
+  color: #007bff;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.cession-document-link:hover {
+  color: #0056b3;
+  text-decoration: underline;
+}
+
+.cession-loading-state {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+  flex-direction: column;
+}
+
+.cession-no-documents {
+  text-align: center;
+  padding: 2rem;
+  color: #6c757d;
+}
+
+.cession-section-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: #495057;
+}
+
+.cession-field-label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #6c757d;
+  text-transform: uppercase;
+  margin-bottom: 0.25rem;
+}
+
+.cession-field-value {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #495057;
+  margin-bottom: 1rem;
+}
+
+.cession-back-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  color: #495057;
+  text-decoration: none;
+  border-radius: 4px;
+  transition: all 0.2s ease-in-out;
+}
+
+.cession-back-button:hover {
+  background-color: #e9ecef;
+  color: #212529;
+  text-decoration: none;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .cession-documents-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .cession-detail-container {
+    padding: 0.5rem;
+  }
+}

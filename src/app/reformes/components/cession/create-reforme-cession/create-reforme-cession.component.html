@@ -1,0 +1,154 @@
+<div class="modal-header">
+  <h4 class="modal-title" id="modal-title">
+    {{ 'CreateReformeCession' | translate }}
+  </h4>
+  <button type="button" class="btn-close" aria-describedby="modal-title" (click)="dismiss()"></button>
+</div>
+
+<div class="modal-body">
+  <form [formGroup]="reformeCessionForm" (ngSubmit)="submitForm()">
+    <!-- Immobilisation Selection -->
+    <div class="form-group mb-3">
+      <label for="immobilisation_id" class="form-label">{{ 'Immobilisation' | translate }} *</label>
+      <ng-select 
+        [items]="immobilisations$ | async"
+        bindLabel="name"
+        bindValue="id"
+        [placeholder]="'SelectImmobilisation' | translate"
+        [searchable]="true"
+        [clearable]="true"
+        formControlName="immobilisation_id"
+        [class.is-invalid]="reformeCessionForm.get('immobilisation_id')?.invalid && (reformeCessionForm.get('immobilisation_id')?.dirty || reformeCessionForm.get('immobilisation_id')?.touched)">
+        <ng-template ng-option-tmp let-item="item">
+          {{ item.name }} - {{ item.code }}
+        </ng-template>
+      </ng-select>
+      <div class="invalid-feedback" *ngIf="reformeCessionForm.get('immobilisation_id')?.invalid && (reformeCessionForm.get('immobilisation_id')?.dirty || reformeCessionForm.get('immobilisation_id')?.touched)">
+        {{ getFormControlErrorText(reformeCessionForm.get('immobilisation_id')) }}
+      </div>
+    </div>
+
+    <!-- Company Selection -->
+    <div class="form-group mb-3">
+      <label for="entreprise_id" class="form-label">{{ 'Company' | translate }} *</label>
+      <ng-select 
+        [items]="entreprises$ | async"
+        bindLabel="name"
+        bindValue="id"
+        [placeholder]="'SelectCompany' | translate"
+        [searchable]="true"
+        [clearable]="true"
+        formControlName="entreprise_id"
+        [class.is-invalid]="reformeCessionForm.get('entreprise_id')?.invalid && (reformeCessionForm.get('entreprise_id')?.dirty || reformeCessionForm.get('entreprise_id')?.touched)">
+        <ng-template ng-option-tmp let-item="item">
+          {{ item.name }} - {{ item.nui }}
+        </ng-template>
+      </ng-select>
+      <div class="invalid-feedback" *ngIf="reformeCessionForm.get('entreprise_id')?.invalid && (reformeCessionForm.get('entreprise_id')?.dirty || reformeCessionForm.get('entreprise_id')?.touched)">
+        {{ getFormControlErrorText(reformeCessionForm.get('entreprise_id')) }}
+      </div>
+    </div>
+
+    <!-- Comment -->
+    <div class="form-group mb-3">
+      <label for="comment" class="form-label">{{ 'Comment' | translate }} *</label>
+      <textarea 
+        id="comment" 
+        class="form-control" 
+        formControlName="comment"
+        rows="4"
+        placeholder="{{ 'EnterComment' | translate }}"
+        [class.is-invalid]="reformeCessionForm.get('comment')?.invalid && (reformeCessionForm.get('comment')?.dirty || reformeCessionForm.get('comment')?.touched)">
+      </textarea>
+      <div class="invalid-feedback" *ngIf="reformeCessionForm.get('comment')?.invalid && (reformeCessionForm.get('comment')?.dirty || reformeCessionForm.get('comment')?.touched)">
+        {{ getFormControlErrorText(reformeCessionForm.get('comment')) }}
+      </div>
+    </div>
+
+    <!-- Documents Upload -->
+    <div class="form-group mb-3">
+      <label for="documents" class="form-label">{{ 'Documents' | translate }}</label>
+      
+      <!-- Primary file input (replace files) -->
+      <div class="input-group mb-2">
+        <input 
+          type="file" 
+          id="documents" 
+          class="form-control" 
+          multiple 
+          accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+          (change)="onFileSelected($event)">
+        <button class="btn btn-outline-secondary" type="button" (click)="clearAllFiles()" title="{{ 'ClearAllFiles' | translate }}">
+          <i class="fas fa-trash"></i>
+        </button>
+      </div>
+      
+      <!-- Add more files button -->
+      <div class="input-group" *ngIf="selectedFiles.length > 0">
+        <input 
+          type="file" 
+          id="additionalDocuments" 
+          class="form-control" 
+          multiple 
+          accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+          (change)="onFileAdd($event)">
+        <label for="additionalDocuments" class="btn btn-outline-primary">
+          <i class="fas fa-plus"></i> {{ 'AddMoreFiles' | translate }}
+        </label>
+      </div>
+      
+      <small class="form-text text-muted">{{ 'SupportedFormats' | translate }}: PDF, DOC, DOCX, JPG, JPEG, PNG</small>
+    </div>
+
+    <!-- Selected Files Display -->
+    <div class="mb-3" *ngIf="selectedFiles.length > 0">
+      <h6>{{ 'SelectedFiles' | translate }}:</h6>
+      <div class="d-flex flex-wrap gap-2">
+        <div class="badge bg-primary d-flex align-items-center gap-1" *ngFor="let file of selectedFiles; let i = index">
+          <i class="fas fa-file"></i>
+          <span>{{ file.name }}</span>
+          <button type="button" class="btn-close btn-close-white" (click)="removeFile(i)" style="font-size: 0.6rem;"></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Error Display -->
+    @if(error$ | async ;as error) {
+        @if(error.status){
+          <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <div class="d-flex align-items-center">
+              <i class="fas fa-exclamation-triangle me-2"></i>
+              <span>{{error.message}}</span>
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+          </div>
+        }
+     }
+
+    <!-- Loading Indicator -->
+    <div class="text-center" *ngIf="loading$ | async">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">{{ 'Loading' | translate }}...</span>
+      </div>
+    </div>
+  </form>
+</div>
+
+<div class="modal-footer">
+  <button 
+    type="button" 
+    class="btn btn-secondary" 
+    (click)="dismiss()">
+    {{ 'Cancel' | translate }}
+  </button>
+  <button 
+    type="submit" 
+    class="btn btn-primary" 
+    [disabled]="!reformeCessionForm.valid || btnSubmit || (loading$ | async)"
+    (click)="submitForm()">
+    <span *ngIf="loading$ | async" class="spinner-border spinner-border-sm me-2" role="status">
+      <span class="visually-hidden">{{ 'Loading' | translate }}...</span>
+    </span>
+    {{ 'Add' | translate }}
+  </button>
+</div>

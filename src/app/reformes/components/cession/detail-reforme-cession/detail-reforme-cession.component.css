@@ -1,0 +1,175 @@
+/* Detail Reforme Cession Component Styles */
+
+.detail-reforme-cession {
+  min-height: 100vh;
+  background-color: #f8f9fa;
+}
+
+.card {
+  border: none;
+  border-radius: 15px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.card-header {
+  background-color: transparent;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+  padding: 1.5rem;
+}
+
+.card-header h6 {
+  color: #344767;
+  font-weight: 600;
+  margin-bottom: 0;
+}
+
+.form-label {
+  font-weight: 600;
+  color: #67748e;
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.form-control-plaintext {
+  padding: 0.5rem 0;
+  margin-bottom: 0;
+  font-size: 0.875rem;
+  color: #344767;
+  font-weight: 500;
+}
+
+.bg-light {
+  background-color: #f8f9fa !important;
+  border-radius: 8px;
+}
+
+.bg-gradient-info {
+  background: linear-gradient(87deg, #11cdef 0, #1171ef 100%);
+}
+
+.text-info {
+  color: #11cdef !important;
+}
+
+.icon-shape {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-lg {
+  width: 64px;
+  height: 64px;
+}
+
+.shadow-lg {
+  box-shadow: 0 15px 35px rgba(50, 50, 93, 0.1), 0 5px 15px rgba(0, 0, 0, 0.07) !important;
+}
+
+.shadow-sm {
+  box-shadow: 0 2px 9px 0 rgba(0, 0, 0, 0.15) !important;
+}
+
+.list-group-item {
+  border: none;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+}
+
+.list-group-item:last-child {
+  border-bottom: none;
+}
+
+.btn-white {
+  background-color: #fff;
+  border-color: #fff;
+  color: #344767;
+}
+
+.btn-white:hover {
+  background-color: rgba(255, 255, 255, 0.9);
+  border-color: rgba(255, 255, 255, 0.9);
+  color: #344767;
+}
+
+.btn-light {
+  background-color: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.2);
+  color: #fff;
+}
+
+.btn-light:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.3);
+  color: #fff;
+}
+
+.opacity-8 {
+  opacity: 0.8;
+}
+
+.badge {
+  font-size: 0.75rem;
+  padding: 0.35em 0.65em;
+}
+
+.bg-gradient-success {
+  background: linear-gradient(87deg, #2dce89 0, #2dcecc 100%);
+}
+
+.bg-gradient-danger {
+  background: linear-gradient(87deg, #f5365c 0, #f56036 100%);
+}
+
+.bg-gradient-warning {
+  background: linear-gradient(87deg, #fb6340 0, #fbb140 100%);
+}
+
+.bg-gradient-secondary {
+  background: linear-gradient(87deg, #8392ab 0, #83a9ab 100%);
+}
+
+.bg-gradient-primary {
+  background: linear-gradient(87deg, #5e72e4 0, #825ee4 100%);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .detail-reforme-cession .container-fluid {
+    padding: 1rem;
+  }
+  
+  .card-body {
+    padding: 1rem;
+  }
+  
+  .icon-shape {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .icon-lg {
+    width: 48px;
+    height: 48px;
+  }
+}
+
+@media (max-width: 576px) {
+  .btn-white,
+  .btn-light {
+    width: 100%;
+    margin-bottom: 0.5rem;
+  }
+  
+  .col-md-4.text-end {
+    text-align: center !important;
+  }
+}

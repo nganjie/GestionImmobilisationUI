@@ -1,0 +1,268 @@
+<div class="main-content position-relative max-height-vh-100 h-100 detail-reforme-cession">
+  <div class="container-fluid py-4">
+    <!-- Error Display -->
+    @if(error$|async;as error){
+        @if(error.status){
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="fas fa-exclamation-triangle me-2"></i>
+        {{error.message}}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+      </div>
+        }
+    }
+
+    <!-- Loading State -->
+    @if(loading$|async) {
+      <div class="row justify-content-center">
+        <div class="col-12 text-center">
+          <div class="card shadow-lg">
+            <div class="card-body py-5">
+              <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">{{ 'Loading' | translate }}...</span>
+              </div>
+              <p class="text-secondary mt-3">{{"LoadingCessionAssetDetails"|translate}}...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- Content -->
+    @if(!(loading$|async) && reformeCession) {
+      <!-- Header Section -->
+      <div class="row mb-4">
+        <div class="col-12">
+          <div class="card bg-gradient-info shadow-lg border-0">
+            <div class="card-body p-4">
+              <div class="row align-items-center">
+                <div class="col-md-8">
+                  <div class="d-flex align-items-center text-white">
+                    <div class="icon icon-shape icon-lg bg-white shadow text-center me-3">
+                      <i class="fas fa-handshake text-info"></i>
+                    </div>
+                    <div>
+                      <h3 class="mb-0">{{ 'CessionAssetDetails' | translate }}</h3>
+                      <p class="text-sm opacity-8 mb-0">
+                        <i class="fas fa-calendar me-2"></i>{{ formatDate(reformeCession.created_at) }}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-4 text-end">
+                  <button class="btn btn-white btn-sm me-2" (click)="goBack()">
+                    <i class="fas fa-arrow-left me-2"></i>{{ 'Back' | translate }}
+                  </button>
+                  <button class="btn btn-light btn-sm" (click)="viewImmobilisationDetails()">
+                    <i class="fas fa-info-circle me-2"></i>{{ 'ViewImmobilisationDetails' | translate }}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Content -->
+      <div class="row">
+        <!-- Asset and Company Information -->
+        <div class="col-lg-8">
+          <!-- Asset Information -->
+          <div class="card shadow-sm mb-4">
+            <div class="card-header pb-0">
+              <h6 class="mb-0">{{ 'AssetInformation' | translate }}</h6>
+            </div>
+            <div class="card-body">
+              <div class="row" *ngIf="reformeCession.immobilisation">
+                <!-- Asset Name -->
+                <div class="col-md-6 mb-3">
+                  <label class="form-label text-sm text-secondary">{{ 'AssetName' | translate }}</label>
+                  <p class="form-control-plaintext">{{ reformeCession.immobilisation.name }}</p>
+                </div>
+
+                <!-- Asset Code -->
+                <div class="col-md-6 mb-3">
+                  <label class="form-label text-sm text-secondary">{{ 'AssetCode' | translate }}</label>
+                  <p class="form-control-plaintext">{{ reformeCession.immobilisation.code }}</p>
+                </div>
+
+                <!-- Category -->
+                <div class="col-md-6 mb-3">
+                  <label class="form-label text-sm text-secondary">{{ 'Category' | translate }}</label>
+                  <p class="form-control-plaintext">{{ reformeCession.immobilisation.categorie.name }}</p>
+                </div>
+
+                <!-- Brand -->
+                <div class="col-md-6 mb-3">
+                  <label class="form-label text-sm text-secondary">{{ 'Brand' | translate }}</label>
+                  <p class="form-control-plaintext">{{ reformeCession.immobilisation.mark || 'N/A' }}</p>
+                </div>
+
+                <!-- Model -->
+                <div class="col-md-6 mb-3">
+                  <label class="form-label text-sm text-secondary">{{ 'Model' | translate }}</label>
+                  <p class="form-control-plaintext">{{ reformeCession.immobilisation.model || 'N/A' }}</p>
+                </div>
+
+                <!-- Quantity -->
+                <div class="col-md-6 mb-3">
+                  <label class="form-label text-sm text-secondary">{{ 'Quantity' | translate }}</label>
+                  <p class="form-control-plaintext">{{ reformeCession.immobilisation.quantity }}</p>
+                </div>
+
+                <!-- Unit Price -->
+                <div class="col-md-6 mb-3">
+                  <label class="form-label text-sm text-secondary">{{ 'PurchaseValue' | translate }}</label>
+                  <p class="form-control-plaintext">{{ reformeCession.immobilisation.unit_price | currency:'XOF':'symbol':'1.0-0' }}</p>
+                </div>
+
+                <!-- Status -->
+                <div class="col-md-6 mb-3">
+                  <label class="form-label text-sm text-secondary">{{ 'Status' | translate }}</label>
+                  <p class="form-control-plaintext">
+                    <span class="badge" [ngClass]="getStatusBadgeClass(reformeCession.immobilisation.status)">
+                      {{ reformeCession.immobilisation.status }}
+                    </span>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Company Information -->
+          <div class="card shadow-sm mb-4">
+            <div class="card-header pb-0">
+              <h6 class="mb-0">{{ 'CompanyInformation' | translate }}</h6>
+            </div>
+            <div class="card-body">
+              <div class="row" *ngIf="reformeCession.entreprise">
+                <!-- Company Name -->
+                <div class="col-md-6 mb-3">
+                  <label class="form-label text-sm text-secondary">{{ 'CompanyName' | translate }}</label>
+                  <p class="form-control-plaintext">{{ reformeCession.entreprise.name }}</p>
+                </div>
+
+                <!-- NUI -->
+                <div class="col-md-6 mb-3">
+                  <label class="form-label text-sm text-secondary">{{ 'NUI' | translate }}</label>
+                  <p class="form-control-plaintext">{{ reformeCession.entreprise.nui || 'N/A' }}</p>
+                </div>
+
+                <!-- Phone -->
+                <div class="col-md-6 mb-3">
+                  <label class="form-label text-sm text-secondary">{{ 'Phone' | translate }}</label>
+                  <p class="form-control-plaintext">{{ reformeCession.entreprise.tel || 'N/A' }}</p>
+                </div>
+
+                <!-- Address -->
+                <div class="col-md-6 mb-3">
+                  <label class="form-label text-sm text-secondary">{{ 'Address' | translate }}</label>
+                  <p class="form-control-plaintext">{{ reformeCession.entreprise.adresse || 'N/A' }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Cession Information -->
+          <div class="card shadow-sm">
+            <div class="card-header pb-0">
+              <h6 class="mb-0">{{ 'CessionAssetInformation' | translate }}</h6>
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <!-- Comment -->
+                <div class="col-12 mb-3">
+                  <label class="form-label text-sm text-secondary">{{ 'Comment' | translate }}</label>
+                  <div class="p-3 bg-light rounded">
+                    <p class="mb-0">{{ reformeCession.comment || 'N/A' }}</p>
+                  </div>
+                </div>
+
+                <!-- Created At -->
+                <div class="col-md-6 mb-3">
+                  <label class="form-label text-sm text-secondary">{{ 'CreatedAt' | translate }}</label>
+                  <p class="form-control-plaintext">{{ formatDate(reformeCession.created_at) }}</p>
+                </div>
+
+                <!-- Updated At -->
+                <div class="col-md-6 mb-3">
+                  <label class="form-label text-sm text-secondary">{{ 'UpdatedAt' | translate }}</label>
+                  <p class="form-control-plaintext">{{ formatDate(reformeCession.updated_at) }}</p>
+                </div>
+
+                <!-- Created By -->
+                <div class="col-md-6 mb-3">
+                  <label class="form-label text-sm text-secondary">{{ 'CreatedBy' | translate }}</label>
+                  <p class="form-control-plaintext">{{ reformeCession.user.first_name }} {{ reformeCession.user.last_name }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Documents and Actions -->
+        <div class="col-lg-4">
+          <!-- Documents Section -->
+          <div class="card shadow-sm mb-4">
+            <div class="card-header pb-0">
+              <h6 class="mb-0">{{ 'Documents' | translate }}</h6>
+            </div>
+            <div class="card-body">
+              @if(reformeCession.documents && reformeCession.documents.length > 0) {
+                <div class="list-group list-group-flush">
+                  @for(document of reformeCession.documents; track document) {
+                    <div class="list-group-item d-flex justify-content-between align-items-center px-0">
+                      <div class="d-flex align-items-center">
+                        <i [class]="getFileIcon(document)" class="text-primary me-2"></i>
+                        <span class="text-sm">{{ document.split('/').pop()|slice:0:10 }}</span>
+                      </div>
+                      <button class="btn btn-sm btn-outline-primary" (click)="downloadDocument(document)">
+                        <i class="fas fa-download"></i>
+                      </button>
+                    </div>
+                  }
+                </div>
+              } @else {
+                <p class="text-muted text-center py-3">{{ 'NoDocumentsAvailable' | translate }}</p>
+              }
+            </div>
+          </div>
+
+          <!-- Actions Section -->
+          <div class="card shadow-sm">
+            <div class="card-header pb-0">
+              <h6 class="mb-0">{{ 'Actions' | translate }}</h6>
+            </div>
+            <div class="card-body">
+              <div class="d-grid gap-2">
+                <button class="btn btn-primary btn-sm" (click)="viewImmobilisationDetails()">
+                  <i class="fas fa-info-circle me-2"></i>{{ 'ViewImmobilisationDetails' | translate }}
+                </button>
+                <button class="btn btn-outline-secondary btn-sm" (click)="goBack()">
+                  <i class="fas fa-arrow-left me-2"></i>{{ 'BackToList' | translate }}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- No Data Found -->
+    @if(!(loading$|async) && !reformeCession) {
+      <div class="row justify-content-center">
+        <div class="col-md-6 text-center">
+          <div class="card shadow-lg">
+            <div class="card-body py-5">
+              <i class="fas fa-handshake text-info fa-3x mb-3"></i>
+              <h5 class="text-secondary">{{ 'CessionAssetNotFound' | translate }}</h5>
+              <p class="text-muted">{{ 'CessionAssetNotFoundDescription' | translate }}</p>
+              <button class="btn btn-primary" (click)="goBack()">
+                <i class="fas fa-arrow-left me-2"></i>{{ 'BackToList' | translate }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+</div>

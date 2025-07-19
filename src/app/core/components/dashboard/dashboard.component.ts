@@ -66,7 +66,7 @@ export class DashboardComponent implements OnInit{
             {
               id: 'suppliers',
               label: 'Suppliers',
-              icon: 'ni ni-building',
+              icon: 'ni ni-delivery-fast',
               route: '/admin/immobilisations/fournisseurs'
             },
             {
@@ -80,13 +80,13 @@ export class DashboardComponent implements OnInit{
         {
           id: 'employees',
           label: 'Employees',
-          icon: 'ni ni-single-02',
+          icon: 'ni ni-circle-08',
           route: '/admin/employees',
           children: [
             {
               id: 'employees',
               label: 'employees',
-              icon: 'ni ni-single-02',
+              icon: 'ni ni-circle-08',
               route: '/admin/employees'
             },
             {
@@ -106,14 +106,38 @@ export class DashboardComponent implements OnInit{
         {
           id: 'reformes',
           label: 'Reformes',
-          icon: 'ni ni-single-02',
+          icon: 'ni ni-settings-gear-65',
           route: '/admin/reformes',
           children: [
             {
               id: 'entreprises',
               label: 'Entreprises',
-              icon: 'ni ni-single-02',
+              icon: 'ni ni-building',
               route: '/admin/reformes/entreprises'
+            },
+            {
+              id: 'buyers',
+              label: 'buyers',
+              icon: 'ni ni-basket',
+              route: '/admin/reformes/buyers'
+            },
+            {
+              id: 'brokens',
+              label: 'brokens',
+              icon: 'ni ni-notification-70',
+              route: '/admin/reformes/brokens'
+            },
+            {
+              id: 'cessions',
+              label: 'cessions',
+              icon: 'ni ni-delivery-fast',
+              route: '/admin/reformes/cessions'
+            },
+            {
+              id: 'sales',
+              label: 'sales',
+              icon: 'ni ni-money-coins',
+              route: '/admin/reformes/sales'
             },
           ]
         }
@@ -125,7 +149,7 @@ export class DashboardComponent implements OnInit{
         {
           id: 'reports',
           label: 'Reports',
-          icon: 'ni ni-chart-bar-32',
+          icon: 'ni ni-chart-pie-35',
           route: '/admin/reports'
         },
         {

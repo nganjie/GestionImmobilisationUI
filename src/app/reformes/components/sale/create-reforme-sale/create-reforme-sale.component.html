@@ -1,0 +1,153 @@
+<div class="modal-header">
+  <h4 class="modal-title" id="modal-title">
+    {{ 'CreateReformeSale' | translate }}
+  </h4>
+  <button type="button" class="btn-close" aria-describedby="modal-title" (click)="dismiss()"></button>
+</div>
+
+<div class="modal-body">
+  <form [formGroup]="reformeSaleForm" (ngSubmit)="submitForm()">
+    <!-- Immobilisation Selection -->
+    <div class="form-group mb-3">
+      <label for="immobilisation_id" class="form-label">{{ 'Immobilisation' | translate }} *</label>
+      <ng-select 
+        [items]="immobilisations$ | async"
+        bindLabel="name"
+        bindValue="id"
+        [placeholder]="'SelectImmobilisation' | translate"
+        [searchable]="true"
+        [clearable]="true"
+        formControlName="immobilisation_id"
+        [class.is-invalid]="reformeSaleForm.get('immobilisation_id')?.invalid && (reformeSaleForm.get('immobilisation_id')?.dirty || reformeSaleForm.get('immobilisation_id')?.touched)">
+        <ng-template ng-option-tmp let-item="item">
+          {{ item.name }} - {{ item.code }}
+        </ng-template>
+      </ng-select>
+      <div class="invalid-feedback" *ngIf="reformeSaleForm.get('immobilisation_id')?.invalid && (reformeSaleForm.get('immobilisation_id')?.dirty || reformeSaleForm.get('immobilisation_id')?.touched)">
+        {{ getFormControlErrorText(reformeSaleForm.get('immobilisation_id')) }}
+      </div>
+    </div>
+
+    <!-- Buyer Selection -->
+    <div class="form-group mb-3">
+      <label for="buyer_id" class="form-label">{{ 'Buyer' | translate }} *</label>
+      <ng-select 
+        [items]="buyers$ | async"
+        bindLabel="first_name"
+        bindValue="id"
+        [placeholder]="'SelectBuyer' | translate"
+        [searchable]="true"
+        [clearable]="true"
+        formControlName="buyer_id"
+        [class.is-invalid]="reformeSaleForm.get('buyer_id')?.invalid && (reformeSaleForm.get('buyer_id')?.dirty || reformeSaleForm.get('buyer_id')?.touched)">
+        <ng-template ng-option-tmp let-item="item">
+          {{ item.first_name }} {{ item.last_name }} - {{ item.cni }}
+        </ng-template>
+      </ng-select>
+      <div class="invalid-feedback" *ngIf="reformeSaleForm.get('buyer_id')?.invalid && (reformeSaleForm.get('buyer_id')?.dirty || reformeSaleForm.get('buyer_id')?.touched)">
+        {{ getFormControlErrorText(reformeSaleForm.get('buyer_id')) }}
+      </div>
+    </div>
+
+    <!-- Amount -->
+    <div class="form-group mb-3">
+      <label for="amount" class="form-label">{{ 'SaleAmount' | translate }} *</label>
+      <div class="input-group">
+        <span class="input-group-text">XAF</span>
+        <input 
+          type="number" 
+          id="amount" 
+          class="form-control" 
+          formControlName="amount"
+          min="0"
+          step="0.01"
+          placeholder="{{ 'EnterSaleAmount' | translate }}"
+          [class.is-invalid]="reformeSaleForm.get('amount')?.invalid && (reformeSaleForm.get('amount')?.dirty || reformeSaleForm.get('amount')?.touched)">
+      </div>
+      <div class="invalid-feedback" *ngIf="reformeSaleForm.get('amount')?.invalid && (reformeSaleForm.get('amount')?.dirty || reformeSaleForm.get('amount')?.touched)">
+        {{ getFormControlErrorText(reformeSaleForm.get('amount')) }}
+      </div>
+    </div>
+
+    <!-- Comment -->
+    <div class="form-group mb-3">
+      <label for="comment" class="form-label">{{ 'Comment' | translate }}</label>
+      <textarea 
+        id="comment" 
+        class="form-control" 
+        formControlName="comment"
+        rows="4"
+        placeholder="{{ 'EnterComment' | translate }}">
+      </textarea>
+    </div>
+
+    <!-- Documents Upload -->
+    <div class="form-group mb-3">
+      <label for="documents" class="form-label">{{ 'Documents' | translate }}</label>
+      <div class="input-group">
+        <input 
+          type="file" 
+          id="documents" 
+          class="form-control" 
+          multiple 
+          accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+          (change)="onFileSelected($event)">
+        <button class="btn btn-outline-secondary" type="button" (click)="clearAllFiles()" title="{{ 'ClearAllFiles' | translate }}">
+          <i class="fas fa-trash"></i>
+        </button>
+      </div>
+      <small class="form-text text-muted">{{ 'SupportedFormats' | translate }}: PDF, DOC, DOCX, JPG, JPEG, PNG</small>
+    </div>
+
+    <!-- Selected Files Display -->
+    <div class="mb-3" *ngIf="selectedFiles.length > 0">
+      <h6>{{ 'SelectedFiles' | translate }}:</h6>
+      <div class="d-flex flex-wrap gap-2">
+        <div class="badge bg-primary d-flex align-items-center gap-1" *ngFor="let file of selectedFiles; let i = index">
+          <i class="fas fa-file"></i>
+          <span>{{ file.name }}</span>
+          <button type="button" class="btn-close btn-close-white" (click)="removeFile(i)" style="font-size: 0.6rem;"></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Error Display -->
+     @if(error$ | async ;as error) {
+        @if(error.status){
+          <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <div class="d-flex align-items-center">
+              <i class="fas fa-exclamation-triangle me-2"></i>
+              <span>{{error.message}}</span>
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+          </div>
+        }
+     }
+
+    <!-- Loading Indicator -->
+    <div class="text-center" *ngIf="loading$ | async">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">{{ 'Loading' | translate }}...</span>
+      </div>
+    </div>
+  </form>
+</div>
+
+<div class="modal-footer">
+  <button 
+    type="button" 
+    class="btn btn-secondary" 
+    (click)="dismiss()">
+    {{ 'Cancel' | translate }}
+  </button>
+  <button 
+    type="submit" 
+    class="btn btn-success" 
+    [disabled]="!reformeSaleForm.valid || btnSubmit || (loading$ | async)"
+    (click)="submitForm()">
+    <span *ngIf="loading$ | async" class="spinner-border spinner-border-sm me-2" role="status">
+      <span class="visually-hidden">{{ 'Loading' | translate }}...</span>
+    </span>
+    {{ 'Create' | translate }}
+  </button>
+</div>

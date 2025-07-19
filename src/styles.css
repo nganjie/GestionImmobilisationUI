@@ -3,6 +3,9 @@
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
+/* Import ng-select styles */
+@import '~@ng-select/ng-select/themes/default.theme.css';
+
 /* Styles pour que les modals soient au-dessus de tous les éléments, y compris la sidebar */
 ngb-modal-backdrop {
     z-index: 9998 !important;
@@ -14,6 +17,46 @@ ngb-modal-backdrop {
 
 .modal-dialog {
     z-index: 10000 !important;
+}
+
+/* Custom ng-select styles to match Bootstrap form-select */
+.ng-select {
+    min-height: 38px;
+}
+
+.ng-select.ng-select-single .ng-select-container {
+    height: 38px;
+}
+
+.ng-select .ng-select-container {
+    background-color: #fff;
+    border-radius: 0.375rem;
+    border: 1px solid #ced4da;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.ng-select.ng-select-focused .ng-select-container {
+    border-color: #86b7fe;
+    outline: 0;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+.ng-select.is-invalid .ng-select-container {
+    border-color: #dc3545;
+}
+
+.ng-select.is-invalid.ng-select-focused .ng-select-container {
+    border-color: #dc3545;
+    box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25);
+}
+
+.ng-select .ng-select-container .ng-value-container {
+    padding-left: 12px;
+    padding-right: 12px;
+}
+
+.ng-select .ng-select-container .ng-value-container .ng-placeholder {
+    color: #6c757d;
 }
 
 /* Améliorer l'apparence du modal */

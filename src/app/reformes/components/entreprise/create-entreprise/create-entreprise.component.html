@@ -1,1 +1,223 @@
-<p>create-entreprise works!</p>
+<!-- Modern Company Form Modal -->
+<div class="modal-content">
+  <!-- Header with gradient background -->
+  <div class="modal-header bg-gradient-primary text-white border-0">
+    <div class="d-flex align-items-center">
+      <div class="icon icon-shape icon-sm bg-white text-primary rounded-circle me-3">
+        <i class="fas fa-building"></i>
+      </div>
+      <div>
+        <h5 class="modal-title mb-0 text-white">
+          {{entrepriseId ? "Update" : "Create" | translate}} {{"Company" | translate}}
+        </h5>
+        <p class="text-white-50 mb-0 text-sm">
+          {{entrepriseId ? "ModifyCompanyDetails" : "AddNewCompanyToSystem" | translate}}
+        </p>
+      </div>
+    </div>
+    <button type="button" 
+            class="btn-close btn-close-white" 
+            data-bs-dismiss="modal" 
+            aria-label="Close" 
+            (click)="dismiss()">
+    </button>
+  </div>
+
+  <!-- Body with improved styling -->
+  <div class="modal-body p-3">
+    <!-- Error Alert -->
+    @if(error$ | async; as error) {
+      @if(error.status){
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+          <div class="d-flex align-items-center">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            <span>{{error.message}}</span>
+          </div>
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+      }
+    }
+
+    <!-- Form -->
+    <form [formGroup]="entrepriseForm" class="needs-validation" novalidate>
+      <div class="row">
+        <!-- Company Name -->
+        <div class="col-12 mb-3">
+          <div class="form-group">
+            <label class="form-label text-dark font-weight-bold">
+              <i class="fas fa-building text-primary me-2"></i>
+              {{"CompanyName" | translate}} <span class="text-danger">*</span>
+            </label>
+            <div class="input-group">
+              <span class="input-group-text bg-light">
+                <i class="fas fa-tag text-muted"></i>
+              </span>
+              <input type="text" 
+                     id="name" 
+                     class="form-control"
+                     [class.is-invalid]="btnSubmit && entrepriseForm.get('name')?.invalid"
+                     [class.is-valid]="entrepriseForm.get('name')?.valid"
+                     formControlName="name"
+                     placeholder="{{'EnterCompanyName' | translate}}" />
+            </div>
+            @if(btnSubmit && entrepriseForm.invalid && entrepriseForm.get('name')?.invalid) {
+              <div class="invalid-feedback d-block">
+                <i class="fas fa-exclamation-circle me-1"></i>
+                {{getFormControlErrorText(entrepriseForm.get('name'))}}
+              </div>
+            }
+          </div>
+        </div>
+
+        <!-- NUI -->
+        <div class="col-md-6 mb-3">
+          <div class="form-group">
+            <label class="form-label text-dark font-weight-bold">
+              <i class="fas fa-id-card text-primary me-2"></i>
+              {{"NUI" | translate}} <span class="text-danger">*</span>
+            </label>
+            <div class="input-group">
+              <span class="input-group-text bg-light">
+                <i class="fas fa-hashtag text-muted"></i>
+              </span>
+              <input type="text" 
+                     id="nui" 
+                     class="form-control"
+                     [class.is-invalid]="btnSubmit && entrepriseForm.get('nui')?.invalid"
+                     [class.is-valid]="entrepriseForm.get('nui')?.valid"
+                     formControlName="nui"
+                     placeholder="{{'EnterNUI' | translate}}" />
+            </div>
+            @if(btnSubmit && entrepriseForm.invalid && entrepriseForm.get('nui')?.invalid) {
+              <div class="invalid-feedback d-block">
+                <i class="fas fa-exclamation-circle me-1"></i>
+                {{getFormControlErrorText(entrepriseForm.get('nui'))}}
+              </div>
+            }
+          </div>
+        </div>
+
+        <!-- Phone -->
+        <div class="col-md-6 mb-3">
+          <div class="form-group">
+            <label class="form-label text-dark font-weight-bold">
+              <i class="fas fa-phone text-primary me-2"></i>
+              {{"Phone" | translate}} <span class="text-danger">*</span>
+            </label>
+            <div class="input-group">
+              <span class="input-group-text bg-light">
+                <i class="fas fa-phone text-muted"></i>
+              </span>
+              <input type="tel" 
+                     id="tel" 
+                     class="form-control"
+                     [class.is-invalid]="btnSubmit && entrepriseForm.get('tel')?.invalid"
+                     [class.is-valid]="entrepriseForm.get('tel')?.valid"
+                     formControlName="tel"
+                     placeholder="{{'EnterPhoneNumber' | translate}}" />
+            </div>
+            @if(btnSubmit && entrepriseForm.invalid && entrepriseForm.get('tel')?.invalid) {
+              <div class="invalid-feedback d-block">
+                <i class="fas fa-exclamation-circle me-1"></i>
+                {{getFormControlErrorText(entrepriseForm.get('tel'))}}
+              </div>
+            }
+          </div>
+        </div>
+
+        <!-- Address -->
+        <div class="col-12 mb-3">
+          <div class="form-group">
+            <label class="form-label text-dark font-weight-bold">
+              <i class="fas fa-map-marker-alt text-primary me-2"></i>
+              {{"Address" | translate}} <span class="text-danger">*</span>
+            </label>
+            <div class="input-group">
+              <span class="input-group-text bg-light">
+                <i class="fas fa-location-arrow text-muted"></i>
+              </span>
+              <textarea 
+                     id="adresse" 
+                     class="form-control"
+                     rows="2"
+                     [class.is-invalid]="btnSubmit && entrepriseForm.get('adresse')?.invalid"
+                     [class.is-valid]="entrepriseForm.get('adresse')?.valid"
+                     formControlName="adresse"
+                     placeholder="{{'EnterAddress' | translate}}"></textarea>
+            </div>
+            @if(btnSubmit && entrepriseForm.invalid && entrepriseForm.get('adresse')?.invalid) {
+              <div class="invalid-feedback d-block">
+                <i class="fas fa-exclamation-circle me-1"></i>
+                {{getFormControlErrorText(entrepriseForm.get('adresse'))}}
+              </div>
+            }
+          </div>
+        </div>
+
+        <!-- Company Type -->
+        <div class="col-12 mb-2">
+          <div class="form-group">
+            <label class="form-label text-dark font-weight-bold">
+              <i class="fas fa-users text-primary me-2"></i>
+              {{"CompanyType" | translate}} <span class="text-danger">*</span>
+            </label>
+            <div class="position-relative">
+              <select class="form-select"
+                      [class.is-invalid]="btnSubmit && entrepriseForm.get('is_physic')?.invalid"
+                      [class.is-valid]="entrepriseForm.get('is_physic')?.valid"
+                      formControlName="is_physic">
+                <option value="" disabled selected>{{"SelectCompanyType" | translate}}</option>
+                <option [value]="0">
+                  <i class="fas fa-building me-2"></i>
+                  {{"LegalEntity" | translate}}
+                </option>
+                <option [value]="1">
+                  <i class="fas fa-user me-2"></i>
+                  {{"Individual" | translate}}
+                </option>
+              </select>
+            </div>
+            @if(btnSubmit && entrepriseForm.invalid && entrepriseForm.get('is_physic')?.invalid) {
+              <div class="invalid-feedback d-block">
+                <i class="fas fa-exclamation-circle me-1"></i>
+                {{getFormControlErrorText(entrepriseForm.get('is_physic'))}}
+              </div>
+            }
+            <div class="form-text text-muted">
+              <i class="fas fa-info-circle me-1"></i>
+              {{"SelectCompanyTypeInfo" | translate}}
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <!-- Footer with action buttons -->
+  <div class="modal-footer bg-light border-0">
+    <div class="d-flex w-100 gap-2">
+      <button type="button" 
+              class="btn btn-outline-secondary flex-fill" 
+              (click)="dismiss()"
+              [disabled]="loading$ | async">
+        <i class="fas fa-times me-2"></i>
+        {{"Cancel" | translate}}
+      </button>
+      
+      <button type="submit" 
+              class="btn flex-fill"
+              [class]="entrepriseId ? 'btn-warning' : 'btn-primary'"
+              (click)="submitForm()"
+              [disabled]="loading$ | async">
+        @if(loading$ | async) {
+          <div class="spinner-border spinner-border-sm me-2" role="status">
+            <span class="visually-hidden">{{"Loading" | translate}}</span>
+          </div>
+        } @else {
+          <i class="fas" [class]="entrepriseId ? 'fa-edit' : 'fa-plus'" class="me-2"></i>
+        }
+        {{entrepriseId ? "Update" : "Create" | translate}}
+      </button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,186 @@
+<!-- Modern Buyer Form Modal -->
+<div class="modal-content">
+  <!-- Header with gradient background -->
+  <div class="modal-header bg-gradient-info text-white border-0">
+    <div class="d-flex align-items-center">
+      <div class="icon icon-shape icon-sm bg-white text-info rounded-circle me-3">
+        <i class="fas fa-user-plus"></i>
+      </div>
+      <div>
+        <h5 class="modal-title mb-0 text-white">
+          {{buyerId ? "Update" : "Create" | translate}} {{"Buyer" | translate}}
+        </h5>
+        <p class="text-white-50 mb-0 text-sm">
+          {{buyerId ? "ModifyBuyerDetails" : "AddNewBuyerToSystem" | translate}}
+        </p>
+      </div>
+    </div>
+    <button type="button" 
+            class="btn-close btn-close-white" 
+            data-bs-dismiss="modal" 
+            aria-label="Close" 
+            (click)="dismiss()">
+    </button>
+  </div>
+
+  <!-- Body with improved styling -->
+  <div class="modal-body p-3">
+    <!-- Error Alert -->
+    @if(error$ | async; as error) {
+      @if(error.status){
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+          <div class="d-flex align-items-center">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            <span>{{error.message}}</span>
+          </div>
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+      }
+    }
+
+    <!-- Form -->
+    <form [formGroup]="buyerForm" class="needs-validation" novalidate>
+      <div class="row">
+        <!-- First Name -->
+        <div class="col-md-6 mb-3">
+          <div class="form-group">
+            <label class="form-label text-dark font-weight-bold">
+              <i class="fas fa-user text-info me-2"></i>
+              {{"FirstName" | translate}} <span class="text-danger">*</span>
+            </label>
+            <div class="input-group">
+              <span class="input-group-text bg-light">
+                <i class="fas fa-user text-muted"></i>
+              </span>
+              <input type="text" 
+                     id="first_name" 
+                     class="form-control"
+                     [class.is-invalid]="btnSubmit && buyerForm.get('first_name')?.invalid"
+                     [class.is-valid]="buyerForm.get('first_name')?.valid"
+                     formControlName="first_name"
+                     placeholder="{{'EnterFirstName' | translate}}" />
+            </div>
+            @if(btnSubmit && buyerForm.invalid && buyerForm.get('first_name')?.invalid) {
+              <div class="invalid-feedback d-block">
+                <i class="fas fa-exclamation-circle me-1"></i>
+                {{getFormControlErrorText(buyerForm.get('first_name'))}}
+              </div>
+            }
+          </div>
+        </div>
+
+        <!-- Last Name -->
+        <div class="col-md-6 mb-3">
+          <div class="form-group">
+            <label class="form-label text-dark font-weight-bold">
+              <i class="fas fa-user text-info me-2"></i>
+              {{"LastName" | translate}} <span class="text-danger">*</span>
+            </label>
+            <div class="input-group">
+              <span class="input-group-text bg-light">
+                <i class="fas fa-user text-muted"></i>
+              </span>
+              <input type="text" 
+                     id="last_name" 
+                     class="form-control"
+                     [class.is-invalid]="btnSubmit && buyerForm.get('last_name')?.invalid"
+                     [class.is-valid]="buyerForm.get('last_name')?.valid"
+                     formControlName="last_name"
+                     placeholder="{{'EnterLastName' | translate}}" />
+            </div>
+            @if(btnSubmit && buyerForm.invalid && buyerForm.get('last_name')?.invalid) {
+              <div class="invalid-feedback d-block">
+                <i class="fas fa-exclamation-circle me-1"></i>
+                {{getFormControlErrorText(buyerForm.get('last_name'))}}
+              </div>
+            }
+          </div>
+        </div>
+
+        <!-- CNI -->
+        <div class="col-md-6 mb-3">
+          <div class="form-group">
+            <label class="form-label text-dark font-weight-bold">
+              <i class="fas fa-id-card text-info me-2"></i>
+              {{"CNI" | translate}} <span class="text-danger">*</span>
+            </label>
+            <div class="input-group">
+              <span class="input-group-text bg-light">
+                <i class="fas fa-id-card text-muted"></i>
+              </span>
+              <input type="text" 
+                     id="cni" 
+                     class="form-control"
+                     [class.is-invalid]="btnSubmit && buyerForm.get('cni')?.invalid"
+                     [class.is-valid]="buyerForm.get('cni')?.valid"
+                     formControlName="cni"
+                     placeholder="{{'EnterCNI' | translate}}" />
+            </div>
+            @if(btnSubmit && buyerForm.invalid && buyerForm.get('cni')?.invalid) {
+              <div class="invalid-feedback d-block">
+                <i class="fas fa-exclamation-circle me-1"></i>
+                {{getFormControlErrorText(buyerForm.get('cni'))}}
+              </div>
+            }
+          </div>
+        </div>
+
+        <!-- Phone -->
+        <div class="col-md-6 mb-3">
+          <div class="form-group">
+            <label class="form-label text-dark font-weight-bold">
+              <i class="fas fa-phone text-info me-2"></i>
+              {{"Phone" | translate}} <span class="text-danger">*</span>
+            </label>
+            <div class="input-group">
+              <span class="input-group-text bg-light">
+                <i class="fas fa-phone text-muted"></i>
+              </span>
+              <input type="tel" 
+                     id="tel" 
+                     class="form-control"
+                     [class.is-invalid]="btnSubmit && buyerForm.get('tel')?.invalid"
+                     [class.is-valid]="buyerForm.get('tel')?.valid"
+                     formControlName="tel"
+                     placeholder="{{'EnterPhoneNumber' | translate}}" />
+            </div>
+            @if(btnSubmit && buyerForm.invalid && buyerForm.get('tel')?.invalid) {
+              <div class="invalid-feedback d-block">
+                <i class="fas fa-exclamation-circle me-1"></i>
+                {{getFormControlErrorText(buyerForm.get('tel'))}}
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <!-- Footer with action buttons -->
+  <div class="modal-footer bg-light border-0">
+    <div class="d-flex w-100 gap-2">
+      <button type="button" 
+              class="btn btn-outline-secondary flex-fill" 
+              (click)="dismiss()"
+              [disabled]="loading$ | async">
+        <i class="fas fa-times me-2"></i>
+        {{"Cancel" | translate}}
+      </button>
+      
+      <button type="submit" 
+              class="btn flex-fill"
+              [class]="buyerId ? 'btn-warning' : 'btn-info'"
+              (click)="submitForm()"
+              [disabled]="loading$ | async">
+        @if(loading$ | async) {
+          <div class="spinner-border spinner-border-sm me-2" role="status">
+            <span class="visually-hidden">{{"Loading" | translate}}</span>
+          </div>
+        } @else {
+          <i class="fas" [class]="buyerId ? 'fa-edit' : 'fa-plus'" class="me-2"></i>
+        }
+        {{buyerId ? "Update" : "Create" | translate}}
+      </button>
+    </div>
+  </div>
+</div>

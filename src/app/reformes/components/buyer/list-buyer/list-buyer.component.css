@@ -1,0 +1,270 @@
+/* Buyer List Component Styles */
+.hover-row {
+  transition: all 0.3s ease;
+}
+
+.hover-row:hover {
+  background-color: #f8f9fa;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.cursor-pointer:hover {
+  color: #5e72e4 !important;
+}
+
+/* Avatar Styles */
+.avatar-initial {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  color: white;
+  font-size: 0.875rem;
+}
+
+.avatar-xs .avatar-initial {
+  font-size: 0.75rem;
+}
+
+.avatar-sm .avatar-initial {
+  font-size: 1rem;
+}
+
+/* Badge Styles */
+.badge {
+  font-size: 0.75rem;
+  padding: 0.375rem 0.75rem;
+  border-radius: 6px;
+}
+
+/* Table Styles */
+.table thead th {
+  border-bottom: 2px solid #e9ecef;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.table tbody tr {
+  border-bottom: 1px solid #f0f2f5;
+}
+
+.table tbody tr:last-child {
+  border-bottom: none;
+}
+
+/* Dropdown Styles */
+.dropdown-toggle::after {
+  display: none;
+}
+
+.dropdown-menu {
+  border: none;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  border-radius: 8px;
+  padding: 0.5rem 0;
+}
+
+.dropdown-item {
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  border-radius: 0;
+  transition: all 0.3s ease;
+}
+
+.dropdown-item:hover {
+  background-color: #f8f9fa;
+  color: #5e72e4;
+}
+
+.dropdown-item.text-danger:hover {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+/* Button Styles */
+.btn {
+  border-radius: 6px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #5e72e4 0%, #825ee4 100%);
+  border: none;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, #825ee4 0%, #5e72e4 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(94, 114, 228, 0.3);
+}
+
+.btn-outline-primary {
+  border: 2px solid #5e72e4;
+  color: #5e72e4;
+}
+
+.btn-outline-primary:hover {
+  background: #5e72e4;
+  color: white;
+  transform: translateY(-2px);
+}
+
+.btn-outline-secondary {
+  border: 2px solid #6c757d;
+  color: #6c757d;
+}
+
+.btn-outline-secondary:hover {
+  background: #6c757d;
+  color: white;
+  transform: translateY(-2px);
+}
+
+/* Card Styles */
+.card {
+  border: none;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.card-header {
+  background: linear-gradient(135deg, #fff 0%, #f8f9fa 100%);
+  border-bottom: 1px solid #e9ecef;
+  padding: 1.5rem;
+}
+
+.card-body {
+  padding: 1.5rem;
+}
+
+/* Form Styles */
+.form-control {
+  border-radius: 6px;
+  border-color: #d2d6da;
+  transition: all 0.3s ease;
+}
+
+.form-control:focus {
+  border-color: #5e72e4;
+  box-shadow: 0 0 0 0.2rem rgba(94, 114, 228, 0.25);
+}
+
+.input-group-text {
+  border-color: #d2d6da;
+  background: linear-gradient(180deg, #f8f9fa 0%, #e9ecef 100%);
+}
+
+.form-label {
+  font-weight: 600;
+  color: #344767;
+  margin-bottom: 0.5rem;
+}
+
+/* Sort Icons */
+.fa-sort,
+.fa-sort-up,
+.fa-sort-down {
+  font-size: 0.75rem;
+  margin-left: 0.25rem;
+}
+
+.fa-sort-up,
+.fa-sort-down {
+  color: #5e72e4;
+}
+
+/* Empty State */
+.text-center.py-4 {
+  padding: 3rem 1rem;
+}
+
+.text-center.py-4 i {
+  opacity: 0.6;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .card-header {
+    padding: 1rem;
+  }
+  
+  .card-body {
+    padding: 1rem;
+  }
+  
+  .btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+  }
+  
+  .table {
+    font-size: 0.875rem;
+  }
+  
+  .dropdown-menu {
+    min-width: 150px;
+  }
+}
+
+@media (max-width: 576px) {
+  .hover-row:hover {
+    transform: none;
+    box-shadow: none;
+  }
+  
+  .btn-primary:hover,
+  .btn-outline-primary:hover,
+  .btn-outline-secondary:hover {
+    transform: none;
+  }
+  
+  .table-responsive {
+    font-size: 0.8rem;
+  }
+}
+
+/* Loading States */
+.loading-overlay {
+  position: relative;
+}
+
+.loading-overlay::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+/* Pagination */
+.mat-paginator {
+  border-radius: 8px;
+  background: #f8f9fa;
+}
+
+/* Badge Colors */
+.bg-gradient-secondary {
+  background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);
+}
+
+.bg-gradient-info {
+  background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+}
+
+.bg-gradient-primary {
+  background: linear-gradient(135deg, #5e72e4 0%, #825ee4 100%);
+}

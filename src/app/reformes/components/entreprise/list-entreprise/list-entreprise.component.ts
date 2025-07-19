@@ -12,6 +12,7 @@ import { ReformeService } from '../../../services/reforme.service';
 import { EntrepriseDetail } from '../../../models/entreprise-detail.model';
 import { searchOption, search, searchby } from '../../../../models/search-element.model';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { CreateEntrepriseComponent } from '../create-entreprise/create-entreprise.component';
 
 @Component({
   selector: 'app-list-entreprise',
@@ -100,7 +101,39 @@ export class ListEntrepriseComponent extends BaseComponent {
     console.log(arr);
     this.pageArray=arr;
   }
-
+  createEntreprise() {
+      const modalRef =this.modalService.open(CreateEntrepriseComponent,{
+        centered:true,
+        backdrop:'static',
+        //backdrop: false
+      });
+      var reloadPgae:Observable<boolean>;
+      reloadPgae=modalRef.componentInstance.reload;
+      reloadPgae.subscribe(
+        (b)=>{
+          if(b){
+            this.reformService.getEntreprisesFromServer(this.paginateData);
+          }
+        }
+      )
+    }
+    updateEntreprise(id:string) {
+        const modalRef =this.modalService.open(CreateEntrepriseComponent,{
+          centered:true,
+          backdrop:'static',
+          //backdrop: false
+        });
+        modalRef.componentInstance.entrepriseId=id;
+        var reloadPgae:Observable<boolean>;
+        reloadPgae=modalRef.componentInstance.reload;
+        reloadPgae.subscribe(
+          (b)=>{
+            if(b){
+              this.reformService.getEntreprisesFromServer(this.paginateData);
+            }
+          }
+        )
+      }
   applyFilters() {
       const searchOptions: searchOption[] = [];
       
@@ -155,12 +188,12 @@ export class ListEntrepriseComponent extends BaseComponent {
       this.applyFilters();
     }
 
-    getCompanyTypeLabel(isPhysic: number): string {
-      return isPhysic === 1 ? 'PersonnePhysique' : 'PersonneMorale';
+    getCompanyTypeLabel(isPhysic: boolean): string {
+      return isPhysic ? 'PersonnePhysique' : 'PersonneMorale';
     }
 
-    getCompanyTypeBadgeClass(isPhysic: number): string {
-      return isPhysic === 1 ? 'bg-gradient-info' : 'bg-gradient-primary';
+    getCompanyTypeBadgeClass(isPhysic: boolean): string {
+      return isPhysic ? 'bg-gradient-info' : 'bg-gradient-primary';
     }
 
     viewDetails(id: string): void {
@@ -190,33 +223,5 @@ export class ListEntrepriseComponent extends BaseComponent {
       const target = event.target as HTMLInputElement;
       this.endDate = target.value;
       this.applyFilters();
-    }
-
-    goToPage(page: number): void {
-      this.paginateData.current_page = page;
-      this.applyFilters();
-    }
-
-    previousPage(): void {
-      if (this.paginateData.current_page > 1) {
-        this.paginateData.current_page--;
-        this.applyFilters();
-      }
-    }
-
-    nextPage(): void {
-      const lastPage = Math.ceil((this.paginateData.total || 0) / this.paginateData.per_page);
-      if (this.paginateData.current_page < lastPage) {
-        this.paginateData.current_page++;
-        this.applyFilters();
-      }
-    }
-
-    getLastPage(): number {
-      return Math.ceil((this.paginateData.total || 0) / this.paginateData.per_page);
-    }
-
-    isLastPage(): boolean {
-      return this.paginateData.current_page === this.getLastPage();
     }
 }

@@ -1,0 +1,251 @@
+<div class="container-fluid py-4" *ngIf="cessionDetail">
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header pb-0">
+          <div class="d-lg-flex">
+            <div>
+              <h5 class="mb-0">{{ 'CessionAssetDetails' | translate }}</h5>
+              <p class="text-sm mb-0">{{ 'CessionAssetInformation' | translate }}</p>
+            </div>
+            <div class="ms-auto my-auto mt-lg-0 mt-4">
+              <div class="ms-auto my-auto">
+                <button
+                  class="btn btn-outline-primary btn-sm mb-0"
+                  type="button"
+                  (click)="goBack()"
+                >
+                  <i class="fas fa-arrow-left me-2"></i>
+                  {{ 'Back' | translate }}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card-body px-0 pb-0">
+          <div class="row px-4">
+            <!-- Cession Information -->
+            <div class="col-md-6">
+              <div class="card card-body border card-plain border-radius-lg d-flex align-items-center flex-row">
+                <h6 class="mb-0">{{ 'CessionAssetInformation' | translate }}</h6>
+              </div>
+              <div class="card card-body border card-plain border-radius-lg">
+                <div class="row">
+                  <div class="col-6">
+                    <div class="numbers">
+                      <p class="text-sm mb-0 text-uppercase font-weight-bold">{{ 'ID' | translate }}</p>
+                      <h5 class="font-weight-bolder">{{ cessionDetail.id }}</h5>
+                    </div>
+                  </div>
+                  <div class="col-6">
+                    <div class="numbers">
+                      <p class="text-sm mb-0 text-uppercase font-weight-bold">{{ 'Status' | translate }}</p>
+                      <h5 class="font-weight-bolder">
+                        <span class="badge badge-sm bg-gradient-success">{{ 'Active' | translate }}</span>
+                      </h5>
+                    </div>
+                  </div>
+                </div>
+                <hr class="horizontal dark my-3">
+                <div class="row">
+                  <div class="col-12">
+                    <div class="numbers">
+                      <p class="text-sm mb-0 text-uppercase font-weight-bold">{{ 'Comment' | translate }}</p>
+                      <h5 class="font-weight-bolder">{{ cessionDetail.comment || 'N/A' }}</h5>
+                    </div>
+                  </div>
+                </div>
+                <hr class="horizontal dark my-3">
+                <div class="row">
+                  <div class="col-6">
+                    <div class="numbers">
+                      <p class="text-sm mb-0 text-uppercase font-weight-bold">{{ 'CreatedAt' | translate }}</p>
+                      <h5 class="font-weight-bolder">{{ cessionDetail.created_at | date: 'medium' }}</h5>
+                    </div>
+                  </div>
+                  <div class="col-6">
+                    <div class="numbers">
+                      <p class="text-sm mb-0 text-uppercase font-weight-bold">{{ 'UpdatedAt' | translate }}</p>
+                      <h5 class="font-weight-bolder">{{ cessionDetail.updated_at | date: 'medium' }}</h5>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Asset Information -->
+            <div class="col-md-6">
+              <div class="card card-body border card-plain border-radius-lg d-flex align-items-center flex-row">
+                <h6 class="mb-0">{{ 'AssetInformation' | translate }}</h6>
+              </div>
+              <div class="card card-body border card-plain border-radius-lg">
+                <div class="row" *ngIf="cessionDetail.immobilisation">
+                  <div class="col-6">
+                    <div class="numbers">
+                      <p class="text-sm mb-0 text-uppercase font-weight-bold">{{ 'AssetCode' | translate }}</p>
+                      <h5 class="font-weight-bolder">{{ cessionDetail.immobilisation.code }}</h5>
+                    </div>
+                  </div>
+                  <div class="col-6">
+                    <div class="numbers">
+                      <p class="text-sm mb-0 text-uppercase font-weight-bold">{{ 'AssetName' | translate }}</p>
+                      <h5 class="font-weight-bolder">{{ cessionDetail.immobilisation.libelle }}</h5>
+                    </div>
+                  </div>
+                </div>
+                <hr class="horizontal dark my-3" *ngIf="cessionDetail.immobilisation">
+                <div class="row" *ngIf="cessionDetail.immobilisation">
+                  <div class="col-6">
+                    <div class="numbers">
+                      <p class="text-sm mb-0 text-uppercase font-weight-bold">{{ 'PurchaseValue' | translate }}</p>
+                      <h5 class="font-weight-bolder">{{ cessionDetail.immobilisation.valeur_achat | currency:'XOF':'symbol':'1.0-0' }}</h5>
+                    </div>
+                  </div>
+                  <div class="col-6">
+                    <div class="numbers">
+                      <p class="text-sm mb-0 text-uppercase font-weight-bold">{{ 'NetValue' | translate }}</p>
+                      <h5 class="font-weight-bolder">{{ cessionDetail.immobilisation.valeur_nette | currency:'XOF':'symbol':'1.0-0' }}</h5>
+                    </div>
+                  </div>
+                </div>
+                <hr class="horizontal dark my-3" *ngIf="cessionDetail.immobilisation">
+                <div class="row" *ngIf="cessionDetail.immobilisation">
+                  <div class="col-12">
+                    <div class="numbers">
+                      <p class="text-sm mb-0 text-uppercase font-weight-bold">{{ 'Category' | translate }}</p>
+                      <h5 class="font-weight-bolder">{{ cessionDetail.immobilisation.categorie?.libelle || 'N/A' }}</h5>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Company Information -->
+          <div class="row px-4 mt-4">
+            <div class="col-md-6">
+              <div class="card card-body border card-plain border-radius-lg d-flex align-items-center flex-row">
+                <h6 class="mb-0">{{ 'CompanyInformation' | translate }}</h6>
+              </div>
+              <div class="card card-body border card-plain border-radius-lg">
+                <div class="row" *ngIf="cessionDetail.entreprise">
+                  <div class="col-6">
+                    <div class="numbers">
+                      <p class="text-sm mb-0 text-uppercase font-weight-bold">{{ 'CompanyName' | translate }}</p>
+                      <h5 class="font-weight-bolder">{{ cessionDetail.entreprise.nom }}</h5>
+                    </div>
+                  </div>
+                  <div class="col-6">
+                    <div class="numbers">
+                      <p class="text-sm mb-0 text-uppercase font-weight-bold">{{ 'Email' | translate }}</p>
+                      <h5 class="font-weight-bolder">{{ cessionDetail.entreprise.email || 'N/A' }}</h5>
+                    </div>
+                  </div>
+                </div>
+                <hr class="horizontal dark my-3" *ngIf="cessionDetail.entreprise">
+                <div class="row" *ngIf="cessionDetail.entreprise">
+                  <div class="col-6">
+                    <div class="numbers">
+                      <p class="text-sm mb-0 text-uppercase font-weight-bold">{{ 'Phone' | translate }}</p>
+                      <h5 class="font-weight-bolder">{{ cessionDetail.entreprise.telephone || 'N/A' }}</h5>
+                    </div>
+                  </div>
+                  <div class="col-6">
+                    <div class="numbers">
+                      <p class="text-sm mb-0 text-uppercase font-weight-bold">{{ 'Address' | translate }}</p>
+                      <h5 class="font-weight-bolder">{{ cessionDetail.entreprise.adresse || 'N/A' }}</h5>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Created By Information -->
+            <div class="col-md-6">
+              <div class="card card-body border card-plain border-radius-lg d-flex align-items-center flex-row">
+                <h6 class="mb-0">{{ 'CreatedBy' | translate }}</h6>
+              </div>
+              <div class="card card-body border card-plain border-radius-lg">
+                <div class="row" *ngIf="cessionDetail.created_by">
+                  <div class="col-6">
+                    <div class="numbers">
+                      <p class="text-sm mb-0 text-uppercase font-weight-bold">{{ 'FirstName' | translate }}</p>
+                      <h5 class="font-weight-bolder">{{ cessionDetail.created_by.first_name }}</h5>
+                    </div>
+                  </div>
+                  <div class="col-6">
+                    <div class="numbers">
+                      <p class="text-sm mb-0 text-uppercase font-weight-bold">{{ 'LastName' | translate }}</p>
+                      <h5 class="font-weight-bolder">{{ cessionDetail.created_by.last_name }}</h5>
+                    </div>
+                  </div>
+                </div>
+                <hr class="horizontal dark my-3" *ngIf="cessionDetail.created_by">
+                <div class="row" *ngIf="cessionDetail.created_by">
+                  <div class="col-12">
+                    <div class="numbers">
+                      <p class="text-sm mb-0 text-uppercase font-weight-bold">{{ 'Email' | translate }}</p>
+                      <h5 class="font-weight-bolder">{{ cessionDetail.created_by.email || 'N/A' }}</h5>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Documents Section -->
+          <div class="row px-4 mt-4">
+            <div class="col-12">
+              <div class="card card-body border card-plain border-radius-lg d-flex align-items-center flex-row">
+                <h6 class="mb-0">{{ 'Documents' | translate }}</h6>
+              </div>
+              <div class="card card-body border card-plain border-radius-lg">
+                <div class="row" *ngIf="cessionDetail.documents && cessionDetail.documents.length > 0; else noDocuments">
+                  <div class="col-md-4" *ngFor="let document of cessionDetail.documents; let i = index">
+                    <div class="card card-body border card-plain border-radius-lg">
+                      <div class="d-flex align-items-center">
+                        <div class="icon icon-shape icon-sm border-radius-md bg-gradient-dark text-center me-2 d-flex align-items-center justify-content-center">
+                          <i class="fas fa-file-pdf text-white opacity-10"></i>
+                        </div>
+                        <div class="numbers">
+                          <p class="text-sm mb-0 text-uppercase font-weight-bold">{{ 'Document' | translate }} {{ i + 1 }}</p>
+                          <h5 class="font-weight-bolder">
+                            <a href="#" (click)="viewDocument(document, $event)" class="text-primary">
+                              {{ document.name || 'Document_' + (i + 1) }}
+                            </a>
+                          </h5>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <ng-template #noDocuments>
+                  <div class="text-center py-4">
+                    <i class="fas fa-file-pdf text-muted mb-3" style="font-size: 3rem;"></i>
+                    <p class="text-muted">{{ 'NoDocumentsAvailable' | translate }}</p>
+                  </div>
+                </ng-template>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Loading State -->
+<div class="container-fluid py-4" *ngIf="!cessionDetail">
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-body text-center py-5">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">{{ 'Loading' | translate }}...</span>
+          </div>
+          <p class="mt-3 text-muted">{{ 'LoadingCessionAssetDetails' | translate }}...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

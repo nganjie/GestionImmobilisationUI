@@ -14,6 +14,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { HttpClient } from '@angular/common/http';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { createTranslateLoader } from '../app.module';
+import { NgSelectModule } from '@ng-select/ng-select';
 
 
 
@@ -32,6 +33,7 @@ import { createTranslateLoader } from '../app.module';
     MatButtonModule,
     MatSelectModule,
     MatFormFieldModule,
+    NgSelectModule,
     TranslateModule.forRoot({
       loader:{
         provide:TranslateLoader,
@@ -51,6 +53,7 @@ import { createTranslateLoader } from '../app.module';
     MatButtonModule,
     MatProgressSpinnerModule,
     CustomSpinnerComponent,
+    NgSelectModule,
     
   ]
 })

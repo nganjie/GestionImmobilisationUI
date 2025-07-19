@@ -1,0 +1,306 @@
+<div class="main-content position-relative max-height-vh-100 h-100 detail-reforme-sale">
+  <div class="container-fluid py-4">
+    <!-- Error Display -->
+    @if(error$|async;as error){
+        @if(error.status){
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="fas fa-exclamation-triangle me-2"></i>
+        {{error.message}}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+      </div>
+        }
+    }
+
+    <!-- Loading State -->
+    @if(loading$|async) {
+      <div class="row justify-content-center">
+        <div class="col-12 text-center">
+          <div class="card shadow-lg">
+            <div class="card-body py-5">
+              <div class="spinner-border text-success" role="status">
+                <span class="visually-hidden">{{ 'Loading' | translate }}...</span>
+              </div>
+              <p class="text-secondary mt-3">{{"LoadingSaleAssetDetails"|translate}}...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- Content -->
+    @if(!(loading$|async) && reformeSale) {
+      <!-- Header Section -->
+      <div class="row mb-4">
+        <div class="col-12">
+          <div class="card bg-gradient-success shadow-lg border-0">
+            <div class="card-body p-4">
+              <div class="row align-items-center">
+                <div class="col-md-8">
+                  <div class="d-flex align-items-center text-white">
+                    <div class="icon icon-shape icon-lg bg-white shadow text-center me-3">
+                      <i class="fas fa-dollar-sign text-success"></i>
+                    </div>
+                    <div>
+                      <h3 class="mb-0">{{ 'SaleAssetDetails' | translate }}</h3>
+                      <p class="text-sm opacity-8 mb-0">
+                        <i class="fas fa-calendar me-2"></i>{{ formatDate(reformeSale.created_at) }}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-4 text-end">
+                  <button class="btn btn-white btn-sm me-2" (click)="goBack()">
+                    <i class="fas fa-arrow-left me-2"></i>{{ 'Back' | translate }}
+                  </button>
+                  <button class="btn btn-light btn-sm" (click)="viewImmobilisationDetails()">
+                    <i class="fas fa-info-circle me-2"></i>{{ 'ViewImmobilisationDetails' | translate }}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Content -->
+      <div class="row">
+        <!-- Immobilisation Information -->
+        <div class="col-lg-8">
+          <div class="card shadow-sm mb-4">
+            <div class="card-header pb-0">
+              <h6 class="mb-0">{{ 'ImmobilisationInformation' | translate }}</h6>
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <!-- Asset Name -->
+                <div class="col-md-6 mb-3">
+                  <label class="form-label text-sm text-secondary">{{ 'Name' | translate }}</label>
+                  <p class="form-control-plaintext">{{ reformeSale.immobilisation?.name }}</p>
+                </div>
+
+                <!-- Asset Code -->
+                <div class="col-md-6 mb-3">
+                  <label class="form-label text-sm text-secondary">{{ 'Code' | translate }}</label>
+                  <p class="form-control-plaintext">{{ reformeSale.immobilisation?.code }}</p>
+                </div>
+
+                <!-- Category -->
+                <div class="col-md-6 mb-3">
+                  <label class="form-label text-sm text-secondary">{{ 'Category' | translate }}</label>
+                  <p class="form-control-plaintext">{{ reformeSale.immobilisation?.categorie?.name }}</p>
+                </div>
+
+                <!-- Brand -->
+                <div class="col-md-6 mb-3">
+                  <label class="form-label text-sm text-secondary">{{ 'Brand' | translate }}</label>
+                  <p class="form-control-plaintext">{{ reformeSale.immobilisation?.mark || ('NotAvailable' | translate) }}</p>
+                </div>
+
+                <!-- Model -->
+                <div class="col-md-6 mb-3">
+                  <label class="form-label text-sm text-secondary">{{ 'Model' | translate }}</label>
+                  <p class="form-control-plaintext">{{ reformeSale.immobilisation?.model || ('NotAvailable' | translate) }}</p>
+                </div>
+
+                <!-- Quantity -->
+                <div class="col-md-6 mb-3">
+                  <label class="form-label text-sm text-secondary">{{ 'Quantity' | translate }}</label>
+                  <p class="form-control-plaintext">{{ reformeSale.immobilisation?.quantity }}</p>
+                </div>
+
+                <!-- Original Unit Price -->
+                <div class="col-md-6 mb-3">
+                  <label class="form-label text-sm text-secondary">{{ 'OriginalUnitPrice' | translate }}</label>
+                  <p class="form-control-plaintext">{{ reformeSale.immobilisation?.unit_price | currency:'XAF':'symbol':'1.0-0' }}</p>
+                </div>
+
+                <!-- Status -->
+                <div class="col-md-6 mb-3">
+                  <label class="form-label text-sm text-secondary">{{ 'Status' | translate }}</label>
+                  <p class="form-control-plaintext">
+                    <span class="badge" [ngClass]="getStatusBadgeClass(reformeSale.immobilisation?.status || 'sold')">
+                      {{ reformeSale.immobilisation?.status }}
+                    </span>
+                  </p>
+                </div>
+
+                <!-- Purchase Date -->
+                <div class="col-md-6 mb-3">
+                  <label class="form-label text-sm text-secondary">{{ 'PurchaseDate' | translate }}</label>
+                  <p class="form-control-plaintext">{{ formatDate(reformeSale.immobilisation?.date_of_receipt || '') }}</p>
+                </div>
+
+                <!-- Order Number -->
+                <div class="col-md-6 mb-3">
+                  <label class="form-label text-sm text-secondary">{{ 'OrderNumber' | translate }}</label>
+                  <p class="form-control-plaintext">{{ reformeSale.immobilisation?.num_bon_commande || ('NotAvailable' | translate) }}</p>
+                </div>
+
+                <!-- Process Number -->
+                <div class="col-md-6 mb-3">
+                  <label class="form-label text-sm text-secondary">{{ 'ProcessNumber' | translate }}</label>
+                  <p class="form-control-plaintext">{{ reformeSale.immobilisation?.num_proces_verbal || ('NotAvailable' | translate) }}</p>
+                </div>
+
+                <!-- Supplier -->
+                <div class="col-md-6 mb-3">
+                  <label class="form-label text-sm text-secondary">{{ 'Supplier' | translate }}</label>
+                  <p class="form-control-plaintext">{{ reformeSale.immobilisation?.fournisseur?.raison_social }}</p>
+                </div>
+
+                <!-- Structure -->
+                <div class="col-md-6 mb-3">
+                  <label class="form-label text-sm text-secondary">{{ 'Structure' | translate }}</label>
+                  <p class="form-control-plaintext">{{ reformeSale.immobilisation?.structure?.name }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Sale Information -->
+          <div class="card shadow-sm">
+            <div class="card-header pb-0">
+              <h6 class="mb-0">{{ 'SaleInformation' | translate }}</h6>
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <!-- Buyer -->
+                <div class="col-md-6 mb-3">
+                  <label class="form-label text-sm text-secondary">{{ 'Buyer' | translate }}</label>
+                  <p class="form-control-plaintext">
+                    <i class="fas fa-user me-2"></i>{{ reformeSale.buyer_id }}
+                  </p>
+                </div>
+
+                <!-- Sale Amount -->
+                <div class="col-md-6 mb-3">
+                  <label class="form-label text-sm text-secondary">{{ 'SaleAmount' | translate }}</label>
+                  <p class="form-control-plaintext">
+                    <span class="badge bg-gradient-success px-3 py-2 fs-6">
+                      <i class="fas fa-dollar-sign me-1"></i>{{ formatCurrency(reformeSale.amount) }}
+                    </span>
+                  </p>
+                </div>
+
+                <!-- Comment -->
+                <div class="col-12 mb-3" *ngIf="reformeSale.comment">
+                  <label class="form-label text-sm text-secondary">{{ 'Comment' | translate }}</label>
+                  <div class="p-3 bg-light rounded">
+                    <p class="mb-0">{{ reformeSale.comment }}</p>
+                  </div>
+                </div>
+
+                <!-- Created At -->
+                <div class="col-md-6 mb-3">
+                  <label class="form-label text-sm text-secondary">{{ 'SaleDate' | translate }}</label>
+                  <p class="form-control-plaintext">{{ formatDate(reformeSale.created_at) }}</p>
+                </div>
+
+                <!-- Updated At -->
+                <div class="col-md-6 mb-3">
+                  <label class="form-label text-sm text-secondary">{{ 'UpdatedAt' | translate }}</label>
+                  <p class="form-control-plaintext">{{ formatDate(reformeSale.updated_at) }}</p>
+                </div>
+
+                <!-- Created By -->
+                <div class="col-md-6 mb-3">
+                  <label class="form-label text-sm text-secondary">{{ 'ProcessedBy' | translate }}</label>
+                  <p class="form-control-plaintext">{{ reformeSale.user?.first_name }} {{ reformeSale.user?.last_name }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Documents and Actions -->
+        <div class="col-lg-4">
+          <!-- Sale Summary -->
+          <div class="card shadow-sm mb-4">
+            <div class="card-header pb-0">
+              <h6 class="mb-0">{{ 'SaleSummary' | translate }}</h6>
+            </div>
+            <div class="card-body">
+              <div class="text-center">
+                <div class="icon icon-shape icon-lg bg-gradient-success shadow mx-auto mb-3">
+                  <i class="fas fa-dollar-sign text-white"></i>
+                </div>
+                <h4 class="text-success">{{ formatCurrency(reformeSale.amount) }}</h4>
+                <p class="text-secondary mb-0">{{ 'TotalSaleAmount' | translate }}</p>
+                <hr>
+                <div class="d-flex justify-content-between">
+                  <span class="text-sm">{{ 'Buyer' | translate }}:</span>
+                  <span class="text-sm text-dark">{{ reformeSale.buyer_id }}</span>
+                </div>
+                <div class="d-flex justify-content-between">
+                  <span class="text-sm">{{ 'SaleDate' | translate }}:</span>
+                  <span class="text-sm text-dark">{{ formatDate(reformeSale.created_at) }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Documents Section -->
+          <div class="card shadow-sm mb-4">
+            <div class="card-header pb-0">
+              <h6 class="mb-0">{{ 'Documents' | translate }}</h6>
+            </div>
+            <div class="card-body">
+              @if(reformeSale.documents && reformeSale.documents.length > 0) {
+                <div class="list-group list-group-flush">
+                  @for(document of reformeSale.documents; track document) {
+                    <div class="list-group-item d-flex justify-content-between align-items-center px-0">
+                      <div class="d-flex align-items-center">
+                        <i [class]="getFileIcon(document)" class="text-primary me-2"></i>
+                        <span class="text-sm">{{ document.split('/').pop()|slice:0:10 }}</span>
+                      </div>
+                      <button class="btn btn-sm btn-outline-primary" (click)="downloadDocument(document)">
+                        <i class="fas fa-download"></i>
+                      </button>
+                    </div>
+                  }
+                </div>
+              } @else {
+                <p class="text-muted text-center py-3">{{ 'NoDocumentsAttached' | translate }}</p>
+              }
+            </div>
+          </div>
+
+          <!-- Actions Section -->
+          <div class="card shadow-sm">
+            <div class="card-header pb-0">
+              <h6 class="mb-0">{{ 'Actions' | translate }}</h6>
+            </div>
+            <div class="card-body">
+              <div class="d-grid gap-2">
+                <button class="btn btn-primary btn-sm" (click)="viewImmobilisationDetails()">
+                  <i class="fas fa-info-circle me-2"></i>{{ 'ViewImmobilisationDetails' | translate }}
+                </button>
+                <button class="btn btn-outline-secondary btn-sm" (click)="goBack()">
+                  <i class="fas fa-arrow-left me-2"></i>{{ 'BackToList' | translate }}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- No Data Found -->
+    @if(!(loading$|async) && !reformeSale) {
+      <div class="row justify-content-center">
+        <div class="col-md-6 text-center">
+          <div class="card shadow-lg">
+            <div class="card-body py-5">
+              <i class="fas fa-dollar-sign text-warning fa-3x mb-3"></i>
+              <h5 class="text-secondary">{{ 'SaleAssetNotFound' | translate }}</h5>
+              <p class="text-muted">{{ 'SaleAssetNotFoundDescription' | translate }}</p>
+              <button class="btn btn-primary" (click)="goBack()">
+                <i class="fas fa-arrow-left me-2"></i>{{ 'BackToList' | translate }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+</div>
