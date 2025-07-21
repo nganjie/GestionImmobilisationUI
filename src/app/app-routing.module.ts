@@ -14,6 +14,7 @@ const routes: Routes = [
       {path:'immobilisations',loadChildren:()=>import('./immobilisations/immobilisations.module').then(m=>m.ImmobilisationsModule)},
       {path:"employees",loadChildren:()=>import('./employees/employees.module').then(m=>m.EmployeesModule)},
       {path:"reformes",loadChildren:()=>import('./reformes/reformes.module').then(m=>m.ReformesModule)},
+      {path:"inventories",loadChildren:()=>import('./inventory/inventory.module').then(m=>m.InventoryModule)},
       //{path:'client-accounts',loadChildren:()=>import('./client-accounts/client-accounts.module').then(m=>m.ClientAccountsModule),canActivate:[authRoleGuard],data:{roles:ClientsRouteRole}}
     ]
     },

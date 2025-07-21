@@ -1,12 +1,13 @@
 /* You can add global styles to this file, and also import other style files */
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
 
 /* Import ng-select styles */
-@import '~@ng-select/ng-select/themes/default.theme.css';
+
 
 /* Styles pour que les modals soient au-dessus de tous les éléments, y compris la sidebar */
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 ngb-modal-backdrop {
     z-index: 9998 !important;
 }

@@ -1,1 +1,124 @@
-<p>create-inventory works!</p>
+<div class="modal-header">
+  <h4 class="modal-title" id="modal-title">
+    <i class="fas fa-inventory me-2"></i>
+    {{modalTitle | translate}}
+  </h4>
+  <button type="button" class="btn-close" aria-label="Close" (click)="onCancel()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="modal-body">
+  @if(loading$ | async) {
+    <div class="text-center py-4">
+      <app-custom-spinner></app-custom-spinner>
+      <p class="text-muted mt-3">{{"Loading"|translate}}...</p>
+    </div>
+  } @else {
+    <form [formGroup]="inventoryForm" (ngSubmit)="onSubmit()">
+      <div class="row">
+        <!-- Name Field -->
+        <div class="col-md-12 mb-3">
+          <label for="name" class="form-label">
+            {{"Name"|translate}} <span class="text-danger">*</span>
+          </label>
+          <input
+            type="text"
+            id="name"
+            class="form-control"
+            formControlName="name"
+            [class.is-invalid]="isFieldInvalid('name')"
+            placeholder="{{'EnterInventoryName'|translate}}"
+          />
+          @if(isFieldInvalid('name')) {
+            <div class="invalid-feedback">
+              {{getFieldError('name')}}
+            </div>
+          }
+        </div>
+
+        <!-- Type Field -->
+        <div class="col-md-6 mb-3">
+          <label for="type" class="form-label">
+            {{"Type"|translate}} <span class="text-danger">*</span>
+          </label>
+          <select
+            id="type"
+            class="form-select"
+            formControlName="type"
+            [class.is-invalid]="isFieldInvalid('type')"
+          >
+            <option value="">{{"SelectType"|translate}}</option>
+            @for(type of inventoryTypes; track type.value) {
+              <option [value]="type.value">{{type.label | translate}}</option>
+            }
+          </select>
+          @if(isFieldInvalid('type')) {
+            <div class="invalid-feedback">
+              {{getFieldError('type')}}
+            </div>
+          }
+        </div>
+
+        <!-- End Date Field -->
+        <div class="col-md-6 mb-3">
+          <label for="end_date" class="form-label">
+            {{"EndDate"|translate}}
+          </label>
+          <input
+            type="date"
+            id="end_date"
+            class="form-control"
+            formControlName="end_date"
+            [class.is-invalid]="isFieldInvalid('end_date')"
+          />
+          @if(isFieldInvalid('end_date')) {
+            <div class="invalid-feedback">
+              {{getFieldError('end_date')}}
+            </div>
+          }
+        </div>
+
+        <!-- Description Field -->
+        <div class="col-md-12 mb-3">
+          <label for="description" class="form-label">
+            {{"Description"|translate}}
+          </label>
+          <textarea
+            id="description"
+            class="form-control"
+            formControlName="description"
+            rows="3"
+            [class.is-invalid]="isFieldInvalid('description')"
+            placeholder="{{'EnterDescription'|translate}}"
+          ></textarea>
+          @if(isFieldInvalid('description')) {
+            <div class="invalid-feedback">
+              {{getFieldError('description')}}
+            </div>
+          }
+        </div>
+      </div>
+    </form>
+  }
+</div>
+
+<div class="modal-footer">
+  <button type="button" class="btn btn-secondary" (click)="onCancel()">
+    <i class="fas fa-times me-2"></i>
+    {{"Cancel"|translate}}
+  </button>
+  <button
+    type="button"
+    class="btn btn-primary"
+    (click)="onSubmit()"
+    [disabled]="inventoryForm.invalid || (loading$ | async)"
+  >
+    @if(loading$ | async) {
+      <i class="fas fa-spinner fa-spin me-2"></i>
+    } @else {
+      <i class="fas fa-save me-2"></i>
+    }
+    {{submitButtonText | translate}}
+  </button>
+</div>

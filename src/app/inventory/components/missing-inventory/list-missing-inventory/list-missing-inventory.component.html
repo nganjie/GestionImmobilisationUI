@@ -1,1 +1,364 @@
-<p>list-missing-inventory works!</p>
+<app-base>
+  <div class="container-fluid py-4">
+    <!-- Header Section -->
+    <div class="row">
+      <div class="col-12">
+        <div class="card mb-4">
+          <div class="card-header pb-0 bg-gradient-primary">
+            <div class="row align-items-center">
+              <div class="col-lg-6 col-7">
+                <h6 class="mb-0 text-white">{{"InventoryMissing"|translate}}</h6>
+                <p class="text-sm mb-0 text-white opacity-8">{{"ManageMissingItems"|translate}}</p>
+              </div>
+              <div class="col-lg-6 col-5 my-auto text-end">
+                <div class="dropdown float-lg-end pe-4">
+                  <a class="btn bg-gradient-light mb-0 dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                    <i class="fas fa-plus"></i>&nbsp;&nbsp;{{"Actions"|translate}}
+                  </a>
+                  <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" (click)="createMissingInventory()">
+                      <i class="fas fa-plus me-2"></i>{{"AddMissingItem"|translate}}
+                    </a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" routerLink="../">
+                      <i class="fas fa-clipboard-list me-2"></i>{{"BackToInventories"|translate}}
+                    </a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" (click)="resetFilters()">
+                      <i class="fas fa-filter me-2"></i>{{"ResetFilters"|translate}}
+                    </a></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Filters Section -->
+    <div class="row">
+      <div class="col-12">
+        <div class="card mb-4">
+          <div class="card-body px-0 pt-0 pb-2">
+            <!-- Première ligne de filtres -->
+            <div class="row mt-3 px-3">
+              <div class="col-lg-4 col-md-6 col-12">
+                <div class="form-group mb-3">
+                  <label class="form-label text-xs">{{"Search"|translate}}</label>
+                  <input type="text" class="form-control" [formControl]="searchCtrl" 
+                         placeholder="{{'SearchMissingItems'|translate}}">
+                </div>
+              </div>
+              <div class="col-lg-2 col-md-6 col-12">
+                <div class="form-group mb-3">
+                  <label class="form-label text-xs">{{"Status"|translate}}</label>
+                  <select class="form-select" [formControl]="statusCtrl">
+                    <option value="">{{"AllStatuses"|translate}}</option>
+                    <option [value]="inventoryStatusEnum.PENDING">{{"Pending"|translate}}</option>
+                    <option [value]="inventoryStatusEnum.TERMINATED">{{"Terminated"|translate}}</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-lg-3 col-md-6 col-12">
+                <div class="form-group mb-3">
+                  <label class="form-label text-xs">{{"Office"|translate}}</label>
+                  <select class="form-select" [formControl]="officeCtrl">
+                    <option value="">{{"SelectOffice"|translate}}</option>
+                    @for(office of offices$ | async; track office.id) {
+                      <option [value]="office.id">{{office.name}} - {{office.building.name}}</option>
+                    }
+                  </select>
+                </div>
+              </div>
+              <div class="col-lg-2 col-md-6 col-12">
+                <div class="form-group mb-3">
+                  <label class="form-label text-xs">{{"Inventory"|translate}}</label>
+                  <select class="form-select" [formControl]="inventoryCtrl">
+                    <option value="">{{"AllInventories"|translate}}</option>
+                    @for(inventory of inventories$ | async; track inventory.id) {
+                      <option [value]="inventory.id">{{inventory.name}}</option>
+                    }
+                  </select>
+                </div>
+              </div>
+              <div class="col-lg-2 col-md-6 col-12">
+                <div class="form-group mb-3">
+                  <label class="form-label text-xs">{{"ItemsPerPage"|translate}}</label>
+                  <select class="form-select" [(ngModel)]="itemsPerPage" (change)="changeChoiceItemPage()">
+                    @for(num of pageArray; track num) {
+                      <option [value]="num">{{num}}</option>
+                    }
+                  </select>
+                </div>
+              </div>
+              <div class="col-lg-1 col-md-6 col-12">
+                <div class="form-group mb-3">
+                  <label class="form-label text-xs opacity-0">Action</label>
+                  <button class="btn btn-outline-secondary btn-sm w-100" (click)="resetFilters()" 
+                          title="{{'ResetFilters'|translate}}">
+                    <i class="fas fa-undo"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Deuxième ligne de filtres (dates) -->
+            <div class="row px-3">
+              <div class="col-lg-3 col-md-6 col-12">
+                <div class="form-group mb-0">
+                  <label class="form-label text-xs">{{"DateFrom"|translate}}</label>
+                  <input type="date" class="form-control" [(ngModel)]="startDate" (change)="applyFilters()">
+                </div>
+              </div>
+              <div class="col-lg-3 col-md-6 col-12">
+                <div class="form-group mb-0">
+                  <label class="form-label text-xs">{{"DateTo"|translate}}</label>
+                  <input type="date" class="form-control" [(ngModel)]="endDate" (change)="applyFilters()">
+                </div>
+              </div>
+              <div class="col-lg-6"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Table Section -->
+    <div class="row">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-header pb-0">
+            <div class="row align-items-center">
+              <div class="col-8">
+                <h6 class="mb-0">{{"MissingItemsList"|translate}}</h6>
+              </div>
+              <div class="col-4 text-end">
+                <button class="btn btn-primary btn-sm" (click)="createMissingInventory()">
+                  <i class="fas fa-plus me-2"></i>{{"Add"|translate}}
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="card-body px-0 pt-0 pb-2">
+            @if(loading$ | async) {
+              <div class="text-center py-4">
+                <app-custom-spinner></app-custom-spinner>
+                <p class="text-muted mt-3">{{"LoadingMissingItems"|translate}}...</p>
+              </div>
+            } @else {
+              @if((missingInventories$ | async)?.length === 0) {
+                <div class="text-center py-4">
+                  <i class="fas fa-exclamation-triangle text-muted" style="font-size: 3rem;"></i>
+                  <h6 class="text-muted mt-3">{{"NoMissingItemsFound"|translate}}</h6>
+                  <p class="text-sm text-muted">{{"CreateFirstMissingItem"|translate}}</p>
+                  <button class="btn btn-primary btn-sm" (click)="createMissingInventory()">
+                    <i class="fas fa-plus me-2"></i>{{"AddMissingItem"|translate}}
+                  </button>
+                </div>
+              } @else {
+                <div class="table-responsive p-0">
+                  <table class="table align-items-center mb-0">
+                    <thead>
+                      <tr>
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                          <a (click)="sortBy('office.name')" class="text-decoration-none cursor-pointer">
+                            {{"Office"|translate}} <i [class]="getSortIcon('office.name')"></i>
+                          </a>
+                        </th>
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                          <a (click)="sortBy('immobilisation.name')" class="text-decoration-none cursor-pointer">
+                            {{"Immobilisation"|translate}} <i [class]="getSortIcon('immobilisation.name')"></i>
+                          </a>
+                        </th>
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                          <a (click)="sortBy('inventory.name')" class="text-decoration-none cursor-pointer">
+                            {{"Inventory"|translate}} <i [class]="getSortIcon('inventory.name')"></i>
+                          </a>
+                        </th>
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center">
+                          <a (click)="sortBy('status')" class="text-decoration-none cursor-pointer">
+                            {{"Status"|translate}} <i [class]="getSortIcon('status')"></i>
+                          </a>
+                        </th>
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                          {{"Employee"|translate}}
+                        </th>
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                          {{"Comment"|translate}}
+                        </th>
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center">
+                          <a (click)="sortBy('created_at')" class="text-decoration-none cursor-pointer">
+                            {{"CreatedBy"|translate}} <i [class]="getSortIcon('created_at')"></i>
+                          </a>
+                        </th>
+                        <th class="text-secondary opacity-7 text-center">{{"Actions"|translate}}</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      @for(missingInventory of missingInventories$ | async; track trackByFn($index, missingInventory)) {
+                        <tr>
+                          <td>
+                            <div class="d-flex px-2 py-1">
+                              <div>
+                                <div class="avatar avatar-sm me-3 bg-gradient-secondary">
+                                  <i class="fas fa-building text-white"></i>
+                                </div>
+                              </div>
+                              <div class="d-flex flex-column justify-content-center">
+                                <h6 class="mb-0 text-sm">{{missingInventory.office.name}}</h6>
+                                <p class="text-xs text-secondary mb-0">{{missingInventory.office.building.name}}</p>
+                              </div>
+                            </div>
+                          </td>
+                          
+                          <td>
+                            <div class="d-flex px-2 py-1">
+                              <div>
+                                <div class="avatar avatar-sm me-3 bg-gradient-info">
+                                  <i class="fas fa-cube text-white"></i>
+                                </div>
+                              </div>
+                              <div class="d-flex flex-column justify-content-center">
+                                <h6 class="mb-0 text-sm">{{missingInventory.immobilisation.name}}</h6>
+                                <p class="text-xs text-secondary mb-0">{{missingInventory.immobilisation.code}}</p>
+                              </div>
+                            </div>
+                          </td>
+
+                          <td>
+                            <div class="d-flex px-2 py-1">
+                              <div>
+                                <div class="avatar avatar-sm me-3 bg-gradient-primary">
+                                  <i class="fas fa-clipboard-list text-white"></i>
+                                </div>
+                              </div>
+                              <div class="d-flex flex-column justify-content-center">
+                                <h6 class="mb-0 text-sm">{{missingInventory.inventory.name}}</h6>
+                                <p class="text-xs text-secondary mb-0">{{missingInventory.inventory.type | translate}}</p>
+                              </div>
+                            </div>
+                          </td>
+
+                          <td class="align-middle text-center text-sm">
+                            <span [class]="getStatusClass(missingInventory.status)">
+                              <i [class]="getStatusIcon(missingInventory.status)" class="me-1"></i>
+                              {{missingInventory.status | translate}}
+                            </span>
+                          </td>
+
+                          <td>
+                            @if(missingInventory.immobilisation.employee_immo?.employee) {
+                              <div class="d-flex align-items-center">
+                                <div class="avatar avatar-xs me-2">
+                                  <div class="avatar-initial rounded-circle bg-gradient-success">
+                                    {{missingInventory.immobilisation.employee_immo!.employee!.first_name.charAt(0)}}{{missingInventory.immobilisation.employee_immo!.employee!.last_name.charAt(0)}}
+                                  </div>
+                                </div>
+                                <div class="d-flex flex-column">
+                                  <h6 class="mb-0 text-xs">{{missingInventory.immobilisation.employee_immo!.employee!.first_name}} {{missingInventory.immobilisation.employee_immo!.employee!.last_name}}</h6>
+                                  <p class="text-xs text-secondary mb-0">{{missingInventory.immobilisation.employee_immo!.employee!.matricule}}</p>
+                                </div>
+                              </div>
+                            } @else {
+                              <span class="text-xs text-secondary">
+                                <i class="fas fa-user-slash me-1"></i>{{"NotAssigned"|translate}}
+                              </span>
+                            }
+                          </td>
+
+                          <td>
+                            <p class="text-xs font-weight-bold mb-0" 
+                               [title]="missingInventory.comment">
+                              {{missingInventory.comment | slice:0:50}}
+                              @if(missingInventory.comment && missingInventory.comment.length > 50) {
+                                <span>...</span>
+                              }
+                            </p>
+                          </td>
+
+                          <td class="align-middle text-center">
+                            <div class="d-flex align-items-center justify-content-center">
+                              <div class="avatar avatar-xs me-2">
+                                <div class="avatar-initial rounded-circle bg-gradient-primary">
+                                  {{missingInventory.user.first_name.charAt(0)}}{{missingInventory.user.last_name.charAt(0)}}
+                                </div>
+                              </div>
+                              <div class="d-flex flex-column">
+                                <h6 class="mb-0 text-xs">{{missingInventory.user.first_name}}</h6>
+                                <span class="text-secondary text-xs">{{formatDate(missingInventory.created_at)}}</span>
+                              </div>
+                            </div>
+                          </td>
+
+                          <td class="align-middle text-center">
+                            <div class="dropdown">
+                              <button class="btn btn-link text-secondary mb-0" type="button" 
+                                      data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fa fa-ellipsis-v text-xs"></i>
+                              </button>
+                              <ul class="dropdown-menu">
+                                <li>
+                                  <a class="dropdown-item" (click)="viewDetails(missingInventory.id)">
+                                    <i class="fas fa-eye me-2"></i>
+                                    {{"View"|translate}}
+                                  </a>
+                                </li>
+                                <li>
+                                  <a class="dropdown-item" (click)="updateMissingInventory(missingInventory.id)">
+                                    <i class="fas fa-edit me-2"></i>
+                                    {{"Edit"|translate}}
+                                  </a>
+                                </li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                  <a class="dropdown-item text-danger" (click)="deleteMissingInventory(missingInventory.id)">
+                                    <i class="fas fa-trash me-2"></i>
+                                    {{"Delete"|translate}}
+                                  </a>
+                                </li>
+                              </ul>
+                            </div>
+                          </td>
+                        </tr>
+                      }
+                    </tbody>
+                  </table>
+                </div>
+              }
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pagination Section -->
+    @if((missingInventories$ | async)?.length && totaElement > 0) {
+      <div class="row">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-center">
+                <div class="text-muted">
+                  {{"Showing"|translate}} {{(paginateData.current_page - 1) * paginateData.per_page + 1}} 
+                  {{"to"|translate}} 
+                  {{Math.min(paginateData.current_page * paginateData.per_page, totaElement)}} 
+                  {{"of"|translate}} {{totaElement}} {{"entries"|translate}}
+                </div>
+                
+                <mat-paginator 
+                  [length]="totaElement"
+                  [pageSize]="itemsPerPage" 
+                  [pageSizeOptions]="pageArray"
+                  [pageIndex]="paginateData.current_page - 1"
+                  (page)="pageChange($event)"
+                  showFirstLastButtons>
+                </mat-paginator>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+</app-base>

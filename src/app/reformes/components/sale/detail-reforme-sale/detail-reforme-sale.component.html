@@ -75,51 +75,51 @@
                 <!-- Asset Name -->
                 <div class="col-md-6 mb-3">
                   <label class="form-label text-sm text-secondary">{{ 'Name' | translate }}</label>
-                  <p class="form-control-plaintext">{{ reformeSale.immobilisation?.name }}</p>
+                  <p class="form-control-plaintext">{{ reformeSale.immobilisation.name }}</p>
                 </div>
 
                 <!-- Asset Code -->
                 <div class="col-md-6 mb-3">
                   <label class="form-label text-sm text-secondary">{{ 'Code' | translate }}</label>
-                  <p class="form-control-plaintext">{{ reformeSale.immobilisation?.code }}</p>
+                  <p class="form-control-plaintext">{{ reformeSale.immobilisation.code }}</p>
                 </div>
 
                 <!-- Category -->
                 <div class="col-md-6 mb-3">
                   <label class="form-label text-sm text-secondary">{{ 'Category' | translate }}</label>
-                  <p class="form-control-plaintext">{{ reformeSale.immobilisation?.categorie?.name }}</p>
+                  <p class="form-control-plaintext">{{ reformeSale.immobilisation.categorie.name }}</p>
                 </div>
 
                 <!-- Brand -->
                 <div class="col-md-6 mb-3">
                   <label class="form-label text-sm text-secondary">{{ 'Brand' | translate }}</label>
-                  <p class="form-control-plaintext">{{ reformeSale.immobilisation?.mark || ('NotAvailable' | translate) }}</p>
+                  <p class="form-control-plaintext">{{ reformeSale.immobilisation.mark || ('NotAvailable' | translate) }}</p>
                 </div>
 
                 <!-- Model -->
                 <div class="col-md-6 mb-3">
                   <label class="form-label text-sm text-secondary">{{ 'Model' | translate }}</label>
-                  <p class="form-control-plaintext">{{ reformeSale.immobilisation?.model || ('NotAvailable' | translate) }}</p>
+                  <p class="form-control-plaintext">{{ reformeSale.immobilisation.model || ('NotAvailable' | translate) }}</p>
                 </div>
 
                 <!-- Quantity -->
                 <div class="col-md-6 mb-3">
                   <label class="form-label text-sm text-secondary">{{ 'Quantity' | translate }}</label>
-                  <p class="form-control-plaintext">{{ reformeSale.immobilisation?.quantity }}</p>
+                  <p class="form-control-plaintext">{{ reformeSale.immobilisation.quantity }}</p>
                 </div>
 
                 <!-- Original Unit Price -->
                 <div class="col-md-6 mb-3">
                   <label class="form-label text-sm text-secondary">{{ 'OriginalUnitPrice' | translate }}</label>
-                  <p class="form-control-plaintext">{{ reformeSale.immobilisation?.unit_price | currency:'XAF':'symbol':'1.0-0' }}</p>
+                  <p class="form-control-plaintext">{{ reformeSale.immobilisation.unit_price | currency:'XAF':'symbol':'1.0-0' }}</p>
                 </div>
 
                 <!-- Status -->
                 <div class="col-md-6 mb-3">
                   <label class="form-label text-sm text-secondary">{{ 'Status' | translate }}</label>
                   <p class="form-control-plaintext">
-                    <span class="badge" [ngClass]="getStatusBadgeClass(reformeSale.immobilisation?.status || 'sold')">
-                      {{ reformeSale.immobilisation?.status }}
+                    <span class="badge" [ngClass]="getStatusBadgeClass(reformeSale.immobilisation.status || 'sold')">
+                      {{ reformeSale.immobilisation.status }}
                     </span>
                   </p>
                 </div>
@@ -127,31 +127,31 @@
                 <!-- Purchase Date -->
                 <div class="col-md-6 mb-3">
                   <label class="form-label text-sm text-secondary">{{ 'PurchaseDate' | translate }}</label>
-                  <p class="form-control-plaintext">{{ formatDate(reformeSale.immobilisation?.date_of_receipt || '') }}</p>
+                  <p class="form-control-plaintext">{{ formatDate(reformeSale.immobilisation.date_of_receipt || '') }}</p>
                 </div>
 
                 <!-- Order Number -->
                 <div class="col-md-6 mb-3">
                   <label class="form-label text-sm text-secondary">{{ 'OrderNumber' | translate }}</label>
-                  <p class="form-control-plaintext">{{ reformeSale.immobilisation?.num_bon_commande || ('NotAvailable' | translate) }}</p>
+                  <p class="form-control-plaintext">{{ reformeSale.immobilisation.num_bon_commande || ('NotAvailable' | translate) }}</p>
                 </div>
 
                 <!-- Process Number -->
                 <div class="col-md-6 mb-3">
                   <label class="form-label text-sm text-secondary">{{ 'ProcessNumber' | translate }}</label>
-                  <p class="form-control-plaintext">{{ reformeSale.immobilisation?.num_proces_verbal || ('NotAvailable' | translate) }}</p>
+                  <p class="form-control-plaintext">{{ reformeSale.immobilisation.num_proces_verbal || ('NotAvailable' | translate) }}</p>
                 </div>
 
                 <!-- Supplier -->
                 <div class="col-md-6 mb-3">
                   <label class="form-label text-sm text-secondary">{{ 'Supplier' | translate }}</label>
-                  <p class="form-control-plaintext">{{ reformeSale.immobilisation?.fournisseur?.raison_social }}</p>
+                  <p class="form-control-plaintext">{{ reformeSale.immobilisation.fournisseur.raison_social }}</p>
                 </div>
 
                 <!-- Structure -->
                 <div class="col-md-6 mb-3">
                   <label class="form-label text-sm text-secondary">{{ 'Structure' | translate }}</label>
-                  <p class="form-control-plaintext">{{ reformeSale.immobilisation?.structure?.name }}</p>
+                  <p class="form-control-plaintext">{{ reformeSale.immobilisation.structure.name }}</p>
                 </div>
               </div>
             </div>
@@ -205,7 +205,7 @@
                 <!-- Created By -->
                 <div class="col-md-6 mb-3">
                   <label class="form-label text-sm text-secondary">{{ 'ProcessedBy' | translate }}</label>
-                  <p class="form-control-plaintext">{{ reformeSale.user?.first_name }} {{ reformeSale.user?.last_name }}</p>
+                  <p class="form-control-plaintext">{{ reformeSale.user.first_name }} {{ reformeSale.user.last_name }}</p>
                 </div>
               </div>
             </div>

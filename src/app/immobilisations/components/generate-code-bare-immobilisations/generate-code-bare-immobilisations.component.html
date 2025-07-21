@@ -249,7 +249,23 @@
                             </span>
                           </td>
                           <td>
-                            <span class="text-xs text-muted">Structure</span>
+                            @if(immobilisation.employee_immo?.employee) {
+                              <div class="d-flex align-items-center">
+                                <div class="avatar avatar-xs me-2">
+                                  <div class="avatar-initial rounded-circle bg-gradient-success">
+                                    {{immobilisation.employee_immo!.employee!.first_name.charAt(0)}}{{immobilisation.employee_immo!.employee!.last_name.charAt(0)}}
+                                  </div>
+                                </div>
+                                <div class="d-flex flex-column">
+                                  <span class="text-xs font-weight-bold">{{immobilisation.employee_immo!.employee!.first_name}} {{immobilisation.employee_immo!.employee!.last_name}}</span>
+                                  <span class="text-xs text-secondary">{{immobilisation.employee_immo!.employee!.matricule}}</span>
+                                </div>
+                              </div>
+                            } @else {
+                              <span class="text-xs text-secondary">
+                                <i class="fas fa-user-slash me-1"></i>Non assigné
+                              </span>
+                            }
                           </td>
                         </tr>
                       }

@@ -1,1 +1,272 @@
-<p>detail-inventory works!</p>
+<div class="main-content position-relative max-height-vh-100 h-100 detail-inventory">
+  <div class="container-fluid py-4">
+    <!-- Loading State -->
+    @if(loading$ | async) {
+      <div class="row justify-content-center">
+        <div class="col-12 text-center">
+          <div class="card shadow-lg">
+            <div class="card-body py-5">
+              <app-custom-spinner></app-custom-spinner>
+              <p class="text-secondary mt-3">{{"LoadingInventoryDetails"|translate}}...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- Content -->
+    @if(!(loading$ | async) && inventory) {
+      <!-- Header Section -->
+      <div class="row mb-4">
+        <div class="col-12">
+          <div class="card bg-gradient-primary shadow-lg border-0">
+            <div class="card-body p-4">
+              <div class="row align-items-center">
+                <div class="col-md-8">
+                  <div class="d-flex align-items-center text-white">
+                    <div class="icon icon-shape icon-lg bg-white shadow text-center me-3">
+                      <i [class]="getTypeIcon(inventory.type)" class="text-primary"></i>
+                    </div>
+                    <div>
+                      <h3 class="mb-0">{{inventory.name}}</h3>
+                      <p class="text-sm opacity-8 mb-0">
+                        <i [class]="getStatusIcon()" class="me-2"></i>{{getStatusText() | translate}}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-4 text-end">
+                  <div class="d-flex justify-content-end align-items-center">
+                    <span [class]="getTypeClass(inventory.type)" class="me-3">
+                      <i [class]="getTypeIcon(inventory.type)" class="me-1"></i>
+                      {{inventory.type | titlecase | translate}}
+                    </span>
+                    <button class="btn btn-outline-light btn-sm" (click)="goBack()">
+                      <i class="fas fa-arrow-left me-2"></i>{{"Back"|translate}}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Content -->
+      <div class="row">
+        <!-- Left Column - Inventory Information -->
+        <div class="col-lg-8">
+          <!-- Basic Information Card -->
+          <div class="card shadow-lg mb-4">
+            <div class="card-header bg-gradient-light p-4">
+              <h6 class="mb-0">
+                <i class="fas fa-info-circle me-2 text-primary"></i>
+                {{"BasicInformation"|translate}}
+              </h6>
+            </div>
+            <div class="card-body p-4">
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="info-item mb-3">
+                    <label class="form-label text-sm text-secondary mb-1">
+                      <i class="fas fa-tag me-2"></i>{{"Name"|translate}}
+                    </label>
+                    <p class="text-dark font-weight-600 mb-0">{{inventory.name}}</p>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="info-item mb-3">
+                    <label class="form-label text-sm text-secondary mb-1">
+                      <i class="fas fa-layer-group me-2"></i>{{"Type"|translate}}
+                    </label>
+                    <p class="text-dark font-weight-600 mb-0">
+                      <span [class]="getTypeClass(inventory.type)">
+                        {{inventory.type | titlecase | translate}}
+                      </span>
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              @if(inventory.description) {
+                <div class="row">
+                  <div class="col-12">
+                    <div class="info-item mb-3">
+                      <label class="form-label text-sm text-secondary mb-1">
+                        <i class="fas fa-file-alt me-2"></i>{{"Description"|translate}}
+                      </label>
+                      <p class="text-dark font-weight-600 mb-0">{{inventory.description}}</p>
+                    </div>
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+
+          <!-- Timeline Card -->
+          <div class="card shadow-lg mb-4">
+            <div class="card-header bg-gradient-light p-4">
+              <h6 class="mb-0">
+                <i class="fas fa-history me-2 text-primary"></i>
+                {{"Timeline"|translate}}
+              </h6>
+            </div>
+            <div class="card-body p-4">
+              <div class="timeline timeline-one-side">
+                <div class="timeline-block mb-3">
+                  <span class="timeline-step">
+                    <i class="fas fa-plus text-success"></i>
+                  </span>
+                  <div class="timeline-content">
+                    <h6 class="text-dark text-sm font-weight-bold mb-0">{{"Created"|translate}}</h6>
+                    <p class="text-secondary text-xs mt-1 mb-0">
+                      {{formatDateTime(inventory.created_at)}}
+                    </p>
+                  </div>
+                </div>
+                <div class="timeline-block mb-3">
+                  <span class="timeline-step">
+                    <i class="fas fa-edit text-warning"></i>
+                  </span>
+                  <div class="timeline-content">
+                    <h6 class="text-dark text-sm font-weight-bold mb-0">{{"LastUpdated"|translate}}</h6>
+                    <p class="text-secondary text-xs mt-1 mb-0">
+                      {{formatDateTime(inventory.updated_at)}}
+                    </p>
+                  </div>
+                </div>
+                @if(inventory.end_date) {
+                  <div class="timeline-block mb-3">
+                    <span class="timeline-step">
+                      <i class="fas fa-calendar-times text-danger"></i>
+                    </span>
+                    <div class="timeline-content">
+                      <h6 class="text-dark text-sm font-weight-bold mb-0">{{"EndDate"|translate}}</h6>
+                      <p class="text-secondary text-xs mt-1 mb-0">
+                        {{formatDate(inventory.end_date)}}
+                      </p>
+                    </div>
+                  </div>
+                }
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Column - Actions & Information -->
+        <div class="col-lg-4">
+          <!-- Actions Card -->
+          <div class="card shadow-lg mb-4">
+            <div class="card-header bg-gradient-light p-4">
+              <h6 class="mb-0">
+                <i class="fas fa-cogs me-2 text-primary"></i>
+                {{"Actions"|translate}}
+              </h6>
+            </div>
+            <div class="card-body p-4">
+              <div class="d-grid gap-3">
+                <button class="btn btn-primary" (click)="editInventory()">
+                  <i class="fas fa-edit me-2"></i>{{"EditInventory"|translate}}
+                </button>
+                <button class="btn btn-info" routerLink="/admin/inventories/report-inventory/{{inventory.id}}">
+                  <i class="fas fa-file-pdf me-2"></i>{{"GenerateReport"|translate}}
+                </button>
+                <button class="btn btn-warning" (click)="closeInventory()">
+                  <i class="fas fa-lock me-2"></i>{{"CloseInventory"|translate}}
+                </button>
+                <button class="btn btn-outline-danger" (click)="deleteInventory()">
+                  <i class="fas fa-trash me-2"></i>{{"DeleteInventory"|translate}}
+                </button>
+                <hr class="my-2">
+                <button class="btn btn-outline-secondary" (click)="goBack()">
+                  <i class="fas fa-arrow-left me-2"></i>{{"BackToList"|translate}}
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- User Information Card -->
+          <div class="card shadow-lg mb-4">
+            <div class="card-header bg-gradient-light p-4">
+              <h6 class="mb-0">
+                <i class="fas fa-user me-2 text-primary"></i>
+                {{"CreatedBy"|translate}}
+              </h6>
+            </div>
+            <div class="card-body p-4">
+              <div class="d-flex align-items-center">
+                <div class="avatar avatar-lg bg-gradient-secondary me-3">
+                  <i class="fas fa-user text-white"></i>
+                </div>
+                <div>
+                  <h6 class="mb-0">{{inventory.user.first_name}} {{inventory.user.last_name}}</h6>
+                  <p class="text-sm text-secondary mb-0">{{inventory.user.email}}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Status Card -->
+          <div class="card shadow-lg mb-4">
+            <div class="card-header bg-gradient-light p-4">
+              <h6 class="mb-0">
+                <i class="fas fa-chart-line me-2 text-primary"></i>
+                {{"Status"|translate}}
+              </h6>
+            </div>
+            <div class="card-body p-4 text-center">
+              <div class="mb-3">
+                <i [class]="getStatusIcon()" style="font-size: 2rem;"></i>
+              </div>
+              <h6 class="mb-2">{{getStatusText() | translate}}</h6>
+              @if(inventory.end_date) {
+                <p class="text-sm text-secondary mb-0">
+                  {{"EndsOn"|translate}}: {{formatDate(inventory.end_date)}}
+                </p>
+              } @else {
+                <p class="text-sm text-secondary mb-0">
+                  {{"NoEndDate"|translate}}
+                </p>
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Manage Inventory Section -->
+      <div class="row">
+        <div class="col-12">
+          <div class="card shadow-lg mb-4">
+            <div class="card-header bg-gradient-light p-4">
+              <h6 class="mb-0">
+                <i class="fas fa-tasks me-2 text-primary"></i>
+                {{"ManageInventory"|translate}}
+              </h6>
+            </div>
+            <div class="card-body p-0">
+              <app-manage-inventory [inventoryId]="inventory.id"></app-manage-inventory>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- Empty State -->
+    @if(!(loading$ | async) && !inventory) {
+      <div class="row justify-content-center">
+        <div class="col-12 text-center">
+          <div class="card shadow-lg">
+            <div class="card-body py-5">
+              <i class="fas fa-exclamation-triangle text-warning" style="font-size: 3rem;"></i>
+              <h3 class="text-secondary mt-3">{{"InventoryNotFound"|translate}}</h3>
+              <p class="text-muted mb-4">{{"InventoryNotFoundDescription"|translate}}</p>
+              <button class="btn btn-primary" (click)="goBack()">
+                <i class="fas fa-arrow-left me-2"></i>{{"BackToList"|translate}}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+</div>

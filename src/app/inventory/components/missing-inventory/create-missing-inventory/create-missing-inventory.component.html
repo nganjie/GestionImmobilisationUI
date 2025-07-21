@@ -1,1 +1,186 @@
-<p>create-missing-inventory works!</p>
+<div class="modal-header">
+  <h4 class="modal-title" id="modal-title">
+    <i class="fas fa-exclamation-triangle me-2"></i>
+    {{getModalTitle()}}
+  </h4>
+  <button type="button" class="btn-close" aria-label="Close" (click)="onCancel()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="modal-body">
+  @if(isLoading) {
+    <div class="text-center py-4">
+      <app-custom-spinner></app-custom-spinner>
+      <p class="text-muted mt-3">{{"Loading"|translate}}...</p>
+    </div>
+  } @else {
+    <form [formGroup]="missingInventoryForm" (ngSubmit)="onSubmit()">
+      <div class="row">
+        <!-- Office Field -->
+        <div class="col-md-6 mb-3">
+          <label for="office_id" class="form-label">
+            {{"Office"|translate}} <span class="text-danger">*</span>
+          </label>
+          <ng-select
+            [items]="offices$ | async"
+            bindLabel="name"
+            bindValue="id"
+            [clearable]="true"
+            [searchable]="true"
+            [placeholder]="'SelectOffice'|translate"
+            formControlName="office_id"
+            [class.is-invalid]="isFieldInvalid('office_id')"
+          >
+          </ng-select>
+          @if(isFieldInvalid('office_id')) {
+            <div class="invalid-feedback">
+              {{getFieldError('office_id')}}
+            </div>
+          }
+        </div>
+
+        <!-- Immobilisation Field -->
+        <div class="col-md-6 mb-3">
+          <label for="immobilisation_id" class="form-label">
+            {{"Immobilisation"|translate}} <span class="text-danger">*</span>
+          </label>
+          <ng-select
+            [items]="immobilisations$ | async"
+            bindLabel="name"
+            bindValue="id"
+            [clearable]="true"
+            [searchable]="true"
+            [placeholder]="'SelectImmobilisation'|translate"
+            formControlName="immobilisation_id"
+            [class.is-invalid]="isFieldInvalid('immobilisation_id')"
+          >
+            <ng-template ng-option-tmp let-item="item">
+              <div>
+                <strong>{{item.name}}</strong>
+                <br>
+                <small class="text-muted">{{item.code}} - {{item.mark}}</small>
+              </div>
+            </ng-template>
+          </ng-select>
+          @if(isFieldInvalid('immobilisation_id')) {
+            <div class="invalid-feedback">
+              {{getFieldError('immobilisation_id')}}
+            </div>
+          }
+        </div>
+
+        <!-- Inventory Field -->
+        <div class="col-md-6 mb-3">
+          <label for="inventory_id" class="form-label">
+            {{"Inventory"|translate}} <span class="text-danger">*</span>
+          </label>
+          <ng-select
+            [items]="inventories$ | async"
+            bindLabel="name"
+            bindValue="id"
+            [clearable]="true"
+            [searchable]="true"
+            [placeholder]="'SelectInventory'|translate"
+            formControlName="inventory_id"
+            [class.is-invalid]="isFieldInvalid('inventory_id')"
+          >
+            <ng-template ng-option-tmp let-item="item">
+              <div>
+                <strong>{{item.name}}</strong>
+                <br>
+                <small class="text-muted">{{item.type | translate}}</small>
+              </div>
+            </ng-template>
+          </ng-select>
+          @if(isFieldInvalid('inventory_id')) {
+            <div class="invalid-feedback">
+              {{getFieldError('inventory_id')}}
+            </div>
+          }
+        </div>
+
+        <!-- Status Field -->
+        <div class="col-md-6 mb-3">
+          <label for="status" class="form-label">
+            {{"Status"|translate}} <span class="text-danger">*</span>
+          </label>
+          <select
+            id="status"
+            class="form-select"
+            formControlName="status"
+            [class.is-invalid]="isFieldInvalid('status')"
+          >
+            @for(status of statusOptions; track status.value) {
+              <option [value]="status.value">
+                {{status.label | translate}}
+              </option>
+            }
+          </select>
+          @if(isFieldInvalid('status')) {
+            <div class="invalid-feedback">
+              {{getFieldError('status')}}
+            </div>
+          }
+        </div>
+
+        <!-- Comment Field -->
+        <div class="col-md-12 mb-3">
+          <label for="comment" class="form-label">
+            {{"Comment"|translate}}
+          </label>
+          <textarea
+            id="comment"
+            class="form-control"
+            formControlName="comment"
+            rows="3"
+            [class.is-invalid]="isFieldInvalid('comment')"
+            placeholder="{{'CommentPlaceholder'|translate}}"
+          ></textarea>
+          @if(isFieldInvalid('comment')) {
+            <div class="invalid-feedback">
+              {{getFieldError('comment')}}
+            </div>
+          }
+        </div>
+
+        <!-- Status Preview -->
+        @if(missingInventoryForm.get('status')?.value) {
+          <div class="col-md-12 mb-3">
+            <div class="alert alert-info">
+              <div class="d-flex align-items-center">
+                <i [class]="getStatusIcon(missingInventoryForm.get('status')?.value)" 
+                   [ngClass]="getStatusClass(missingInventoryForm.get('status')?.value)" 
+                   class="me-2"></i>
+                <span>
+                  {{"StatusSelected"|translate}}: 
+                  <strong>{{missingInventoryForm.get('status')?.value | translate}}</strong>
+                </span>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    </form>
+  }
+</div>
+
+<div class="modal-footer">
+  <button type="button" class="btn btn-secondary" (click)="onCancel()">
+    <i class="fas fa-times me-2"></i>
+    {{"Cancel"|translate}}
+  </button>
+  <button
+    type="button"
+    class="btn btn-primary"
+    (click)="onSubmit()"
+    [disabled]="missingInventoryForm.invalid || isLoading"
+  >
+    @if(isLoading) {
+      <i class="fas fa-spinner fa-spin me-2"></i>
+    } @else {
+      <i class="fas fa-save me-2"></i>
+    }
+    {{getSubmitButtonText()}}
+  </button>
+</div>

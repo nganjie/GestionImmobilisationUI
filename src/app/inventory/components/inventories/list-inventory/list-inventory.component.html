@@ -1,1 +1,267 @@
-<p>list-inventory works!</p>
+<app-base>
+  <div class="container-fluid py-4">
+    <!-- Header Section -->
+    <div class="row">
+      <div class="col-12">
+        <div class="card mb-4">
+          <div class="card-header pb-0 bg-gradient-primary">
+            <div class="row align-items-center">
+              <div class="col-lg-6 col-7">
+                <h6 class="mb-0 text-white">{{"Inventories"|translate}}</h6>
+                <p class="text-sm mb-0 text-white opacity-8">{{"ManageInventories"|translate}}</p>
+              </div>
+              <div class="col-lg-6 col-5 my-auto text-end">
+                <div class="dropdown float-lg-end pe-4">
+                  <a class="btn bg-gradient-light mb-0 dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                    <i class="fas fa-plus"></i>&nbsp;&nbsp;{{"Actions"|translate}}
+                  </a>
+                  <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" (click)="createInventory()">
+                      <i class="fas fa-plus me-2"></i>{{"CreateInventory"|translate}}
+                    </a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" routerLink="missing-inventory">
+                      <i class="fas fa-exclamation-triangle me-2"></i>{{"InventoryMissing"|translate}}
+                    </a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" (click)="resetFilters()">
+                      <i class="fas fa-filter me-2"></i>{{"ResetFilters"|translate}}
+                    </a></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Filters Section -->
+    <div class="row">
+      <div class="col-12">
+        <div class="card mb-4">
+          <div class="card-body px-0 pt-0 pb-2">
+            <div class="row mt-3 px-3">
+              <div class="col-lg-3 col-md-6 col-12">
+                <div class="form-group mb-0">
+                  <label class="form-label text-xs">{{"Search"|translate}}</label>
+                  <input type="text" class="form-control" [formControl]="searchCtrl" 
+                         placeholder="{{'SearchInventories'|translate}}">
+                </div>
+              </div>
+              <div class="col-lg-2 col-md-6 col-12">
+                <div class="form-group mb-0">
+                  <label class="form-label text-xs">{{"Type"|translate}}</label>
+                  <select class="form-select" [formControl]="typeCtrl">
+                    <option value="">{{"AllTypes"|translate}}</option>
+                    @for(type of listInventoryTypeEnum; track type) {
+                      <option [value]="type">{{type | titlecase | translate}}</option>
+                    }
+                  </select>
+                </div>
+              </div>
+              <div class="col-lg-2 col-md-6 col-12">
+                <div class="form-group mb-0">
+                  <label class="form-label text-xs">{{"ItemsPerPage"|translate}}</label>
+                  <select class="form-select" [(ngModel)]="itemsPerPage" (change)="changeChoiceItemPage()">
+                    @for(num of pageArray; track num) {
+                      <option [value]="num">{{num}}</option>
+                    }
+                  </select>
+                </div>
+              </div>
+              <div class="col-lg-2 col-md-6 col-12">
+                <div class="form-group mb-0">
+                  <label class="form-label text-xs">{{"DateFrom"|translate}}</label>
+                  <input type="date" class="form-control" [(ngModel)]="startDate" (change)="applyFilters()">
+                </div>
+              </div>
+              <div class="col-lg-2 col-md-6 col-12">
+                <div class="form-group mb-0">
+                  <label class="form-label text-xs">{{"DateTo"|translate}}</label>
+                  <input type="date" class="form-control" [(ngModel)]="endDate" (change)="applyFilters()">
+                </div>
+              </div>
+              <div class="col-lg-1 col-md-6 col-12">
+                <div class="form-group mb-0">
+                  <label class="form-label text-xs opacity-0">Action</label>
+                  <button class="btn btn-outline-secondary btn-sm w-100" (click)="resetFilters()" 
+                          title="{{'ResetFilters'|translate}}">
+                    <i class="fas fa-undo"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Table Section -->
+    <div class="row">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-header pb-0">
+            <div class="row align-items-center">
+              <div class="col-8">
+                <h6 class="mb-0">{{"InventoriesList"|translate}}</h6>
+              </div>
+              <div class="col-4 text-end">
+                <button class="btn btn-primary btn-sm" (click)="createInventory()">
+                  <i class="fas fa-plus me-2"></i>{{"Add"|translate}}
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="card-body px-0 pt-0 pb-2">
+            @if(loading$ | async) {
+              <div class="text-center py-4">
+                <app-custom-spinner></app-custom-spinner>
+                <p class="text-muted mt-3">{{"LoadingInventories"|translate}}...</p>
+              </div>
+            } @else {
+              @if((inventories$ | async)?.length === 0) {
+                <div class="text-center py-4">
+                  <i class="fas fa-inventory text-muted" style="font-size: 3rem;"></i>
+                  <h6 class="text-muted mt-3">{{"NoInventoriesFound"|translate}}</h6>
+                  <p class="text-sm text-muted">{{"CreateFirstInventory"|translate}}</p>
+                  <button class="btn btn-primary btn-sm" (click)="createInventory()">
+                    <i class="fas fa-plus me-2"></i>{{"CreateInventory"|translate}}
+                  </button>
+                </div>
+              } @else {
+                <div class="table-responsive p-0">
+                  <table class="table align-items-center mb-0">
+                    <thead>
+                      <tr>
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                          <a (click)="sortBy('name')" class="text-decoration-none cursor-pointer">
+                            {{"Name"|translate}} <i [class]="getSortIcon('name')"></i>
+                          </a>
+                        </th>
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                          <a (click)="sortBy('type')" class="text-decoration-none cursor-pointer">
+                            {{"Type"|translate}} <i [class]="getSortIcon('type')"></i>
+                          </a>
+                        </th>
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                          {{"Description"|translate}}
+                        </th>
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                          <a (click)="sortBy('created_at')" class="text-decoration-none cursor-pointer">
+                            {{"CreatedAt"|translate}} <i [class]="getSortIcon('created_at')"></i>
+                          </a>
+                        </th>
+                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                          {{"Actions"|translate}}
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      @for(inventory of inventories$ | async; track inventory.id) {
+                        <tr>
+                          <td class="ps-2">
+                            <div class="d-flex px-2 py-1">
+                              <div class="avatar avatar-sm bg-gradient-secondary me-3">
+                                <i [class]="getTypeIcon(inventory.type)" class="text-white"></i>
+                              </div>
+                              <div class="d-flex flex-column justify-content-center">
+                                <h6 class="mb-0 text-sm">{{inventory.name}}</h6>
+                                <p class="text-xs text-secondary mb-0">
+                                  {{"CreatedBy"|translate}}: {{inventory.user.first_name}} {{inventory.user.last_name}}
+                                </p>
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <span [class]="getTypeClass(inventory.type)">
+                              {{inventory.type | titlecase | translate}}
+                            </span>
+                          </td>
+                          <td>
+                            <p class="text-xs text-secondary mb-0">
+                              {{inventory.description || 'N/A'}}
+                            </p>
+                          </td>
+                          <td>
+                            <p class="text-xs text-secondary mb-0">{{formatDate(inventory.created_at)}}</p>
+                            @if(inventory.end_date) {
+                              <p class="text-xs text-warning mb-0">
+                                <i class="fas fa-clock me-1"></i>{{"EndDate"|translate}}: {{formatDate(inventory.end_date)}}
+                              </p>
+                            }
+                          </td>
+                          <td class="text-center">
+                            <div class="dropdown">
+                              <button class="btn btn-link text-secondary p-0 dropdown-toggle" 
+                                      type="button" 
+                                      data-bs-toggle="dropdown">
+                                <i class="fas fa-ellipsis-v"></i>
+                              </button>
+                              <ul class="dropdown-menu">
+                                <li>
+                                  <a class="dropdown-item" (click)="viewDetails(inventory.id)">
+                                    <i class="fas fa-eye me-2"></i>{{"View"|translate}}
+                                  </a>
+                                </li>
+                                <li>
+                                  <a class="dropdown-item" (click)="generateReport(inventory.id)">
+                                    <i class="fas fa-file-pdf me-2"></i>{{"GenerateReport"|translate}}
+                                  </a>
+                                </li>
+                                <li>
+                                  <a class="dropdown-item" (click)="updateInventory(inventory.id)">
+                                    <i class="fas fa-edit me-2"></i>{{"Edit"|translate}}
+                                  </a>
+                                </li>
+                                <li>
+                                  <a class="dropdown-item text-warning" (click)="closeInventory(inventory.id)">
+                                    <i class="fas fa-lock me-2"></i>{{"CloseInventory"|translate}}
+                                  </a>
+                                </li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                  <a class="dropdown-item text-danger" (click)="deleteInventory(inventory.id)">
+                                    <i class="fas fa-trash me-2"></i>{{"Delete"|translate}}
+                                  </a>
+                                </li>
+                              </ul>
+                            </div>
+                          </td>
+                        </tr>
+                      }
+                    </tbody>
+                  </table>
+                </div>
+
+                <!-- Pagination -->
+                <div class="card-footer">
+                  <div class="row align-items-center">
+                    <div class="col-sm-6">
+                      <div class="dataTables_info">
+                        <span class="text-sm text-secondary">
+                          {{"Showing"|translate}} {{(paginateData$ | async)?.current_page || 0}} {{"to"|translate}} {{(paginateData$ | async)?.per_page || 0}} 
+                          {{"of"|translate}} {{(paginateData$ | async)?.total || 0}} {{"entries"|translate}}
+                        </span>
+                      </div>
+                    </div>
+                    <div class="col-sm-6">
+                      <mat-paginator #paginator 
+                                   [length]="totaElement" 
+                                   (page)="pageChange($event)"
+                                   [pageSize]="itemsPerPage"
+                                   [pageSizeOptions]="pageArray"
+                                   [showFirstLastButtons]="true"
+                                   aria-label="Select page">
+                      </mat-paginator>
+                    </div>
+                  </div>
+                </div>
+              }
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</app-base>

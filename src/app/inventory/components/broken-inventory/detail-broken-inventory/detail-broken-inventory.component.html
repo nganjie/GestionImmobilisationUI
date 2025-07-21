@@ -1,1 +1,227 @@
-<p>detail-broken-inventory works!</p>
+<app-base>
+  <div class="container-fluid py-4">
+    @if(loading$ | async) {
+      <div class="text-center py-5">
+        <app-custom-spinner></app-custom-spinner>
+        <p class="text-muted mt-3">{{"LoadingBrokenItemDetails"|translate}}...</p>
+      </div>
+    } @else if(!brokenInventory) {
+      <div class="row">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-body text-center py-5">
+              <i class="fas fa-exclamation-triangle text-warning" style="font-size: 3rem;"></i>
+              <h4 class="mt-3">{{"BrokenItemNotFound"|translate}}</h4>
+              <p class="text-muted">{{"BrokenItemNotFoundDescription"|translate}}</p>
+              <button class="btn btn-primary" (click)="goBack()">
+                <i class="fas fa-arrow-left me-2"></i>{{"BackToBrokenItems"|translate}}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    } @else {
+      <!-- Header Section -->
+      <div class="row">
+        <div class="col-12">
+          <div class="card mb-4">
+            <div class="card-header pb-0 bg-gradient-primary">
+              <div class="row align-items-center">
+                <div class="col-lg-6 col-7">
+                  <h6 class="mb-0 text-white">{{"BrokenItemDetails"|translate}}</h6>
+                  <p class="text-sm mb-0 text-white opacity-8">{{"BrokenItemInformation"|translate}}</p>
+                </div>
+                <div class="col-lg-6 col-5 my-auto text-end">
+                  <div class="dropdown float-lg-end pe-4">
+                    <a class="btn bg-gradient-light mb-0 dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                      <i class="fas fa-cog"></i>&nbsp;&nbsp;{{"Actions"|translate}}
+                    </a>
+                    <ul class="dropdown-menu">
+                      <li><a class="dropdown-item" (click)="editBrokenInventory()">
+                        <i class="fas fa-edit me-2"></i>{{"Edit"|translate}}
+                      </a></li>
+                      <li><hr class="dropdown-divider"></li>
+                      <li><a class="dropdown-item text-danger" (click)="deleteBrokenInventory()">
+                        <i class="fas fa-trash me-2"></i>{{"Delete"|translate}}
+                      </a></li>
+                      <li><hr class="dropdown-divider"></li>
+                      <li><a class="dropdown-item" (click)="goBack()">
+                        <i class="fas fa-arrow-left me-2"></i>{{"BackToBrokenItems"|translate}}
+                      </a></li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Details Section -->
+      <div class="row">
+        <div class="col-xl-4 col-lg-5">
+          <div class="card card-profile">
+            <div class="row">
+              <div class="col-4">
+                <div class="card-profile-image">
+                  <div class="avatar avatar-xl bg-gradient-danger shadow-sm">
+                    <i class="fas fa-wrench text-white" style="font-size: 1.5rem;"></i>
+                  </div>
+                </div>
+              </div>
+              <div class="col-8 my-auto">
+                <div class="card-body text-left">
+                  <h5 class="font-weight-bolder mb-0">{{"BrokenItem"|translate}}</h5>
+                  <p class="text-sm font-weight-light mb-0">
+                    <span [class]="getStatusClass(brokenInventory.status)">
+                      <i [class]="getStatusIcon(brokenInventory.status)" class="me-1"></i>
+                      {{brokenInventory.status | translate}}
+                    </span>
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="card-body pt-0">
+              <div class="row">
+                <div class="col">
+                  <div class="d-flex justify-content-center">
+                    <div class="d-grid text-center">
+                      <span class="text-lg font-weight-bolder">{{formatDate(brokenInventory.created_at)}}</span>
+                      <span class="text-sm opacity-8">{{"CreatedAt"|translate}}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="text-center mt-4">
+                <button class="btn btn-primary btn-sm" (click)="editBrokenInventory()">
+                  <i class="fas fa-edit me-2"></i>{{"Edit"|translate}}
+                </button>
+                <button class="btn btn-outline-secondary btn-sm ms-2" (click)="goBack()">
+                  <i class="fas fa-arrow-left me-2"></i>{{"Back"|translate}}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-xl-8 col-lg-7">
+          <div class="card">
+            <div class="card-header pb-0">
+              <div class="d-flex align-items-center">
+                <p class="mb-0">{{"BrokenItemInformation"|translate}}</p>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label class="form-control-label">{{"User"|translate}}</label>
+                    <div class="card mb-3">
+                      <div class="card-body p-3">
+                        <div class="d-flex">
+                          <div>
+                            <div class="avatar avatar-sm me-3 bg-gradient-secondary">
+                              <i class="fas fa-user text-white"></i>
+                            </div>
+                          </div>
+                          <div class="d-flex flex-column justify-content-center">
+                            <h6 class="mb-0 text-sm">{{brokenInventory.user.first_name}} {{brokenInventory.user.last_name}}</h6>
+                            <p class="text-xs text-secondary mb-0">{{brokenInventory.user.email}}</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label class="form-control-label">{{"Status"|translate}}</label>
+                    <div class="mt-2">
+                      <span [class]="getStatusClass(brokenInventory.status)">
+                        <i [class]="getStatusIcon(brokenInventory.status)" class="me-1"></i>
+                        {{brokenInventory.status | translate}}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-12">
+                  <div class="form-group">
+                    <label class="form-control-label">{{"Immobilisation"|translate}}</label>
+                    <div class="card mb-3">
+                      <div class="card-body p-3">
+                        <div class="d-flex">
+                          <div>
+                            <div class="avatar avatar-sm me-3 bg-gradient-info">
+                              <i class="fas fa-cube text-white"></i>
+                            </div>
+                          </div>
+                          <div class="d-flex flex-column justify-content-center">
+                            <h6 class="mb-0 text-sm">{{brokenInventory.immobilisation.name}}</h6>
+                            <p class="text-xs text-secondary mb-0">
+                              {{"Code"|translate}}: {{brokenInventory.immobilisation.code}} | 
+                              {{"Mark"|translate}}: {{brokenInventory.immobilisation.mark}}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-12">
+                  <div class="form-group">
+                    <label class="form-control-label">{{"Inventory"|translate}}</label>
+                    <div class="card mb-3">
+                      <div class="card-body p-3">
+                        <div class="d-flex">
+                          <div>
+                            <div class="avatar avatar-sm me-3 bg-gradient-primary">
+                              <i class="fas fa-clipboard-list text-white"></i>
+                            </div>
+                          </div>
+                          <div class="d-flex flex-column justify-content-center">
+                            <h6 class="mb-0 text-sm">{{brokenInventory.inventory.name}}</h6>
+                            <p class="text-xs text-secondary mb-0">
+                              {{"Type"|translate}}: {{brokenInventory.inventory.type | translate}}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-12">
+                  <div class="form-group">
+                    <label class="form-control-label">{{"Comment"|translate}}</label>
+                    <div class="card">
+                      <div class="card-body">
+                        <p class="text-sm mb-0">{{brokenInventory.comment}}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label class="form-control-label">{{"CreatedAt"|translate}}</label>
+                    <p class="form-control-static">{{formatDate(brokenInventory.created_at)}}</p>
+                  </div>
+                </div>
+
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label class="form-control-label">{{"UpdatedAt"|translate}}</label>
+                    <p class="form-control-static">{{formatDate(brokenInventory.updated_at)}}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+</app-base>

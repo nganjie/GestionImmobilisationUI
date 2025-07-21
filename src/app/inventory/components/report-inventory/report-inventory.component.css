@@ -1,0 +1,148 @@
+/* Print-specific styles */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  
+  .print-content {
+    box-shadow: none !important;
+    border: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  
+  .card {
+    box-shadow: none !important;
+    border: none !important;
+  }
+  
+  .card-body {
+    padding: 0 !important;
+  }
+  
+  .report-header {
+    page-break-inside: avoid;
+  }
+  
+  .table {
+    page-break-inside: auto;
+  }
+  
+  .table tr {
+    page-break-inside: avoid;
+    page-break-after: auto;
+  }
+  
+  .table thead {
+    display: table-header-group;
+  }
+  
+  .table tbody {
+    display: table-row-group;
+  }
+  
+  .nav-tabs,
+  .nav-link {
+    display: none !important;
+  }
+  
+  .tab-pane {
+    display: block !important;
+  }
+  
+  .tab-pane.active {
+    display: block !important;
+  }
+  
+  /* Show both missing and broken items in print */
+  .tab-pane {
+    page-break-before: auto;
+  }
+  
+  /* Ensure good contrast for print */
+  .text-warning {
+    color: #856404 !important;
+  }
+  
+  .text-danger {
+    color: #721c24 !important;
+  }
+  
+  .text-info {
+    color: #0c5460 !important;
+  }
+  
+  .bg-gradient-warning,
+  .bg-gradient-danger,
+  .bg-gradient-info {
+    background: #f8f9fa !important;
+    color: #212529 !important;
+  }
+  
+  .bg-gradient-warning .text-white,
+  .bg-gradient-danger .text-white,
+  .bg-gradient-info .text-white {
+    color: #212529 !important;
+  }
+}
+
+/* Screen styles */
+@media screen {
+  .inventory-info {
+    background-color: #f8f9fa;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    margin-bottom: 1rem;
+  }
+  
+  .report-header h2 {
+    color: #344767;
+    font-weight: 600;
+  }
+  
+  .nav-tabs .nav-link {
+    border: 1px solid transparent;
+    border-top-left-radius: 0.5rem;
+    border-top-right-radius: 0.5rem;
+  }
+  
+  .nav-tabs .nav-link.active {
+    color: #495057;
+    background-color: #fff;
+    border-color: #dee2e6 #dee2e6 #fff;
+  }
+  
+  .tab-content {
+    border: 1px solid #dee2e6;
+    border-top: none;
+    border-radius: 0 0 0.5rem 0.5rem;
+    padding: 1rem;
+  }
+}
+
+/* Common styles */
+.report-header {
+  margin-bottom: 2rem;
+}
+
+.inventory-info .row > div {
+  text-align: center;
+  padding: 0.5rem;
+}
+
+.table th {
+  font-weight: 600;
+  background-color: #f8f9fa;
+  border-top: none;
+}
+
+.table-striped > tbody > tr:nth-of-type(odd) {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.summary-section {
+  background-color: #f8f9fa;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  margin-top: 1rem;
+}

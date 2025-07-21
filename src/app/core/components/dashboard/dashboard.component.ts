@@ -140,9 +140,36 @@ export class DashboardComponent implements OnInit{
               route: '/admin/reformes/sales'
             },
           ]
+        },
+        {
+      id: 'inventories',
+      label: 'Inventories',
+      icon: 'ni ni-settings-gear-65',
+      route: '/admin/inventories',
+      children: [
+        {
+          id: 'inventories',
+          label: 'all inventories',
+          icon: 'ni ni-chart-pie-35',
+          route: '/admin/inventories'
+        },
+        {
+          id: 'missing-inventories',
+          label: 'missing inventories',
+          icon: 'ni ni-settings-gear-65',
+          route: '/admin/inventories/missing-inventory'
+        },
+         {
+          id: 'broken-inventories',
+          label: 'broken inventories',
+          icon: 'ni ni-settings-gear-65',
+          route: '/admin/inventories/broken-inventory'
         }
       ]
     },
+      ]
+    },
+    
     {
       title: 'QuickAccess',
       items: [

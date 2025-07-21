@@ -1,3 +1,4 @@
+import { EmployeeDetail } from "../../employees/models/employee-detail.model"
 import { ImmobilisationStatusEnum } from "../../enums/immobilisation-status.enum"
 
 export interface ImmobilisationDetail {
@@ -22,7 +23,17 @@ export interface ImmobilisationDetail {
     structure: Structure
     fournisseur: Fournisseur
     user: User
-  }
+    employee_immo?: Employeeimmo;
+}
+interface Employeeimmo {
+  id: string;
+  user_id: string;
+  immobilisation_id: string;
+  employee_id: string;
+  created_at: string;
+  updated_at: string;
+  employee: EmployeeDetail;
+}
   
   export interface Categorie {
     id: string

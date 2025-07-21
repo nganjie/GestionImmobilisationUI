@@ -11,6 +11,14 @@ import { DetailMissingInventoryComponent } from './components/missing-inventory/
 import { ListBrokenInventoryComponent } from './components/broken-inventory/list-broken-inventory/list-broken-inventory.component';
 import { CreateBrokenInventoryComponent } from './components/broken-inventory/create-broken-inventory/create-broken-inventory.component';
 import { DetailBrokenInventoryComponent } from './components/broken-inventory/detail-broken-inventory/detail-broken-inventory.component';
+import { SharedModule } from '../shared/shared.module';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { LanguageService } from '../services/language/language.service';
+import { HttpClient } from '@angular/common/http';
+import { createTranslateLoader } from '../app.module';
+import { ManageInventoryComponent } from './components/manage-inventory/manage-inventory.component';
+import { ReportInventoryComponent } from './components/report-inventory/report-inventory.component';
 
 
 
@@ -24,11 +32,26 @@ import { DetailBrokenInventoryComponent } from './components/broken-inventory/de
     DetailMissingInventoryComponent,
     ListBrokenInventoryComponent,
     CreateBrokenInventoryComponent,
-    DetailBrokenInventoryComponent
+    DetailBrokenInventoryComponent,
+    ManageInventoryComponent,
+    ReportInventoryComponent
   ],
   imports: [
     CommonModule,
-    InventoryRoutingModule
+    InventoryRoutingModule,
+    SharedModule,
+    MatPaginatorModule,
+    TranslateModule.forRoot({
+      loader:{
+        provide:TranslateLoader,
+        useFactory:(createTranslateLoader),
+        deps:[HttpClient]
+      }
+    }
+    ),
+  ],
+  providers:[
+    LanguageService
   ]
 })
 export class InventoryModule { }

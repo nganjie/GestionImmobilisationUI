@@ -1,1 +1,144 @@
-<p>create-broken-inventory works!</p>
+<div class="modal-header bg-gradient-primary">
+  <h4 class="modal-title text-white" id="modal-title">
+    @if(isEditMode) {
+      <i class="fas fa-edit me-2"></i>{{"EditBrokenItem"|translate}}
+    } @else {
+      <i class="fas fa-plus me-2"></i>{{"CreateBrokenItem"|translate}}
+    }
+  </h4>
+  <button type="button" class="btn-close btn-close-white" (click)="dismiss()" aria-label="Close"></button>
+</div>
+
+<div class="modal-body">
+  @if(loading$ | async) {
+    <div class="text-center py-4">
+      <app-custom-spinner></app-custom-spinner>
+      <p class="text-muted mt-3">{{"LoadingData"|translate}}...</p>
+    </div>
+  } @else {
+    <form [formGroup]="brokenInventoryForm" (ngSubmit)="onSubmit()">
+      <div class="row">
+        <!-- Immobilisation Field -->
+        <div class="col-md-6 mb-3">
+          <label for="immobilisation_id" class="form-label">
+            {{"Immobilisation"|translate}} <span class="text-danger">*</span>
+          </label>
+          <ng-select
+            [items]="immobilisations$ | async"
+            bindLabel="name"
+            bindValue="id"
+            [clearable]="true"
+            [searchable]="true"
+            [placeholder]="'SelectImmobilisation'|translate"
+            formControlName="immobilisation_id"
+            [class.is-invalid]="isFieldInvalid('immobilisation_id')"
+          >
+            <ng-template ng-option-tmp let-item="item">
+              <div>
+                <strong>{{item.name}}</strong>
+                <br>
+                <small class="text-muted">{{item.code}} - {{item.mark}}</small>
+              </div>
+            </ng-template>
+          </ng-select>
+          @if(isFieldInvalid('immobilisation_id')) {
+            <div class="invalid-feedback">
+              {{getFieldError('immobilisation_id')}}
+            </div>
+          }
+        </div>
+
+        <!-- Inventory Field -->
+        <div class="col-md-6 mb-3">
+          <label for="inventory_id" class="form-label">
+            {{"Inventory"|translate}} <span class="text-danger">*</span>
+          </label>
+          <ng-select
+            [items]="inventories$ | async"
+            bindLabel="name"
+            bindValue="id"
+            [clearable]="true"
+            [searchable]="true"
+            [placeholder]="'SelectInventory'|translate"
+            formControlName="inventory_id"
+            [class.is-invalid]="isFieldInvalid('inventory_id')"
+          >
+            <ng-template ng-option-tmp let-item="item">
+              <div>
+                <strong>{{item.name}}</strong>
+                <br>
+                <small class="text-muted">{{item.type | translate}}</small>
+              </div>
+            </ng-template>
+          </ng-select>
+          @if(isFieldInvalid('inventory_id')) {
+            <div class="invalid-feedback">
+              {{getFieldError('inventory_id')}}
+            </div>
+          }
+        </div>
+
+        <!-- Status Field -->
+        <div class="col-md-6 mb-3">
+          <label for="status" class="form-label">
+            {{"Status"|translate}} <span class="text-danger">*</span>
+          </label>
+          <select
+            class="form-select"
+            formControlName="status"
+            [class.is-invalid]="isFieldInvalid('status')"
+          >
+            <option [value]="inventoryStatusEnum.PENDING">{{"Pending"|translate}}</option>
+            <option [value]="inventoryStatusEnum.TERMINATED">{{"Terminated"|translate}}</option>
+          </select>
+          @if(isFieldInvalid('status')) {
+            <div class="invalid-feedback">
+              {{getFieldError('status')}}
+            </div>
+          }
+        </div>
+
+        <!-- Comment Field -->
+        <div class="col-md-12 mb-3">
+          <label for="comment" class="form-label">
+            {{"Comment"|translate}} <span class="text-danger">*</span>
+          </label>
+          <textarea
+            class="form-control"
+            formControlName="comment"
+            rows="4"
+            [placeholder]="'EnterComment'|translate"
+            [class.is-invalid]="isFieldInvalid('comment')"
+          ></textarea>
+          @if(isFieldInvalid('comment')) {
+            <div class="invalid-feedback">
+              {{getFieldError('comment')}}
+            </div>
+          }
+        </div>
+      </div>
+    </form>
+  }
+</div>
+
+<div class="modal-footer">
+  <button type="button" class="btn btn-outline-secondary" (click)="close()">
+    <i class="fas fa-times me-2"></i>{{"Cancel"|translate}}
+  </button>
+  <button 
+    type="button" 
+    class="btn btn-primary" 
+    (click)="onSubmit()"
+    [disabled]="!brokenInventoryForm.valid || (loading$ | async)"
+  >
+    @if(loading$ | async) {
+      <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+    } @else {
+      @if(isEditMode) {
+        <i class="fas fa-save me-2"></i>{{"Update"|translate}}
+      } @else {
+        <i class="fas fa-plus me-2"></i>{{"Create"|translate}}
+      }
+    }
+  </button>
+</div>

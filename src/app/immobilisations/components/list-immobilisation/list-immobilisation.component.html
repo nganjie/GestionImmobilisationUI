@@ -159,6 +159,9 @@
                     {{"Status"|translate}}
                     <i [class]="getSortIcon('status')" class="ms-1"></i>
                   </th>
+                  <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                    {{"Employee"|translate}}
+                  </th>
                   <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 cursor-pointer"
                       (click)="sortBy('created_at')">
                     {{"CreatedAt"|translate}}
@@ -212,6 +215,25 @@
                         </span>
                       </td>
                       <td class="text-center">
+                        @if(immobilisation.employee_immo?.employee) {
+                          <div class="d-flex align-items-center justify-content-center">
+                            <div class="avatar avatar-xs me-2">
+                              <div class="avatar-initial rounded-circle bg-gradient-success">
+                                {{immobilisation.employee_immo!.employee!.first_name.charAt(0)}}{{immobilisation.employee_immo!.employee!.last_name.charAt(0)}}
+                              </div>
+                            </div>
+                            <div class="d-flex flex-column">
+                              <h6 class="mb-0 text-xs">{{immobilisation.employee_immo!.employee!.first_name}} {{immobilisation.employee_immo!.employee!.last_name}}</h6>
+                              <p class="text-xs text-secondary mb-0">{{immobilisation.employee_immo!.employee!.matricule}}</p>
+                            </div>
+                          </div>
+                        } @else {
+                          <span class="text-xs text-secondary">
+                            <i class="fas fa-user-slash me-1"></i>{{"NotAssigned"|translate}}
+                          </span>
+                        }
+                      </td>
+                      <td class="text-center">
                         <div class="d-flex align-items-center justify-content-center">
                           <div class="avatar avatar-xs me-2">
                             <div class="avatar-initial rounded-circle bg-gradient-primary">
@@ -260,7 +282,7 @@
                   }
                 } @else {
                   <tr>
-                    <td colspan="8" class="text-center py-4">
+                    <td colspan="9" class="text-center py-4">
                       <div class="d-flex flex-column align-items-center">
                         <i class="fas fa-inbox text-muted mb-3" style="font-size: 3rem;"></i>
                         <h6 class="text-muted mb-2">{{"NoDataFound"|translate}}</h6>
