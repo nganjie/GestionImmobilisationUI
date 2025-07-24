@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
 import { Observable, BehaviorSubject, debounceTime, distinctUntilChanged } from 'rxjs';
 import { FormBuilder, FormControl } from '@angular/forms';
@@ -15,6 +15,7 @@ import { LanguageService } from '../../../../services/language/language.service'
 import { CreateMissingInventoryComponent } from '../create-missing-inventory/create-missing-inventory.component';
 import { searchby, searchOption } from '../../../../models/search-element.model';
 import { InventoryStatusEnum } from '../../../../enums/inventory-status.enum';
+import { BarcodeScannerLivestreamComponent } from 'ngx-barcode-scanner';
 
 @Component({
   selector: 'app-list-missing-inventory',
@@ -37,6 +38,11 @@ export class ListMissingInventoryComponent extends BaseComponent implements OnIn
   itemsPerPage$ = new BehaviorSubject<number>(this.itemsPerPage);
   page$ = new BehaviorSubject<number>(1);
   missingInventories$!: Observable<MissingInventoryDetail[]>;
+
+  // Barcode Scanner properties
+  @ViewChild(BarcodeScannerLivestreamComponent)
+  barcodeScanner!: BarcodeScannerLivestreamComponent;
+  isActiveScan = false;
 
   // Observables pour les données de référence
   offices$!: Observable<OfficeDetail[]>;
@@ -75,6 +81,17 @@ export class ListMissingInventoryComponent extends BaseComponent implements OnIn
     
     this.missingInventories$ = this.inventoryService.missingInventories$;
     this.inventoryService.getMissingInventoriesFromServer({ current_page: 1, per_page: this.itemsPerPage });
+
+    // Setup barcode scanner logic
+    this.missingInventories$.subscribe(
+      (data) => {
+        if (this.isActiveScan && data.length == 1) {
+          this.isActiveScan = false;
+          this.barcodeScanner.stop();
+          this.inventoryService.setSnackMesage('Inventaire manquant trouvé : ' + data[0].id);
+        }
+      }
+    );
 
     // Initialiser les observables pour les données de référence
     this.offices$ = this.employeeService.offices$;
@@ -291,5 +308,31 @@ export class ListMissingInventoryComponent extends BaseComponent implements OnIn
 
   get Math() {
     return Math;
+  }
+
+  // Barcode Scanner methods
+  onValueChanges(result: any) {
+    console.log('valueChanges :', result.codeResult.code);
+    if (result.codeResult.code.length > 8) {
+      console.log('valueChanges 2 : ', result.codeResult.code);
+      this.searchCtrl.setValue(result.codeResult.code);
+      this.applyFilters();
+    }
+  }
+
+  scanCodeBarre() {
+    if (this.barcodeScanner && typeof this.barcodeScanner.start === 'function') {
+      this.barcodeScanner.start();
+      this.isActiveScan = true;
+    }
+  }
+
+  closeScan() {
+    this.barcodeScanner.stop();
+    this.isActiveScan = false;
+  }
+
+  onStarted(event: boolean) {
+    console.log('started :', event);
   }
 }

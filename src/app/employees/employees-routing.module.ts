@@ -6,6 +6,9 @@ import { ListOfficeComponent } from './components/list-office/list-office.compon
 import { ListEmployeeComponent } from './components/list-employee/list-employee.component';
 import { DetailEmployeeComponent } from './components/detail-employee/detail-employee.component';
 import { GenererFicheDetenteurComponent } from './components/generer-fiche-detenteur/generer-fiche-detenteur.component';
+import { ListTransferImmoEmployeeComponent } from './components/list-transfer-immo-employee/list-transfer-immo-employee.component';
+import { TransferImmoEmployeeComponent } from './components/transfer-immo-employee/transfer-immo-employee.component';
+import { DetailTransferImmoEmployeeComponent } from './components/detail-transfer-immo-employee/detail-transfer-immo-employee.component';
 
 const routes: Routes = [
   {path:'',component:ListEmployeeComponent},
@@ -13,6 +16,9 @@ const routes: Routes = [
   {path:'detail/:id',component:DetailEmployeeComponent},
   {path:'buildings',component:ListBuildingComponent},
   {path:'offices',component:ListOfficeComponent},
+  {path:'transfers',component:ListTransferImmoEmployeeComponent},
+  {path:'transfers/create',component:TransferImmoEmployeeComponent},
+  {path:'transfers/detail/:id',component:DetailTransferImmoEmployeeComponent},
 ];
 
 @NgModule({

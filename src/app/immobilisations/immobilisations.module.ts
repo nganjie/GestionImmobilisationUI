@@ -22,6 +22,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { DetailImmobilisationComponent } from './components/detail-immobilisation/detail-immobilisation.component';
 import { GenerateCodeBareImmobilisationsComponent } from './components/generate-code-bare-immobilisations/generate-code-bare-immobilisations.component';
+import { BarcodeScannerLivestreamModule } from 'ngx-barcode-scanner';
 
 
 @NgModule({
@@ -55,7 +56,8 @@ import { GenerateCodeBareImmobilisationsComponent } from './components/generate-
     }
     ),
     NgSelectModule,
-    MatSelectModule
+    MatSelectModule,
+    BarcodeScannerLivestreamModule
 ],
 providers:[
   LanguageService,

@@ -1,4 +1,25 @@
 <app-base>
+  <!-- Barcode Scanner Section -->
+  <div class="row col-6">
+    <barcode-scanner-livestream
+      #barcodeScanner
+      type="code_128"
+      (valueChanges)="onValueChanges($event)"
+      (started)="onStarted(true)"
+    ></barcode-scanner-livestream>
+    <div class="col-lg-8 col-md-6 col-12" *ngIf="isActiveScan">
+      <button class="btn btn-outline-info btn-sm mb-1 me-2" (click)="closeScan()">
+        {{"close scan barcode"|translate}}
+      </button>
+    </div>
+  </div>
+  <div class="col-lg-8 col-md-6 col-12" *ngIf="!isActiveScan">
+    <button class="btn btn-outline-info btn-sm mb-1 me-2" (click)="scanCodeBarre()">
+      <i class="fas fa-barcode me-2"></i>
+      {{"scan a barcode"|translate}}
+    </button>
+  </div>
+
   <div class="container-fluid py-4">
     <!-- Header Section -->
     <div class="row">

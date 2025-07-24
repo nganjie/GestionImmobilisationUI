@@ -26,6 +26,7 @@ import { DetailReformeCessionComponent } from './components/cession/detail-refor
 import { ListReformeSaleComponent } from './components/sale/list-reforme-sale/list-reforme-sale.component';
 import { CreateReformeSaleComponent } from './components/sale/create-reforme-sale/create-reforme-sale.component';
 import { DetailReformeSaleComponent } from './components/sale/detail-reforme-sale/detail-reforme-sale.component';
+import { BarcodeScannerLivestreamModule } from 'ngx-barcode-scanner';
 
 
 @NgModule({
@@ -62,7 +63,8 @@ import { DetailReformeSaleComponent } from './components/sale/detail-reforme-sal
     }
     ),
     NgSelectModule,
-    MatSelectModule
+    MatSelectModule,
+    BarcodeScannerLivestreamModule
   ],
   providers:[
     LanguageService

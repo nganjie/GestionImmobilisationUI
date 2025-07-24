@@ -100,6 +100,12 @@ export class DashboardComponent implements OnInit{
               label: 'Offices',
               icon: 'ni ni-shop',
               route: '/admin/employees/offices'
+            },
+            {
+              id: 'transfers',
+              label: 'Transfers',
+              icon: 'ni ni-shop',
+              route: '/admin/employees/transfers'
             }
           ]
         },

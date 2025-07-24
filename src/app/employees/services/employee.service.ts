@@ -12,6 +12,7 @@ import { BuildingDetail } from '../models/building-detail.model';
 import { EmployeeDetail } from '../models/employee-detail.model';
 import { OfficeDetail } from '../models/office-detail.model';
 import { exploseSearchOption, searchOption } from '../../models/search-element.model';
+import { Employeeimmo } from '../models/employee-immo-detail.model';
 
 @Injectable({
   providedIn: 'root'
@@ -32,6 +33,10 @@ export class EmployeeService extends GlobalServices {
   _offices$= new BehaviorSubject<OfficeDetail[]>([]);
   get offices$():Observable<OfficeDetail[]>{
     return this._offices$.asObservable();
+  }
+  _transfers$= new BehaviorSubject<Employeeimmo[]>([]);
+  get transfers$():Observable<Employeeimmo[]>{
+    return this._transfers$.asObservable();
   }
   getEmployeeFromServer(paginateD:PaginateData=this.emptyPaginate,searchOptions:searchOption[]=[]){
     const header =this.getHearder();
@@ -251,6 +256,61 @@ export class EmployeeService extends GlobalServices {
         console.log(data);
         if(data.success){
           this.setSnackMesage('Immobilisation assigned successfully');
+          this.setConfirmSubmit(true);
+        }
+        else{
+          this.setSnackMesage(`${data.error}`,'btn-warning');
+        }
+      }),
+      catchError(this.handleError)
+    ).subscribe();
+  }
+
+  // Methods for Transfer Management
+  getTransfersFromServer(paginateD:PaginateData=this.emptyPaginate,searchOptions:searchOption[]=[]){
+    const header =this.getHearder();
+    let pagin =this.explosePaginationOption(paginateD);
+    let search =exploseSearchOption(searchOptions);
+        pagin += search ? `&${search}` : '';
+    this.setLoadStatus(true)
+    this.http.get<ApiPaginatedResponse<Employeeimmo>>(`${environment.apiUrlFirst}/admin/transfer-immo-employees/all?${pagin}`,header).pipe(
+      map(data=>{
+        this.setLoadStatus(false);
+        console.log(data)
+        this._transfers$.next(data.data?.data??[]);
+        this._paginateData$.next({
+          current_page:data.data?.current_page??1,
+          per_page:data.data?.per_page??1,
+          total:data.data?.total??1
+        })
+        return data.data?.data??[]
+      }),
+      catchError(this.handleError)
+    ).subscribe();
+  }
+
+  getTransferDetailFromServer(id:string):Observable<Employeeimmo|null>{
+    const header =this.getHearder();
+    this.setLoadStatus(true)
+    return this.http.get<ApiResponse<Employeeimmo>>(`${environment.apiUrlFirst}/admin/transfer-immo-employees/detail/${id}`,header).pipe(
+      map(data=>{
+        this.setLoadStatus(false);
+        console.log(data);
+        return data.data??null;
+      }),
+      catchError(this.handleError)
+    );
+  }
+
+  createTransfer(form:FormGroup){
+    const header =this.getHearder();
+    this.setLoadStatus(true)
+    this.http.post<ApiResponse<Employeeimmo>>(`${environment.apiUrlFirst}/admin/transfer-immo-employees/create`,form.value,header).pipe(
+      map(data=>{
+        this.setLoadStatus(false);
+        console.log(data);
+        if(data.success){
+          this.setSnackMesage('Transfer created successfully');
           this.setConfirmSubmit(true);
         }
         else{

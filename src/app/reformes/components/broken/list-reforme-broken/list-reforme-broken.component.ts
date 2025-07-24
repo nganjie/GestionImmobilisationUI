@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormBuilder } from '@angular/forms';
 import { PageEvent } from '@angular/material/paginator';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -11,6 +11,7 @@ import { ReformeBrokenDetail } from '../../../models/reforme-broken-detail';
 import { ReformeService } from '../../../services/reforme.service';
 import { CreateReformeBrokenComponent } from '../create-reforme-broken/create-reforme-broken.component';
 import { BaseComponent } from '../../../../shared/components/base/base.component';
+import { BarcodeScannerLivestreamComponent } from 'ngx-barcode-scanner';
 
 @Component({
   selector: 'app-list-reforme-broken',
@@ -29,6 +30,11 @@ export class ListReformeBrokenComponent extends BaseComponent implements OnInit 
   searchCtrl!: FormControl;
   reformeBrokens$!: Observable<ReformeBrokenDetail[]>;
   Math = Math; // Expose Math to template
+
+  // Barcode Scanner properties
+  @ViewChild(BarcodeScannerLivestreamComponent)
+  barcodeScanner!: BarcodeScannerLivestreamComponent;
+  isActiveScan = false;
 
   currentSortBy: string = 'created_at';
   sortDirection: 'asc' | 'desc' = 'desc';
@@ -59,6 +65,17 @@ export class ListReformeBrokenComponent extends BaseComponent implements OnInit 
         this.paginateData = data;
         this.totaElement = data.total ?? 0;
         this.changeChoiceItemPage();
+      }
+    );
+
+    // Setup barcode scanner logic
+    this.reformeBrokens$.subscribe(
+      (data) => {
+        if (this.isActiveScan && data.length == 1) {
+          this.isActiveScan = false;
+          this.barcodeScanner.stop();
+          this.reformService.setSnackMesage('Article cassé trouvé : ' + data[0].id);
+        }
       }
     );
 
@@ -187,5 +204,31 @@ export class ListReformeBrokenComponent extends BaseComponent implements OnInit 
     const target = event.target as HTMLInputElement;
     this.endDate = target.value;
     this.applyFilters();
+  }
+
+  // Barcode Scanner methods
+  onValueChanges(result: any) {
+    console.log('valueChanges :', result.codeResult.code);
+    if (result.codeResult.code.length > 8) {
+      console.log('valueChanges 2 : ', result.codeResult.code);
+      this.searchCtrl.setValue(result.codeResult.code);
+      this.applyFilters();
+    }
+  }
+
+  scanCodeBarre() {
+    if (this.barcodeScanner && typeof this.barcodeScanner.start === 'function') {
+      this.barcodeScanner.start();
+      this.isActiveScan = true;
+    }
+  }
+
+  closeScan() {
+    this.barcodeScanner.stop();
+    this.isActiveScan = false;
+  }
+
+  onStarted(event: boolean) {
+    console.log('started :', event);
   }
 }

@@ -76,7 +76,6 @@ export class CreateMissingInventoryComponent implements OnInit {
       office_id: ['', [Validators.required]],
       immobilisation_id: ['', [Validators.required]],
       inventory_id: ['', [Validators.required]],
-      status: [InventoryStatusEnum.PENDING, [Validators.required]],
       comment: ['']
     });
   }

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -9,6 +9,7 @@ import { searchOption, search, searchby } from '../../../../models/search-elemen
 import { SaleDetail } from '../../../models/sale-detail.model';
 import { ReformeService } from '../../../services/reforme.service';
 import { CreateReformeSaleComponent } from '../create-reforme-sale/create-reforme-sale.component';
+import { BarcodeScannerLivestreamComponent } from 'ngx-barcode-scanner';
 
 @Component({
   selector: 'app-list-reforme-sale',
@@ -30,6 +31,11 @@ export class ListReformeSaleComponent extends BaseComponent implements OnInit {
   };
   loading = false;
 
+  // Barcode Scanner properties
+  @ViewChild(BarcodeScannerLivestreamComponent)
+  barcodeScanner!: BarcodeScannerLivestreamComponent;
+  isActiveScan = false;
+
   constructor(
     private reformeService: ReformeService,
     private modalService: NgbModal,
@@ -46,6 +52,13 @@ export class ListReformeSaleComponent extends BaseComponent implements OnInit {
   initializeData() {
     this.reformeService.sales$.subscribe(sales => {
       this.sales = sales as SaleDetail[];
+      
+      // Setup barcode scanner logic
+      if (this.isActiveScan && this.sales.length == 1) {
+        this.isActiveScan = false;
+        this.barcodeScanner.stop();
+        this.reformeService.setSnackMesage('Vente trouvée : ' + this.sales[0].id);
+      }
     });
 
     this.reformeService.paginateData$.subscribe((paginationDetail: any) => {
@@ -162,5 +175,31 @@ export class ListReformeSaleComponent extends BaseComponent implements OnInit {
     this.dateToCtrl.setValue('');
     this.searchOptions = [];
     this.getReformeSaleFromServer();
+  }
+
+  // Barcode Scanner methods
+  onValueChanges(result: any) {
+    console.log('valueChanges :', result.codeResult.code);
+    if (result.codeResult.code.length > 8) {
+      console.log('valueChanges 2 : ', result.codeResult.code);
+      this.searchCtrl.setValue(result.codeResult.code);
+      this.getReformeSaleFromServer();
+    }
+  }
+
+  scanCodeBarre() {
+    if (this.barcodeScanner && typeof this.barcodeScanner.start === 'function') {
+      this.barcodeScanner.start();
+      this.isActiveScan = true;
+    }
+  }
+
+  closeScan() {
+    this.barcodeScanner.stop();
+    this.isActiveScan = false;
+  }
+
+  onStarted(event: boolean) {
+    console.log('started :', event);
   }
 }

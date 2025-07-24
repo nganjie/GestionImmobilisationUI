@@ -1,0 +1,258 @@
+<app-base nameOption="TransferDetail">
+  <!-- Header Section -->
+  <div class="row mb-4">
+    <div class="col-lg-8 col-md-6 col-12">
+      <div class="d-flex align-items-center">
+        <button class="btn btn-link text-dark p-0 me-3" (click)="goBack()">
+          <i class="fas fa-arrow-left fa-lg"></i>
+        </button>
+        <div>
+          <h4 class="mb-0 text-dark">{{"TransferDetails"|translate}}</h4>
+          <p class="text-sm text-secondary mb-0">{{"ViewTransferInformation"|translate}}</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-4 col-md-6 col-12 text-end">
+      <button class="btn btn-outline-primary btn-sm mb-0" (click)="goBack()">
+        <i class="fas fa-list me-2"></i>
+        {{"BackToList"|translate}}
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading$ | async" class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-body text-center py-5">
+          <div class="spinner-border spinner-border-lg text-primary" role="status">
+            <span class="visually-hidden">{{"Loading"|translate}}...</span>
+          </div>
+          <p class="text-secondary mt-3">{{"LoadingTransferDetails"|translate}}...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Transfer Details -->
+  <div *ngIf="!(loading$ | async)" class="row">
+    <div class="col-12">
+      <ng-container *ngIf="transfer$ | async as transfer; else noTransferFound">
+        
+        <!-- Transfer Summary Card -->
+        <div class="card mb-4">
+          <div class="card-header pb-0">
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <h5 class="mb-0">{{"TransferSummary"|translate}}</h5>
+                <p class="text-sm mb-0">{{"TransferID"|translate}}: {{transfer.id}}</p>
+              </div>
+              <div>
+                <span [class]="transfer.status ? 'badge badge-lg bg-gradient-success' : 'badge badge-lg bg-gradient-secondary'">
+                  {{transfer.status ? ('Active'|translate) : ('Inactive'|translate)}}
+                </span>
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-6">
+                <h6 class="text-uppercase text-xs font-weight-bolder opacity-7">{{"TransferDate"|translate}}</h6>
+                <p class="text-sm font-weight-bold mb-3">
+                  <i class="fas fa-calendar-alt text-primary me-2"></i>
+                  {{transfer.transfer_date | date:'full'}}
+                </p>
+              </div>
+              <div class="col-md-6">
+                <h6 class="text-uppercase text-xs font-weight-bolder opacity-7">{{"CreatedAt"|translate}}</h6>
+                <p class="text-sm font-weight-bold mb-3">
+                  <i class="fas fa-clock text-info me-2"></i>
+                  {{transfer.created_at | date:'short'}}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Asset Information -->
+        <div class="card mb-4">
+          <div class="card-header pb-0">
+            <h5 class="mb-0">{{"AssetInformation"|translate}}</h5>
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-6">
+                <h6 class="text-uppercase text-xs font-weight-bolder opacity-7">{{"AssetCode"|translate}}</h6>
+                <p class="text-sm font-weight-bold mb-3">
+                  <i class="fas fa-qrcode text-primary me-2"></i>
+                  {{transfer.immobilisation.code}}
+                </p>
+              </div>
+              <div class="col-md-6">
+                <h6 class="text-uppercase text-xs font-weight-bolder opacity-7">{{"AssetName"|translate}}</h6>
+                <p class="text-sm font-weight-bold mb-3">
+                  <i class="fas fa-box text-info me-2"></i>
+                  {{transfer.immobilisation.name}}
+                </p>
+              </div>
+              <div class="col-md-6">
+                <h6 class="text-uppercase text-xs font-weight-bolder opacity-7">{{"Brand"|translate}}</h6>
+                <p class="text-sm font-weight-bold mb-3">
+                  <i class="fas fa-tag text-warning me-2"></i>
+                  {{transfer.immobilisation.mark}}
+                </p>
+              </div>
+              <div class="col-md-6">
+                <h6 class="text-uppercase text-xs font-weight-bolder opacity-7">{{"Model"|translate}}</h6>
+                <p class="text-sm font-weight-bold mb-3">
+                  <i class="fas fa-cogs text-secondary me-2"></i>
+                  {{transfer.immobilisation.model}}
+                </p>
+              </div>
+              <div class="col-md-6">
+                <h6 class="text-uppercase text-xs font-weight-bolder opacity-7">{{"Category"|translate}}</h6>
+                <p class="text-sm font-weight-bold mb-3">
+                  <i class="fas fa-folder text-success me-2"></i>
+                  {{transfer.immobilisation.categorie.name}}
+                </p>
+              </div>
+              <div class="col-md-6">
+                <h6 class="text-uppercase text-xs font-weight-bolder opacity-7">{{"Status"|translate}}</h6>
+                <p class="text-sm font-weight-bold mb-3">
+                  <i class="fas fa-info-circle text-info me-2"></i>
+                  {{transfer.immobilisation.status}}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Employee Transfer Information -->
+        <div class="card mb-4">
+          <div class="card-header pb-0">
+            <h5 class="mb-0">{{"EmployeeTransferInformation"|translate}}</h5>
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <!-- From Employee -->
+              <div class="col-md-6">
+                <h6 class="text-uppercase text-xs font-weight-bolder opacity-7">{{"FromEmployee"|translate}}</h6>
+                <div *ngIf="transfer.last_employee; else noFromEmployee" class="d-flex align-items-center mb-3">
+                  <div class="avatar avatar-sm bg-gradient-info rounded-circle me-3">
+                    <i class="fas fa-user text-white"></i>
+                  </div>
+                  <div>
+                    <p class="text-sm font-weight-bold mb-0">
+                      {{transfer.last_employee.first_name}} {{transfer.last_employee.last_name}}
+                    </p>
+                    <p class="text-xs text-secondary mb-0">
+                      {{"Matricule"|translate}}: {{transfer.last_employee.matricule}}
+                    </p>
+                    <p class="text-xs text-secondary mb-0">
+                      {{transfer.last_employee.fonction}} - {{transfer.last_employee.departement}}
+                    </p>
+                  </div>
+                </div>
+                <ng-template #noFromEmployee>
+                  <p class="text-sm text-muted mb-3">
+                    <i class="fas fa-minus-circle text-secondary me-2"></i>
+                    {{"NotSpecified"|translate}}
+                  </p>
+                </ng-template>
+              </div>
+
+              <!-- To Employee -->
+              <div class="col-md-6">
+                <h6 class="text-uppercase text-xs font-weight-bolder opacity-7">{{"ToEmployee"|translate}}</h6>
+                <div class="d-flex align-items-center mb-3">
+                  <div class="avatar avatar-sm bg-gradient-success rounded-circle me-3">
+                    <i class="fas fa-user text-white"></i>
+                  </div>
+                  <div>
+                    <p class="text-sm font-weight-bold mb-0">
+                      {{transfer.employee.first_name}} {{transfer.employee.last_name}}
+                    </p>
+                    <p class="text-xs text-secondary mb-0">
+                      {{"Matricule"|translate}}: {{transfer.employee.matricule}}
+                    </p>
+                    <p class="text-xs text-secondary mb-0">
+                      {{transfer.employee.fonction}} - {{transfer.employee.departement}}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Comment Section -->
+        <div class="card mb-4" *ngIf="transfer.comment">
+          <div class="card-header pb-0">
+            <h5 class="mb-0">{{"Comment"|translate}}</h5>
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-12">
+                <div class="bg-light p-3 rounded">
+                  <p class="text-sm mb-0">
+                    <i class="fas fa-comment text-primary me-2"></i>
+                    {{transfer.comment}}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- System Information -->
+        <div class="card">
+          <div class="card-header pb-0">
+            <h5 class="mb-0">{{"SystemInformation"|translate}}</h5>
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-4">
+                <h6 class="text-uppercase text-xs font-weight-bolder opacity-7">{{"UserID"|translate}}</h6>
+                <p class="text-sm font-weight-bold mb-3">
+                  <i class="fas fa-user-cog text-info me-2"></i>
+                  {{transfer.user_id}}
+                </p>
+              </div>
+              <div class="col-md-4">
+                <h6 class="text-uppercase text-xs font-weight-bolder opacity-7">{{"CreatedAt"|translate}}</h6>
+                <p class="text-sm font-weight-bold mb-3">
+                  <i class="fas fa-calendar-plus text-success me-2"></i>
+                  {{transfer.created_at | date:'short'}}
+                </p>
+              </div>
+              <div class="col-md-4">
+                <h6 class="text-uppercase text-xs font-weight-bolder opacity-7">{{"LastUpdated"|translate}}</h6>
+                <p class="text-sm font-weight-bold mb-3">
+                  <i class="fas fa-edit text-warning me-2"></i>
+                  {{transfer.updated_at | date:'short'}}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </ng-container>
+
+      <!-- No Transfer Found Template -->
+      <ng-template #noTransferFound>
+        <div class="card">
+          <div class="card-body text-center py-5">
+            <i class="fas fa-exclamation-triangle fa-3x text-warning mb-3"></i>
+            <h5 class="text-dark mb-3">{{"TransferNotFound"|translate}}</h5>
+            <p class="text-secondary mb-4">{{"TransferNotFoundMessage"|translate}}</p>
+            <button class="btn btn-primary" (click)="goBack()">
+              <i class="fas fa-arrow-left me-2"></i>
+              {{"BackToList"|translate}}
+            </button>
+          </div>
+        </div>
+      </ng-template>
+
+    </div>
+  </div>
+</app-base>

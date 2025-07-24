@@ -19,6 +19,7 @@ import { HttpClient } from '@angular/common/http';
 import { createTranslateLoader } from '../app.module';
 import { ManageInventoryComponent } from './components/manage-inventory/manage-inventory.component';
 import { ReportInventoryComponent } from './components/report-inventory/report-inventory.component';
+import { BarcodeScannerLivestreamModule } from 'ngx-barcode-scanner';
 
 
 
@@ -49,6 +50,7 @@ import { ReportInventoryComponent } from './components/report-inventory/report-i
       }
     }
     ),
+    BarcodeScannerLivestreamModule
   ],
   providers:[
     LanguageService

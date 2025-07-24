@@ -101,28 +101,7 @@
         </div>
 
         <!-- Status Field -->
-        <div class="col-md-6 mb-3">
-          <label for="status" class="form-label">
-            {{"Status"|translate}} <span class="text-danger">*</span>
-          </label>
-          <select
-            id="status"
-            class="form-select"
-            formControlName="status"
-            [class.is-invalid]="isFieldInvalid('status')"
-          >
-            @for(status of statusOptions; track status.value) {
-              <option [value]="status.value">
-                {{status.label | translate}}
-              </option>
-            }
-          </select>
-          @if(isFieldInvalid('status')) {
-            <div class="invalid-feedback">
-              {{getFieldError('status')}}
-            </div>
-          }
-        </div>
+
 
         <!-- Comment Field -->
         <div class="col-md-12 mb-3">

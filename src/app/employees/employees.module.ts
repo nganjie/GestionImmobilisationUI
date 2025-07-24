@@ -24,6 +24,10 @@ import { NgSelectModule } from '@ng-select/ng-select';
 import { DetailEmployeeComponent } from './components/detail-employee/detail-employee.component';
 import { AddImmobilisationToEmployeeComponent } from './components/add-immobilisation-to-employee/add-immobilisation-to-employee.component';
 import { GenererFicheDetenteurComponent } from './components/generer-fiche-detenteur/generer-fiche-detenteur.component';
+import { BarcodeScannerLivestreamModule } from 'ngx-barcode-scanner';
+import { TransferImmoEmployeeComponent } from './components/transfer-immo-employee/transfer-immo-employee.component';
+import { ListTransferImmoEmployeeComponent } from './components/list-transfer-immo-employee/list-transfer-immo-employee.component';
+import { DetailTransferImmoEmployeeComponent } from './components/detail-transfer-immo-employee/detail-transfer-immo-employee.component';
 
 
 @NgModule({
@@ -36,7 +40,10 @@ import { GenererFicheDetenteurComponent } from './components/generer-fiche-deten
     CreateOfficeComponent,
     DetailEmployeeComponent,
     AddImmobilisationToEmployeeComponent,
-    GenererFicheDetenteurComponent
+    GenererFicheDetenteurComponent,
+    TransferImmoEmployeeComponent,
+    ListTransferImmoEmployeeComponent,
+    DetailTransferImmoEmployeeComponent
   ],
   imports: [
     CommonModule,
@@ -56,7 +63,8 @@ import { GenererFicheDetenteurComponent } from './components/generer-fiche-deten
     NgSelectModule,
     MatSelectModule,
     NgxMatSelectSearchModule,
-    MatFormFieldModule
+    MatFormFieldModule,
+    BarcodeScannerLivestreamModule
   ],
   providers:[
     LanguageService,

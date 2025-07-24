@@ -30,6 +30,10 @@ interface Employeeimmo {
   user_id: string;
   immobilisation_id: string;
   employee_id: string;
+  last_employee_id?: string;
+  transfer_date: string;
+  comment?: string;
+  status: boolean;
   created_at: string;
   updated_at: string;
   employee: EmployeeDetail;

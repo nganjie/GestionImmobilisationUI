@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
 import { ImmoService } from '../../services/immo.service';
 import { BaseComponent } from '../../../shared/components/base/base.component';
@@ -12,6 +12,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormControl } from '@angular/forms';
 import { search, searchby, searchOption } from '../../../models/search-element.model';
 import { ListImmobilisationStatusEnum } from '../../../enums/immobilisation-status.enum';
+import { BarcodeScannerLivestreamComponent } from 'ngx-barcode-scanner';
+
 
 @Component({
   selector: 'app-list-immobilisation',
@@ -40,7 +42,9 @@ export class ListImmobilisationComponent extends BaseComponent implements OnInit
     page$ =new BehaviorSubject<number>(1);
     employeeId?:string;
   immobilisations$!:Observable<ImmobilisationDetail[]>
-  
+  @ViewChild(BarcodeScannerLivestreamComponent)
+  barcodeScanner!: BarcodeScannerLivestreamComponent;
+  isActiveScan=false;
   // Nouvelles propriétés
 
   
@@ -72,6 +76,15 @@ export class ListImmobilisationComponent extends BaseComponent implements OnInit
     this.employeeId = this.route.snapshot.queryParamMap.get('employee_id') || undefined;
 
     this.immobilisations$=this.immoService.immobilisations$;
+    this.immobilisations$.subscribe(
+      (data)=>{
+        if(this.isActiveScan&&data.length==1){
+          this.isActiveScan=false;
+          this.barcodeScanner.stop();
+          this.immoService.setSnackMesage('Immobilisation trouvée : ' + data[0].name);
+        }
+      }
+    );
     if(this.employeeId){
       this.immoService.getImmoFromServer({current_page:1,per_page:this.itemsPerPage},[searchby('employee_id',this.employeeId)]);
     }else{
@@ -81,10 +94,41 @@ export class ListImmobilisationComponent extends BaseComponent implements OnInit
     
     // Initialiser les filtres
     this.initSearchFilter();
+    // Démarrer le scanner après l'initialisation de la vue
+    // (déplacé dans ngAfterViewInit)
 
     //this.setnameMenu('Immobilisations');
 
   }
+
+  /*ngAfterViewInit(): void {
+    if (this.barcodeScanner && typeof this.barcodeScanner.start === 'function') {
+      this.barcodeScanner.start();
+    }
+  }*/
+  onValueChanges(result:any) {
+    console.log('valueChanges :',result.codeResult.code);
+    if(result.codeResult.code.length > 8) {
+      console.log('valueChanges 2 : ',result.codeResult.code);
+      this.searchCtrl.setValue(result.codeResult.code);
+      this.applyFilters();
+    }
+  }
+  scanCodeBarre() {
+    if (this.barcodeScanner && typeof this.barcodeScanner.start === 'function') {
+      this.barcodeScanner.start();
+      this.isActiveScan=true;
+    }
+  }
+  closeScan(){
+    this.barcodeScanner.stop();
+    this.isActiveScan=false;
+  }
+
+  onStarted(event:boolean) {
+    console.log('started :',event);
+  }
+
   getImmoSearchOptions(searchOptions:searchOption[]=[]){
     let options=searchOptions
     if(this.employeeId){

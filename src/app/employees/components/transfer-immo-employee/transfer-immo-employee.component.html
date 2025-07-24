@@ -1,0 +1,182 @@
+<app-base nameOption="CreateTransfer">
+  <!-- Header Section -->
+  <div class="row mb-4">
+    <div class="col-lg-8 col-md-6 col-12">
+      <div class="d-flex align-items-center">
+        <button class="btn btn-link text-dark p-0 me-3" (click)="goBack()">
+          <i class="fas fa-arrow-left fa-lg"></i>
+        </button>
+        <div>
+          <h4 class="mb-0 text-dark">{{"CreateAssetTransfer"|translate}}</h4>
+          <p class="text-sm text-secondary mb-0">{{"TransferAssetBetweenEmployees"|translate}}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Transfer Form -->
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header pb-0">
+          <h5 class="mb-0">{{"TransferInformation"|translate}}</h5>
+          <p class="text-sm mb-0">{{"FillRequiredFields"|translate}}</p>
+        </div>
+        <div class="card-body">
+          <form [formGroup]="transferForm" (ngSubmit)="onSubmit()">
+            <div class="row">
+              <!-- Asset Selection -->
+              <div class="col-md-6 mb-3">
+                <label class="form-label">{{"Asset"|translate}} <span class="text-danger">*</span></label>
+                <ng-select
+                  [items]="immobilisations$ | async"
+                  bindLabel="name"
+                  bindValue="id"
+                  formControlName="immobilisation_id"
+                  [closeOnSelect]="true"
+                  [searchable]="true"
+                  [clearable]="true"
+                  [class.is-invalid]="immobilisationCtrl.invalid && immobilisationCtrl.touched"
+                  [class.is-valid]="immobilisationCtrl.valid"
+                  placeholder="{{'SelectAsset'|translate}}">
+                  
+                  <ng-option *ngFor="let immo of immobilisations$ | async" [value]="immo.id">
+                    <div class="d-flex align-items-center">
+                      <i class="fas fa-box text-primary me-2"></i>
+                      <div>
+                        <div class="fw-bold">{{immo.code}} - {{immo.name}}</div>
+                        <small class="text-muted">
+                          <i class="fas fa-tag me-1"></i>
+                          {{immo.mark}} - {{immo.model}}
+                        </small>
+                      </div>
+                    </div>
+                  </ng-option>
+                </ng-select>
+                <div class="invalid-feedback" *ngIf="immobilisationCtrl.invalid && immobilisationCtrl.touched">
+                  <small *ngIf="immobilisationCtrl.errors?.['required']">{{"AssetRequired"|translate}}</small>
+                </div>
+              </div>
+
+              <!-- From Employee (Optional) -->
+              <div class="col-md-6 mb-3">
+                <label class="form-label">{{"FromEmployee"|translate}} <span class="text-danger">*</span></label>
+                <ng-select
+                  [items]="employees$ | async"
+                  bindLabel="first_name"
+                  bindValue="id"
+                  formControlName="from_employee_id"
+                  [closeOnSelect]="true"
+                  [searchable]="true"
+                  [clearable]="true"
+                  placeholder="{{'SelectEmployee'|translate}}">
+                  
+                  <ng-option *ngFor="let employee of employees$ | async" [value]="employee.id">
+                    <div class="d-flex align-items-center">
+                      <i class="fas fa-user text-info me-2"></i>
+                      <div>
+                        <div class="fw-bold">{{employee.first_name}} {{employee.last_name}}</div>
+                        <small class="text-muted">
+                          <i class="fas fa-id-badge me-1"></i>
+                          {{employee.matricule}} - {{employee.fonction}}
+                        </small>
+                      </div>
+                    </div>
+                  </ng-option>
+                </ng-select>
+                <small class="form-text text-muted">{{"CurrentAssetHolder"|translate}}</small>
+              </div>
+
+              <!-- To Employee -->
+              <div class="col-md-6 mb-3">
+                <label class="form-label">{{"ToEmployee"|translate}} <span class="text-danger">*</span></label>
+                <ng-select
+                  [items]="employees$ | async"
+                  bindLabel="first_name"
+                  bindValue="id"
+                  formControlName="to_employee_id"
+                  [closeOnSelect]="true"
+                  [searchable]="true"
+                  [clearable]="true"
+                  [class.is-invalid]="toEmployeeCtrl.invalid && toEmployeeCtrl.touched"
+                  [class.is-valid]="toEmployeeCtrl.valid"
+                  placeholder="{{'SelectEmployee'|translate}}">
+                  
+                  <ng-option *ngFor="let employee of employees$ | async" [value]="employee.id">
+                    <div class="d-flex align-items-center">
+                      <i class="fas fa-user text-success me-2"></i>
+                      <div>
+                        <div class="fw-bold">{{employee.first_name}} {{employee.last_name}}</div>
+                        <small class="text-muted">
+                          <i class="fas fa-id-badge me-1"></i>
+                          {{employee.matricule}} - {{employee.fonction}}
+                        </small>
+                      </div>
+                    </div>
+                  </ng-option>
+                </ng-select>
+                <div class="invalid-feedback" *ngIf="toEmployeeCtrl.invalid && toEmployeeCtrl.touched">
+                  <small *ngIf="toEmployeeCtrl.errors?.['required']">{{"ToEmployeeRequired"|translate}}</small>
+                </div>
+                <small class="form-text text-muted">{{"NewAssetHolder"|translate}}</small>
+              </div>
+
+              <!-- Comment -->
+              <div class="col-12 mb-3">
+                <label class="form-label">{{"Comment"|translate}} <span class="text-muted">({{"Optional"|translate}})</span></label>
+                <textarea class="form-control" 
+                          formControlName="comment" 
+                          rows="3" 
+                          placeholder="{{'EnterTransferComment'|translate}}"></textarea>
+                <small class="form-text text-muted">{{"TransferReason"|translate}}</small>
+              </div>
+            </div>
+
+            <!-- Form Actions -->
+            <div class="row">
+              <div class="col-12">
+                <div class="d-flex justify-content-end">
+                  <button type="button" 
+                          class="btn btn-outline-secondary me-2" 
+                          (click)="goBack()"
+                          [disabled]="loading$ | async">
+                    <i class="fas fa-times me-2"></i>
+                    {{"Cancel"|translate}}
+                  </button>
+                  <button type="submit" 
+                          class="btn btn-primary" 
+                          [disabled]="(loading$ | async) || transferForm.invalid">
+                    <span *ngIf="loading$ | async" class="spinner-border spinner-border-sm me-2" role="status"></span>
+                    <i *ngIf="!(loading$ | async)" class="fas fa-exchange-alt me-2"></i>
+                    {{"CreateTransfer"|translate}}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Information Panel -->
+  <div class="row mt-4">
+    <div class="col-12">
+      <div class="card bg-gradient-info">
+        <div class="card-body">
+          <div class="row align-items-center">
+            <div class="col-8">
+              <h6 class="text-white mb-2">{{"TransferInstructions"|translate}}</h6>
+              <p class="text-white text-sm mb-0">
+                {{"TransferInstructionsText"|translate}}
+              </p>
+            </div>
+            <div class="col-4 text-end">
+              <i class="fas fa-info-circle fa-3x text-white opacity-6"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</app-base>

@@ -54,7 +54,6 @@ export class CreateBrokenInventoryComponent implements OnInit {
     this.brokenInventoryForm = this.formBuilder.group({
       immobilisation_id: ['', [Validators.required]],
       inventory_id: ['', [Validators.required]],
-      status: [InventoryStatusEnum.PENDING, [Validators.required]],
       comment: ['', [Validators.required, Validators.minLength(3)]]
     });
   }

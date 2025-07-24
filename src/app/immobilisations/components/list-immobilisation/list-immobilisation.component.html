@@ -1,5 +1,24 @@
 <app-base nameOption="Immobilisations">
   <!-- Header Section with Actions -->
+   <div class="row col-6">
+    <barcode-scanner-livestream
+   #barcodeScanner
+      type="code_128"
+      (valueChanges)="onValueChanges($event)"
+      (started)="(onStarted)"
+    ></barcode-scanner-livestream>
+    <div class="col-lg-8 col-md-6 col-12" *ngIf="isActiveScan">
+  <button class="btn btn-outline-info btn-sm mb-1 me-2" (click)="closeScan()">
+        {{"close scan barcode"|translate}}
+      </button>
+</div>
+   </div>
+   <div class="col-lg-8 col-md-6 col-12" *ngIf="!isActiveScan">
+  <button class="btn btn-outline-info btn-sm mb-1 me-2" (click)="scanCodeBarre()">
+        <i class="fas fa-barcode me-2"></i>
+        {{"scan a barcode"|translate}}
+      </button>
+</div>
   <div class="row mb-4">
     <div class="col-lg-8 col-md-6 col-12">
       <div class="d-flex align-items-center">
@@ -8,7 +27,13 @@
       </div>
       <p class="text-sm text-secondary mb-0">{{"ManageYourAssets"|translate}}</p>
     </div>
+
     <div class="col-lg-4 col-md-6 col-12 text-end">
+      
+      <button class="btn btn-outline-info btn-sm mb-0 me-2" routerLink="generate-barcodes">
+        <i class="fas fa-barcode me-2"></i>
+        {{"GenerateBarcodes"|translate}}
+      </button>
       <button class="btn btn-primary btn-sm mb-0" routerLink="create">
         <i class="fas fa-plus me-2"></i>
         {{"Add"|translate}} {{"Immobilisation"|translate}}

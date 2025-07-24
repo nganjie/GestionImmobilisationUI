@@ -121,6 +121,36 @@ export class ReportInventoryComponent implements OnInit {
     return total;
   }
 
+  getTotalMissingQuantity(): number {
+    return this.missingItems.reduce((sum, item) => 
+      sum + (item.immobilisation?.quantity || 0), 0
+    );
+  }
+
+  getTotalBrokenQuantity(): number {
+    return this.brokenItems.reduce((sum, item) => 
+      sum + (item.immobilisation?.quantity || 0), 0
+    );
+  }
+
+  getTotalMissingValue(): number {
+    return this.missingItems.reduce((sum, item) => {
+      if (item.immobilisation && item.immobilisation.unit_price && item.immobilisation.quantity) {
+        return sum + (item.immobilisation.unit_price * item.immobilisation.quantity);
+      }
+      return sum;
+    }, 0);
+  }
+
+  getTotalBrokenValue(): number {
+    return this.brokenItems.reduce((sum, item) => {
+      if (item.immobilisation && item.immobilisation.unit_price && item.immobilisation.quantity) {
+        return sum + (item.immobilisation.unit_price * item.immobilisation.quantity);
+      }
+      return sum;
+    }, 0);
+  }
+
   formatDate(date: string): string {
     return new Date(date).toLocaleDateString('fr-FR');
   }

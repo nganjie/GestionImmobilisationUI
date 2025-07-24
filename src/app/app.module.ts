@@ -12,6 +12,7 @@ import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { LanguageService } from './services/language/language.service';
 import { MatSelectModule } from '@angular/material/select';
+import { BarcodeScannerLivestreamModule } from "ngx-barcode-scanner";
 export function createTranslateLoader(http:HttpClient){
   return new TranslateHttpLoader(http,'./i18n/','.json');
 }
@@ -32,7 +33,8 @@ export function createTranslateLoader(http:HttpClient){
       }
     }
     ),
-    MatSelectModule
+    MatSelectModule,
+    BarcodeScannerLivestreamModule
   ],
   providers: [
     AuthService,

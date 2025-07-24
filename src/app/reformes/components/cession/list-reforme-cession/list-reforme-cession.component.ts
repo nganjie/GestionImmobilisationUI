@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormBuilder } from '@angular/forms';
 import { PageEvent } from '@angular/material/paginator';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -11,6 +11,7 @@ import { CessionDetail } from '../../../models/cession-detail';
 import { ReformeService } from '../../../services/reforme.service';
 import { CreateReformeCessionComponent } from '../create-reforme-cession/create-reforme-cession.component';
 import { BaseComponent } from '../../../../shared/components/base/base.component';
+import { BarcodeScannerLivestreamComponent } from 'ngx-barcode-scanner';
 
 @Component({
   selector: 'app-list-reforme-cession',
@@ -29,6 +30,11 @@ export class ListReformeCessionComponent extends BaseComponent implements OnInit
   searchCtrl!: FormControl;
   reformeCessions$!: Observable<CessionDetail[]>;
   Math = Math; // Expose Math to template
+
+  // Barcode Scanner properties
+  @ViewChild(BarcodeScannerLivestreamComponent)
+  barcodeScanner!: BarcodeScannerLivestreamComponent;
+  isActiveScan = false;
 
   currentSortBy: string = 'created_at';
   sortDirection: 'asc' | 'desc' = 'desc';
@@ -61,6 +67,17 @@ export class ListReformeCessionComponent extends BaseComponent implements OnInit
         this.totaElement = data.total ?? 0;
         // TODO: Implement changeChoiceItemPage method
          this.changeChoiceItemPage();
+      }
+    );
+
+    // Setup barcode scanner logic
+    this.reformeCessions$.subscribe(
+      (data) => {
+        if (this.isActiveScan && data.length == 1) {
+          this.isActiveScan = false;
+          this.barcodeScanner.stop();
+          this.reformService.setSnackMesage('Cession trouvée : ' + data[0].id);
+        }
       }
     );
 
@@ -173,6 +190,33 @@ export class ListReformeCessionComponent extends BaseComponent implements OnInit
     this.endDate = target.value;
     this.applyFilters();
   }
+
+  // Barcode Scanner methods
+  onValueChanges(result: any) {
+    console.log('valueChanges :', result.codeResult.code);
+    if (result.codeResult.code.length > 8) {
+      console.log('valueChanges 2 : ', result.codeResult.code);
+      this.searchCtrl.setValue(result.codeResult.code);
+      this.applyFilters();
+    }
+  }
+
+  scanCodeBarre() {
+    if (this.barcodeScanner && typeof this.barcodeScanner.start === 'function') {
+      this.barcodeScanner.start();
+      this.isActiveScan = true;
+    }
+  }
+
+  closeScan() {
+    this.barcodeScanner.stop();
+    this.isActiveScan = false;
+  }
+
+  onStarted(event: boolean) {
+    console.log('started :', event);
+  }
+
   changeChoiceItemPage(): void {
     let arr: number[] = [];
     if (this.totaElement <= 2) {
