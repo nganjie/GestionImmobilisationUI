@@ -43,6 +43,7 @@ export class ListTransferImmoEmployeeComponent extends BaseComponent implements 
   @ViewChild(BarcodeScannerLivestreamComponent)
   barcodeScanner!: BarcodeScannerLivestreamComponent;
   isActiveScan = false;
+  currentCodeBare='';
 
   constructor(
     private languageService: LanguageService,
@@ -58,6 +59,17 @@ export class ListTransferImmoEmployeeComponent extends BaseComponent implements 
     this.loading$ = this.employeeService.loading$;
     this.paginateData$ = this.employeeService.paginateData$;
     this.transfers$ = this.employeeService.transfers$;
+    this.transfers$.subscribe(data => {
+      if(this.isActiveScan&&data.length==1){
+          this.isActiveScan=false;
+          this.barcodeScanner.stop();
+          this.employeeService.setSnackMesage('Immobilisation trouvée : ' + data[0].immobilisation.name);
+        }else if(this.isActiveScan&&this.currentCodeBare.length==11){
+          this.isActiveScan=false;
+          this.barcodeScanner.stop();
+          this.employeeService.setSnackMesage('Aucune immobilisation trouvée pour le code barre : ' + this.currentCodeBare);
+        }
+    });
     this.employees$ = this.employeeService.employees$;
 
     // Initialisation des contrôles
@@ -150,14 +162,21 @@ export class ListTransferImmoEmployeeComponent extends BaseComponent implements 
 
   // Barcode scanner methods
   onValueChanges(result: any): void {
-    this.searchCtrl.setValue(result.codeResult.code);
-    this.closeScan();
+    console.log('valueChanges :', result.codeResult.code);
+    if (result.codeResult.code.length ==11) {
+      this.currentCodeBare = result.codeResult.code;
+      console.log('valueChanges 2 : ', result.codeResult.code);
+      this.searchCtrl.setValue(result.codeResult.code);
+      this.onSearch();
+    }
+   
   }
 
   scanCodeBarre(): void {
-    this.isActiveScan = true;
-    if (this.barcodeScanner) {
+    console.log('Barcode scanner started');
+    if (this.barcodeScanner && typeof this.barcodeScanner.start === 'function') {
       this.barcodeScanner.start();
+      this.isActiveScan = true;
     }
   }
 

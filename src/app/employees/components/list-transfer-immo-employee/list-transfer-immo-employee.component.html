@@ -1,6 +1,20 @@
 <app-base nameOption="Transfer">
   <!-- Header Section with Actions -->
   <div class="row mb-4">
+    <div class="col-lg-8 col-md-6 col-12" *ngIf="isActiveScan">
+      <button class="btn btn-outline-info btn-sm mb-1 me-2" (click)="closeScan()">
+        {{"close scan barcode"|translate}}
+      </button>
+    </div>
+    <div class="col-lg-8 col-md-6 col-12" *ngIf="!isActiveScan">
+      <button class="btn btn-outline-info btn-sm mb-1 me-2" (click)="scanCodeBarre()">
+        <i class="fas fa-barcode me-2"></i>
+        {{"scan a barcode"|translate}}
+      </button>
+    </div>
+  </div>
+  
+  <div class="row mb-4">
     <div class="col-lg-8 col-md-6 col-12">
       <div class="d-flex align-items-center">
         <h4 class="mb-0 text-dark">{{"AssetTransfers"|translate}}</h4>
@@ -30,12 +44,6 @@
                   <input type="text" class="form-control" 
                          placeholder="{{'SearchByAssetCode'|translate}}" 
                          [formControl]="searchCtrl">
-                  <button *ngIf="!isActiveScan" class="btn btn-outline-secondary" type="button" (click)="scanCodeBarre()">
-                    <i class="fas fa-qrcode"></i>
-                  </button>
-                  <button *ngIf="isActiveScan" class="btn btn-danger" type="button" (click)="closeScan()">
-                    <i class="fas fa-times"></i>
-                  </button>
                 </div>
               </div>
             </div>
@@ -78,16 +86,16 @@
   </div>
 
   <!-- Barcode Scanner Section -->
-  <div *ngIf="isActiveScan" class="row mb-4">
+  <div  class="row mb-4">
     <div class="col-12">
       <div class="card">
         <div class="card-body p-3">
           <h6 class="text-dark">{{"ScanBarcode"|translate}}</h6>
           <div class="d-flex justify-content-center">
             <barcode-scanner-livestream 
-              type="code_128,code_39,ean_8,ean_13,code_93,codabar"
+              type="code_128"
               (valueChanges)="onValueChanges($event)"
-              (started)="(onStarted)"
+              (started)="onStarted($event)"
               >
             </barcode-scanner-livestream>
           </div>

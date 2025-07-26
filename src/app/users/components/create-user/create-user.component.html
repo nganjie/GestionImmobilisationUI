@@ -1,0 +1,190 @@
+<div class="modal-header">
+  <h4 class="modal-title">{{isEditMode ? ("UpdateUser"|translate) : ("CreateUser"|translate)}}</h4>
+  <button type="button" class="btn-close" aria-label="Close" (click)="closeModal()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="modal-body">
+  <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
+    <div class="row">
+      <!-- First Name -->
+      <div class="col-md-6 mb-3">
+        <label class="form-label">{{"FirstName"|translate}} <span class="text-danger">*</span></label>
+        <input type="text" 
+               class="form-control" 
+               formControlName="first_name"
+               [class.is-invalid]="firstNameCtrl?.invalid && firstNameCtrl?.touched"
+               [class.is-valid]="firstNameCtrl?.valid"
+               placeholder="{{'EnterFirstName'|translate}}">
+        <div class="invalid-feedback" *ngIf="firstNameCtrl?.invalid && firstNameCtrl?.touched">
+          <small *ngIf="firstNameCtrl?.errors?.['required']">{{"FirstNameRequired"|translate}}</small>
+          <small *ngIf="firstNameCtrl?.errors?.['minlength']">{{"FirstNameMinLength"|translate}}</small>
+        </div>
+      </div>
+
+      <!-- Last Name -->
+      <div class="col-md-6 mb-3">
+        <label class="form-label">{{"LastName"|translate}} <span class="text-danger">*</span></label>
+        <input type="text" 
+               class="form-control" 
+               formControlName="last_name"
+               [class.is-invalid]="lastNameCtrl?.invalid && lastNameCtrl?.touched"
+               [class.is-valid]="lastNameCtrl?.valid"
+               placeholder="{{'EnterLastName'|translate}}">
+        <div class="invalid-feedback" *ngIf="lastNameCtrl?.invalid && lastNameCtrl?.touched">
+          <small *ngIf="lastNameCtrl?.errors?.['required']">{{"LastNameRequired"|translate}}</small>
+          <small *ngIf="lastNameCtrl?.errors?.['minlength']">{{"LastNameMinLength"|translate}}</small>
+        </div>
+      </div>
+
+      <!-- Email -->
+      <div class="col-12 mb-3">
+        <label class="form-label">{{"Email"|translate}} <span class="text-danger">*</span></label>
+        <input type="email" 
+               class="form-control" 
+               formControlName="email"
+               [class.is-invalid]="emailCtrl?.invalid && emailCtrl?.touched"
+               [class.is-valid]="emailCtrl?.valid"
+               placeholder="{{'EnterEmail'|translate}}">
+        <div class="invalid-feedback" *ngIf="emailCtrl?.invalid && emailCtrl?.touched">
+          <small *ngIf="emailCtrl?.errors?.['required']">{{"EmailRequired"|translate}}</small>
+          <small *ngIf="emailCtrl?.errors?.['email']">{{"EmailInvalid"|translate}}</small>
+        </div>
+      </div>
+
+      <!-- Password -->
+      <div class="col-md-6 mb-3" *ngIf="!isEditMode">
+        <label class="form-label">{{"Password"|translate}} <span class="text-danger">*</span></label>
+        <input type="password" 
+               class="form-control" 
+               formControlName="password"
+               [class.is-invalid]="passwordCtrl?.invalid && passwordCtrl?.touched"
+               [class.is-valid]="passwordCtrl?.valid"
+               placeholder="{{'EnterPassword'|translate}}">
+        <div class="invalid-feedback" *ngIf="passwordCtrl?.invalid && passwordCtrl?.touched">
+          <small *ngIf="passwordCtrl?.errors?.['required']">{{"PasswordRequired"|translate}}</small>
+          <small *ngIf="passwordCtrl?.errors?.['minlength']">{{"PasswordMinLength"|translate}}</small>
+        </div>
+      </div>
+
+      <!-- Password Confirmation -->
+      <div class="col-md-6 mb-3" *ngIf="!isEditMode">
+        <label class="form-label">{{"ConfirmPassword"|translate}} <span class="text-danger">*</span></label>
+        <input type="password" 
+               class="form-control" 
+               formControlName="password_confirmation"
+               [class.is-invalid]="passwordConfirmationCtrl?.invalid && passwordConfirmationCtrl?.touched || userForm.errors?.['passwordMismatch']"
+               [class.is-valid]="passwordConfirmationCtrl?.valid && !userForm.errors?.['passwordMismatch']"
+               placeholder="{{'ConfirmPassword'|translate}}">
+        <div class="invalid-feedback" *ngIf="passwordConfirmationCtrl?.invalid && passwordConfirmationCtrl?.touched || userForm.errors?.['passwordMismatch']">
+          <small *ngIf="passwordConfirmationCtrl?.errors?.['required']">{{"PasswordConfirmationRequired"|translate}}</small>
+          <small *ngIf="userForm.errors?.['passwordMismatch']">{{"PasswordMismatch"|translate}}</small>
+        </div>
+      </div>
+
+      <!-- Password fields for edit mode (optional) -->
+      <div class="col-12 mb-3" *ngIf="isEditMode">
+        <div class="alert alert-info" role="alert">
+          <i class="fas fa-info-circle me-2"></i>
+          {{"PasswordEditNote"|translate}}
+        </div>
+      </div>
+
+      <div class="col-md-6 mb-3" *ngIf="isEditMode">
+        <label class="form-label">{{"NewPassword"|translate}} <span class="text-muted">({{"Optional"|translate}})</span></label>
+        <input type="password" 
+               class="form-control" 
+               formControlName="password"
+               [class.is-invalid]="passwordCtrl?.invalid && passwordCtrl?.touched"
+               [class.is-valid]="passwordCtrl?.valid"
+               placeholder="{{'EnterNewPassword'|translate}}">
+        <div class="invalid-feedback" *ngIf="passwordCtrl?.invalid && passwordCtrl?.touched">
+          <small *ngIf="passwordCtrl?.errors?.['minlength']">{{"PasswordMinLength"|translate}}</small>
+        </div>
+      </div>
+
+      <div class="col-md-6 mb-3" *ngIf="isEditMode">
+        <label class="form-label">{{"ConfirmNewPassword"|translate}} <span class="text-muted">({{"Optional"|translate}})</span></label>
+        <input type="password" 
+               class="form-control" 
+               formControlName="password_confirmation"
+               [class.is-invalid]="passwordConfirmationCtrl?.invalid && passwordConfirmationCtrl?.touched"
+               [class.is-valid]="passwordConfirmationCtrl?.valid"
+               placeholder="{{'ConfirmNewPassword'|translate}}">
+        <div class="invalid-feedback" *ngIf="passwordConfirmationCtrl?.invalid && passwordConfirmationCtrl?.touched">
+          <small *ngIf="userForm.errors?.['passwordMismatch']">{{"PasswordMismatch"|translate}}</small>
+        </div>
+      </div>
+
+      <!-- Admin Status -->
+      <div class="col-md-6 mb-3">
+        <label class="form-label">{{"UserType"|translate}} <span class="text-danger">*</span></label>
+        <select class="form-select" 
+                formControlName="is_admin"
+                [class.is-invalid]="isAdminCtrl?.invalid && isAdminCtrl?.touched"
+                [class.is-valid]="isAdminCtrl?.valid">
+          <option value="">{{"SelectUserType"|translate}}</option>
+          <option value="1">{{"Administrator"|translate}}</option>
+          <option value="0">{{"RegularUser"|translate}}</option>
+        </select>
+        <div class="invalid-feedback" *ngIf="isAdminCtrl?.invalid && isAdminCtrl?.touched">
+          <small *ngIf="isAdminCtrl?.errors?.['required']">{{"UserTypeRequired"|translate}}</small>
+        </div>
+      </div>
+
+      <!-- Role -->
+      <div class="col-md-6 mb-3">
+        <label class="form-label">{{"Role"|translate}} <span class="text-danger">*</span></label>
+        <ng-select [items]="roles$ | async"
+                   bindLabel="name"
+                   bindValue="id"
+                   formControlName="role_id"
+                   [closeOnSelect]="true"
+                   [searchable]="true"
+                   [clearable]="true"
+                   [class.is-invalid]="roleCtrl?.invalid && roleCtrl?.touched"
+                   [class.is-valid]="roleCtrl?.valid"
+                   placeholder="{{'SelectRole'|translate}}">
+          
+          <ng-option *ngFor="let role of roles$ | async" [value]="role.id">
+            <div class="d-flex align-items-center">
+              <i class="fas fa-user-tag text-primary me-2"></i>
+              <div>
+                <div class="fw-bold">{{role.name}}</div>
+                <small class="text-muted">{{role.guard_name}}</small>
+              </div>
+            </div>
+          </ng-option>
+        </ng-select>
+        <div class="invalid-feedback" *ngIf="roleCtrl?.invalid && roleCtrl?.touched">
+          <small *ngIf="roleCtrl?.errors?.['required']">{{"RoleRequired"|translate}}</small>
+        </div>
+      </div>
+    </div>
+
+    <!-- Error Display -->
+    <div *ngIf="error$ | async as error" class="alert alert-danger" role="alert">
+      <i class="fas fa-exclamation-triangle me-2"></i>
+      {{error.message}}
+    </div>
+  </form>
+</div>
+
+<div class="modal-footer">
+  <button type="button" 
+          class="btn btn-outline-secondary" 
+          (click)="closeModal()"
+          [disabled]="loading$ | async">
+    <i class="fas fa-times me-2"></i>
+    {{"Cancel"|translate}}
+  </button>
+  <button type="submit" 
+          class="btn btn-primary" 
+          (click)="onSubmit()"
+          [disabled]="(loading$ | async) || userForm.invalid">
+    <span *ngIf="loading$ | async" class="spinner-border spinner-border-sm me-2" role="status"></span>
+    <i *ngIf="!(loading$ | async)" class="fas fa-save me-2"></i>
+    {{userId ? ("UpdateUser"|translate) : ("CreateUser"|translate)}}
+  </button>
+</div>

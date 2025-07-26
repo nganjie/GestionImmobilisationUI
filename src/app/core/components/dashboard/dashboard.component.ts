@@ -45,6 +45,20 @@ export class DashboardComponent implements OnInit{
     {
       items: [
         {
+          id:'usesrs',
+          label: 'Users',
+          icon: 'ni ni-single-02',
+          route: '/admin/users',
+          children: [
+            {
+              id: 'users-list',
+              label: 'All Users',
+              icon: 'ni ni-bullet-list-67',
+              route: '/admin/users' 
+            }
+          ]
+        },
+        {
           id: 'immobilisations',
           label: 'Immobilisations',
           icon: 'ni ni-archive-2',

@@ -118,6 +118,7 @@ export class GlobalServices{
       }
        handleError(error: HttpErrorResponse) {
         this.setLoadStatus(false);
+        console.log('handleError',error);
         if(error.status==400){
             this._error$.next({status:false,message:error.error.title})
         }else{
@@ -134,6 +135,7 @@ export class GlobalServices{
           // Erreur côté serveur (API down, 500, etc.)
           errorMessage = `Erreur Serveur ${error.status} : ${error.message}`;
         }
+        this.setSnackMesage(error.error.message,'btn-danger');
     
         //console.error(errorMessage); // Log de l'erreur (optionnel)
         return throwError(() => error); // Retourne une erreur observable

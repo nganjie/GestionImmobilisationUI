@@ -1,0 +1,226 @@
+<app-base nameOption="Users">
+  <!-- Header Section with Actions -->
+  <div class="row mb-4">
+    <div class="col-lg-8 col-md-6 col-12">
+      <div class="d-flex align-items-center">
+        <h4 class="mb-0 text-dark">{{"Users"|translate}}</h4>
+        <span class="badge bg-gradient-info ms-2">{{(users$ | async)?.length || 0}} {{"items"|translate}}</span>
+      </div>
+      <p class="text-sm text-secondary mb-0">{{"ManageSystemUsers"|translate}}</p>
+    </div>
+    <div class="col-lg-4 col-md-6 col-12 text-end">
+      <button class="btn btn-primary btn-sm mb-0" (click)="openCreateModal()">
+        <i class="fas fa-plus me-2"></i>
+        {{"CreateUser"|translate}}
+      </button>
+    </div>
+  </div>
+
+  <!-- Filters Section -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-body p-3">
+          <div class="row align-items-center">
+            <div class="col-lg-4 col-md-6 col-12">
+              <div class="form-group mb-0">
+                <label class="form-label text-xs">{{"Search"|translate}}</label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="fas fa-search"></i></span>
+                  <input type="text" class="form-control" 
+                         placeholder="{{'SearchByNameOrEmail'|translate}}" 
+                         [formControl]="searchCtrl">
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-3 col-md-6 col-12">
+              <div class="form-group mb-0">
+                <label class="form-label text-xs">{{"Role"|translate}}</label>
+                <select class="form-select" [formControl]="roleCtrl">
+                  <option value="">{{"All"|translate}}</option>
+                  <option *ngFor="let role of roles$ | async" [value]="role.id">
+                    {{role.name}}
+                  </option>
+                </select>
+              </div>
+            </div>
+            <div class="col-lg-3 col-md-6 col-12">
+              <div class="form-group mb-0">
+                <label class="form-label text-xs">{{"Status"|translate}}</label>
+                <select class="form-select" [formControl]="statusCtrl">
+                  <option value="">{{"All"|translate}}</option>
+                  <option value="1">{{"Admin"|translate}}</option>
+                  <option value="0">{{"User"|translate}}</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-lg-2 col-md-6 col-12">
+              <div class="form-group mb-0">
+                <label class="form-label text-xs">&nbsp;</label>
+                <button class="btn btn-outline-secondary w-100" (click)="resetFilters()">
+                  <i class="fas fa-sync-alt me-2"></i>
+                  {{"Reset"|translate}}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Data Table -->
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header pb-0">
+          <div class="d-lg-flex">
+            <div>
+              <h5 class="mb-0">{{"UsersList"|translate}}</h5>
+              <p class="text-sm mb-0">{{"ViewAllSystemUsers"|translate}}</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-body px-0 pb-0">
+          <div class="table-responsive">
+            <table class="table table-flush" id="users-list">
+              <thead class="thead-light">
+                <tr>
+                  <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                    <button class="btn btn-sm p-0 text-secondary" (click)="sortBy('first_name')">
+                      {{"Name"|translate}} <i [class]="getSortIcon('first_name')"></i>
+                    </button>
+                  </th>
+                  <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                    <button class="btn btn-sm p-0 text-secondary" (click)="sortBy('email')">
+                      {{"Email"|translate}} <i [class]="getSortIcon('email')"></i>
+                    </button>
+                  </th>
+                  <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                    {{"Roles"|translate}}
+                  </th>
+                  <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                    <button class="btn btn-sm p-0 text-secondary" (click)="sortBy('is_admin')">
+                      {{"Status"|translate}} <i [class]="getSortIcon('is_admin')"></i>
+                    </button>
+                  </th>
+                  <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                    <button class="btn btn-sm p-0 text-secondary" (click)="sortBy('created_at')">
+                      {{"CreatedAt"|translate}} <i [class]="getSortIcon('created_at')"></i>
+                    </button>
+                  </th>
+                  <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                    {{"Actions"|translate}}
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngIf="loading$ | async">
+                  <td colspan="6" class="text-center py-4">
+                    <div class="spinner-border spinner-border-sm text-primary" role="status">
+                      <span class="visually-hidden">{{"Loading"|translate}}...</span>
+                    </div>
+                    <span class="ms-2">{{"Loading"|translate}}...</span>
+                  </td>
+                </tr>
+                <tr *ngIf="!(loading$ | async) && (users$ | async)?.length === 0">
+                  <td colspan="6" class="text-center py-4">
+                    <i class="fas fa-users fa-3x text-secondary mb-3"></i>
+                    <p class="text-secondary mb-0">{{"NoUsersFound"|translate}}</p>
+                  </td>
+                </tr>
+                <tr *ngFor="let user of users$ | async; trackBy: trackByUserId" 
+                    class="cursor-pointer hover-shadow" 
+                    (click)="goToDetail(user)">
+                  <td class="text-sm">
+                    <div class="d-flex align-items-center">
+                      <div class="avatar avatar-sm bg-gradient-primary rounded-circle me-3">
+                        <i class="fas fa-user text-white"></i>
+                      </div>
+                      <div>
+                        <span class="text-dark font-weight-bold">
+                          {{user.first_name}} {{user.last_name}}
+                        </span>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="text-sm">
+                    <span class="text-dark">{{user.email}}</span>
+                    <div *ngIf="user.email_verified_at" class="text-xs text-success">
+                      <i class="fas fa-check-circle me-1"></i>
+                      {{"Verified"|translate}}
+                    </div>
+                    <div *ngIf="!user.email_verified_at" class="text-xs text-warning">
+                      <i class="fas fa-exclamation-circle me-1"></i>
+                      {{"NotVerified"|translate}}
+                    </div>
+                  </td>
+                  <td class="text-sm">
+                    <div class="d-flex flex-wrap">
+                      <span *ngFor="let role of user.roles; let last = last" 
+                            class="badge bg-gradient-info me-1 mb-1">
+                        {{role.name}}
+                      </span>
+                      <span *ngIf="user.roles?.length === 0" class="text-muted">
+                        {{"NoRoles"|translate}}
+                      </span>
+                    </div>
+                  </td>
+                  <td class="text-sm">
+                    <span [class]="user.is_admin ? 'badge badge-sm bg-gradient-success' : 'badge badge-sm bg-gradient-info'">
+                      {{user.is_admin ? ('Admin'|translate) : ('User'|translate)}}
+                    </span>
+                  </td>
+                  <td class="text-sm">
+                    <span class="text-dark font-weight-bold">
+                      {{user.created_at | date:'short'}}
+                    </span>
+                  </td>
+                  <td class="text-sm">
+                    <div class="d-flex align-items-center">
+                      <button class="btn btn-link text-secondary ps-1 pe-1 mb-0" 
+                              (click)="goToDetail(user); $event.stopPropagation()"
+                              title="{{'ViewDetails'|translate}}">
+                        <i class="fas fa-eye text-xs"></i>
+                      </button>
+                      <button class="btn btn-link text-secondary ps-1 pe-1 mb-0" 
+                              (click)="goToEdit(user); $event.stopPropagation()"
+                              title="{{'Edit'|translate}}">
+                        <i class="fas fa-edit text-xs"></i>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Pagination -->
+        <div class="card-footer" *ngIf="!(loading$ | async) && (users$ | async) && (users$ | async)!.length > 0">
+          <div class="row mt-3">
+            <div class="col-sm-6">
+              <div class="d-flex align-items-center">
+                <span class="text-sm text-secondary">
+                  {{"Showing"|translate}} {{(paginateData$ | async)?.current_page || 0}} {{"to"|translate}} {{(paginateData$ | async)?.per_page || 0}} 
+                  {{"of"|translate}} {{(paginateData$ | async)?.total || 0}} {{"entries"|translate}}
+                </span>
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <mat-paginator #paginator 
+                           [length]="totaElement" 
+                           (page)="pageEvent=pageChange($event)"
+                           [pageSize]="itemsPerPage"
+                           [pageSizeOptions]="[5, 10, 25, 50]"
+                           [showFirstLastButtons]="true"
+                           aria-label="Select page">
+              </mat-paginator>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</app-base>

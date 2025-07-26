@@ -1,0 +1,205 @@
+<app-base nameOption="UserDetail">
+  <!-- Header Section -->
+  <div class="row mb-4">
+    <div class="col-lg-8 col-md-6 col-12">
+      <div class="d-flex align-items-center">
+        <button class="btn btn-link text-dark p-0 me-3" (click)="goBack()">
+          <i class="fas fa-arrow-left fa-lg"></i>
+        </button>
+        <div>
+          <h4 class="mb-0 text-dark">{{"UserDetails"|translate}}</h4>
+          <p class="text-sm text-secondary mb-0">{{"ViewUserInformation"|translate}}</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-4 col-md-6 col-12 text-end">
+      <button class="btn btn-primary btn-sm mb-0" (click)="goToEdit()" *ngIf="user">
+        <i class="fas fa-edit me-2"></i>
+        {{"EditUser"|translate}}
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading$ | async" class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-body text-center py-5">
+          <div class="spinner-border spinner-border-lg text-primary" role="status">
+            <span class="visually-hidden">{{"Loading"|translate}}...</span>
+          </div>
+          <p class="mt-3 text-secondary">{{"LoadingUserDetails"|translate}}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="!(loading$ | async) && !user" class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-body text-center py-5">
+          <i class="fas fa-user-slash fa-3x text-secondary mb-3"></i>
+          <h5 class="text-secondary">{{"UserNotFound"|translate}}</h5>
+          <p class="text-muted">{{"UserNotFoundMessage"|translate}}</p>
+          <button class="btn btn-primary" (click)="goBack()">
+            <i class="fas fa-arrow-left me-2"></i>
+            {{"BackToUsers"|translate}}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- User Details -->
+  <div *ngIf="!(loading$ | async) && user" class="row">
+    <!-- Basic Information -->
+    <div class="col-xl-4 col-lg-5 col-md-6 col-12 mb-4">
+      <div class="card h-100">
+        <div class="card-header pb-0">
+          <h6 class="mb-0">{{"BasicInformation"|translate}}</h6>
+        </div>
+        <div class="card-body">
+          <div class="text-center mb-4">
+            <div class="avatar avatar-xl bg-gradient-primary rounded-circle mx-auto mb-3">
+              <i class="fas fa-user fa-2x text-white"></i>
+            </div>
+            <h5 class="mb-0">{{user.first_name}} {{user.last_name}}</h5>
+            <span [class]="getStatusClass()">{{getStatusLabel() | translate}}</span>
+          </div>
+          
+          <div class="d-flex justify-content-between border-bottom py-2">
+            <span class="text-sm text-secondary">{{"Email"|translate}}:</span>
+            <span class="text-sm font-weight-bold">{{user.email}}</span>
+          </div>
+          
+          <div class="d-flex justify-content-between border-bottom py-2">
+            <span class="text-sm text-secondary">{{"EmailStatus"|translate}}:</span>
+            <span class="text-sm" [class]="getVerificationClass()">
+              <i class="fas fa-circle me-1" style="font-size: 8px;"></i>
+              {{getVerificationStatus() | translate}}
+            </span>
+          </div>
+          
+          <div class="d-flex justify-content-between border-bottom py-2">
+            <span class="text-sm text-secondary">{{"UserType"|translate}}:</span>
+            <span class="text-sm font-weight-bold">
+              {{user.is_admin ? ('Administrator'|translate) : ('User'|translate)}}
+            </span>
+          </div>
+          
+          <div class="d-flex justify-content-between py-2">
+            <span class="text-sm text-secondary">{{"MemberSince"|translate}}:</span>
+            <span class="text-sm font-weight-bold">{{user.created_at | date:'mediumDate'}}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Roles and Permissions -->
+    <div class="col-xl-8 col-lg-7 col-md-6 col-12 mb-4">
+      <div class="card h-100">
+        <div class="card-header pb-0">
+          <h6 class="mb-0">{{"RolesAndPermissions"|translate}}</h6>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-12">
+              <h6 class="text-sm text-uppercase text-secondary mb-3">{{"AssignedRoles"|translate}}</h6>
+              
+              <div *ngIf="user.roles && user.roles.length > 0" class="d-flex flex-wrap">
+                <div *ngFor="let role of user.roles" class="me-3 mb-3">
+                  <div class="card border">
+                    <div class="card-body p-3">
+                      <div class="d-flex align-items-center">
+                        <div class="avatar avatar-sm bg-gradient-info rounded-circle me-3">
+                          <i class="fas fa-user-tag text-white"></i>
+                        </div>
+                        <div>
+                          <h6 class="mb-0">{{role.name}}</h6>
+                          <p class="text-xs text-secondary mb-0">{{role.guard_name}}</p>
+                        </div>
+                      </div>
+                      <div class="mt-2">
+                        <small class="text-muted">
+                          {{"CreatedAt"|translate}}: {{role.created_at | date:'short'}}
+                        </small>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div *ngIf="!user.roles || user.roles.length === 0" class="text-center py-4">
+                <i class="fas fa-user-times fa-2x text-secondary mb-3"></i>
+                <p class="text-secondary mb-0">{{"NoRolesAssigned"|translate}}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Account Activity -->
+    <div class="col-12 mb-4">
+      <div class="card">
+        <div class="card-header pb-0">
+          <h6 class="mb-0">{{"AccountActivity"|translate}}</h6>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-lg-3 col-md-6 col-12">
+              <div class="card border mb-3">
+                <div class="card-body text-center p-3">
+                  <div class="avatar avatar-sm bg-gradient-primary rounded-circle mx-auto mb-2">
+                    <i class="fas fa-calendar-plus text-white"></i>
+                  </div>
+                  <h6 class="mb-0">{{user.created_at | date:'mediumDate'}}</h6>
+                  <p class="text-xs text-secondary mb-0">{{"AccountCreated"|translate}}</p>
+                </div>
+              </div>
+            </div>
+            
+            <div class="col-lg-3 col-md-6 col-12">
+              <div class="card border mb-3">
+                <div class="card-body text-center p-3">
+                  <div class="avatar avatar-sm bg-gradient-info rounded-circle mx-auto mb-2">
+                    <i class="fas fa-sync text-white"></i>
+                  </div>
+                  <h6 class="mb-0">{{user.updated_at | date:'mediumDate'}}</h6>
+                  <p class="text-xs text-secondary mb-0">{{"LastUpdated"|translate}}</p>
+                </div>
+              </div>
+            </div>
+            
+            <div class="col-lg-3 col-md-6 col-12">
+              <div class="card border mb-3">
+                <div class="card-body text-center p-3">
+                  <div class="avatar avatar-sm bg-gradient-success rounded-circle mx-auto mb-2">
+                    <i class="fas fa-check-circle text-white"></i>
+                  </div>
+                  <h6 class="mb-0">
+                    {{user.email_verified_at ? (user.email_verified_at | date:'mediumDate') : ('NotVerified'|translate)}}
+                  </h6>
+                  <p class="text-xs text-secondary mb-0">{{"EmailVerified"|translate}}</p>
+                </div>
+              </div>
+            </div>
+            
+            <div class="col-lg-3 col-md-6 col-12">
+              <div class="card border mb-3">
+                <div class="card-body text-center p-3">
+                  <div class="avatar avatar-sm bg-gradient-warning rounded-circle mx-auto mb-2">
+                    <i class="fas fa-shield-alt text-white"></i>
+                  </div>
+                  <h6 class="mb-0">{{user.roles?.length || 0}}</h6>
+                  <p class="text-xs text-secondary mb-0">{{"AssignedRoles"|translate}}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</app-base>

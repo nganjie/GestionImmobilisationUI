@@ -15,6 +15,7 @@ const routes: Routes = [
       {path:"employees",loadChildren:()=>import('./employees/employees.module').then(m=>m.EmployeesModule)},
       {path:"reformes",loadChildren:()=>import('./reformes/reformes.module').then(m=>m.ReformesModule)},
       {path:"inventories",loadChildren:()=>import('./inventory/inventory.module').then(m=>m.InventoryModule)},
+      {path:"users",loadChildren:()=>import('./users/users.module').then(m=>m.UsersModule)},
       //{path:'client-accounts',loadChildren:()=>import('./client-accounts/client-accounts.module').then(m=>m.ClientAccountsModule),canActivate:[authRoleGuard],data:{roles:ClientsRouteRole}}
     ]
     },
