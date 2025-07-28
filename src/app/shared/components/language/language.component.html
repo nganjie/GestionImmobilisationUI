@@ -1,23 +1,24 @@
-<li (click)="logOut()">
-    <a >
-        <i class="fa fa-sign-out"></i> {{"LogOut"|translate}}
-    </a>
-</li>
-<li>
-    <mat-form-field class="mat-select-hide-underline m-0 p-0">
-        <mat-select [value]="language.value" (valueChange)="selectLanguage($event)">
-          <mat-select-trigger>
-            <div >
-              <img [src]="language.img" class="flag"/>
-              <span>{{ language.label }}</span>
-            </div>
-          </mat-select-trigger>
-          <mat-option *ngFor="let opt of languages" [value]="opt.value">
-            <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
-              <img [src]="opt.img" class="flag" /> 
-              <span>{{ opt.label }}</span>
-            </div>
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
-</li>
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <div (click)="logOut()" class="logout-button">
+  <i class="fas fa-sign-out-alt"></i>
+  
+</div>
+<div class="dropdown-language" [class.open]="isOpen">
+  <div class="dropdown-language-toggle" (click)="toggleDropdown()">
+    <img [src]="currentFlagUrl" alt="selected flag" title="{{currentFlag | titlecase}}">
+  </div>
+
+  <div class="dropdown-language-menu" *ngIf="isOpen">
+    @for(flag of flags;track $index){
+        <div class="dropdown-language-item" (click)="selectLanguage(flag.code)">
+            <img [src]="flag.img" alt="{{flag.code}}">
+            <div>{{flag.codeFlag|titlecase}}</div>
+        </div>
+    }
+
+  </div>
+</div>
+<div routerLink="/admin/profile" class="profile-div">
+  <i class="fa-solid fa-user"></i> {{"Profile"|translate}}
+</div>
+</div>

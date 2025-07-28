@@ -7,7 +7,6 @@
     "CreateU":"Creer Une",
     "Employee": "Employé",
     "CurrentEmployee": "Employé actuel",
-    "User": "Utilisateur",
     "Account": "Compte",
     "Treasury": "Trésorerie",
     "SelectDisplayed": "Sélectionner affichées",
@@ -88,7 +87,6 @@
     "Role":"Rôle",
     "display_name":"Nom",
     "Kind":"Nature",
-    "CurrentUser":"Utilisateur actuel",
     "AccountNumber":"Numéro de compte",
     "balance":"solde",
     "eBankingCode":"Code eBanking",
@@ -742,6 +740,18 @@
     "UserType": "Type d'utilisateur",
     "MemberSince": "Membre depuis",
     "RolesAndPermissions": "Rôles et permissions",
+    "AccessDenied": "Accès refusé",
+    "AccessDeniedMessage": "Vous n'avez pas les permissions nécessaires pour accéder à cette page.",
+    "ContactAdminForAccess": "Contactez un administrateur pour obtenir l'accès à cette fonctionnalité.",
+    "GoBack": "Retour",
+    "GoToHomePage": "Aller à l'accueil",
+    "RequestedPage": "Page demandée",
+    "InsufficientPermissions": "Permissions insuffisantes",
+    "UnauthorizedAction": "Action non autorisée",
+    "VisitorRestrictedMessage": "Cette action est restreinte aux visiteurs.",
+    "AdminOnlyMessage": "Cette fonctionnalité est réservée aux administrateurs.",
+    "SuperAdminOnlyMessage": "Cette fonctionnalité est réservée aux super administrateurs.",
+    "RequiredRoles": "Rôles requis",
     "UserTableHeaders": {
         "ID": "ID",
         "Username": "Nom d'utilisateur",
@@ -752,5 +762,40 @@
         "Status": "Statut",
         "CreatedAt": "Créé le",
         "Actions": "Actions"
-    }
+    },
+    "CurrentUser": {
+        "Title": "Profil Utilisateur",
+        "Subtitle": "Informations de votre compte",
+        "PersonalInfo": "Informations Personnelles",
+        "RolesPermissions": "Rôles et Permissions",
+        "AccountInfo": "Informations du Compte"
+    },
+    "Permission": {
+        "Read": "Lecture",
+        "Create": "Création",
+        "Update": "Modification",
+        "Delete": "Suppression"
+    },
+    "User": {
+        "FirstName": "Prénom",
+        "LastName": "Nom",
+        "Email": "Email",
+        "Verified": "Vérifié",
+        "NotVerified": "Non vérifié",
+        "AdminStatus": "Statut Administrateur",
+        "Administrator": "Administrateur",
+        "StandardUser": "Utilisateur Standard",
+        "Roles": "Rôles",
+        "NoRoles": "Aucun rôle assigné",
+        "CurrentPermissions": "Permissions Actuelles",
+        "UserId": "ID Utilisateur",
+        "CreatedAt": "Créé le",
+        "LastUpdate": "Dernière mise à jour"
+    },
+    "Common": {
+        "Refresh": "Actualiser",
+        "Loading": "Chargement",
+        "Error": "Erreur"
+    },
+    "ErrorLoadingUserData": "Erreur lors du chargement des données utilisateur"
 }

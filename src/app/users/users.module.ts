@@ -15,6 +15,7 @@ import { LanguageService } from '../services/language/language.service';
 import { UserService } from './services/user.service';
 import { MatSelectModule } from '@angular/material/select';
 import { NgSelectModule } from '@ng-select/ng-select';
+import { RoleManagementModule } from '../modules/role-management.module';
 
 @NgModule({
   declarations: [
@@ -31,6 +32,7 @@ import { NgSelectModule } from '@ng-select/ng-select';
     MatPaginatorModule,
     MatIconModule,
     DecimalPipe,
+    RoleManagementModule,
     TranslateModule.forRoot({
       loader:{
         provide:TranslateLoader,

@@ -9,10 +9,18 @@
       <p class="text-sm text-secondary mb-0">{{"ManageSystemUsers"|translate}}</p>
     </div>
     <div class="col-lg-4 col-md-6 col-12 text-end">
-      <button class="btn btn-primary btn-sm mb-0" (click)="openCreateModal()">
+      <button *hasRole="userRole.SUPER_ADMIN" class="btn btn-primary btn-sm mb-0" (click)="openCreateModal()">
         <i class="fas fa-plus me-2"></i>
         {{"CreateUser"|translate}}
       </button>
+      
+      <!-- Message pour les non-autorisés -->
+      <div *cannotAccess="userRole.SUPER_ADMIN" class="alert alert-info py-2 px-3 mb-0">
+        <small>
+          <i class="fas fa-info-circle me-1"></i>
+          {{"SuperAdminOnlyMessage"|translate}}
+        </small>
+      </div>
     </div>
   </div>
 

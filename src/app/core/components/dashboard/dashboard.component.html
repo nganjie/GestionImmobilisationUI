@@ -18,7 +18,7 @@
            alt="GestionImmo Logo">
       <span class="ms-2 font-weight-bold text-gradient text-primary" 
             [class.d-none]="isSidebarCollapsed">
-        {{ 'AppName' | translate }}
+        {{ appName | translate }}
       </span>
     </a>
     
@@ -38,7 +38,7 @@
     <ul class="navbar-nav">
       
       <!-- Sections de menu -->
-      <ng-container *ngFor="let section of menuSections; let sectionIndex = index">
+      <ng-container *ngFor="let section of filteredMenuSections; let sectionIndex = index">
         
         <!-- Titre de section -->
         <li class="nav-item mt-3" *ngIf="section.title && !isSidebarCollapsed">
@@ -149,31 +149,12 @@
 
   <!-- Footer du sidebar -->
   <div class="sidenav-footer mx-3" [class.d-none]="isSidebarCollapsed">
-    <div class="card card-background shadow-none card-background-mask-primary" id="sidenavCard">
-      <div class="full-background" 
-           style="background-image: url('../assets/img/curved-images/curved14.jpg')"></div>
-      <div class="card-body text-start p-3 w-100">
-        <div class="icon icon-shape icon-sm bg-white text-center border-radius-md shadow mb-3 d-flex align-items-center justify-content-center">
-          <i class="ni ni-diamond text-dark text-gradient text-lg top-0" aria-hidden="true"></i>
-        </div>
-        <div class="docs-info">
-          <h6 class="text-white up mb-0">{{ 'NeedHelp' | translate }}</h6>
-          <p class="text-xs font-weight-bold">{{ 'CheckDocumentation' | translate }}</p>
-        </div>
-      </div>
-    </div>
+
     
-    <a [href]="'https://docs.gestionimmo.com'" 
-       target="_blank" 
-       class="btn btn-outline-white btn-sm w-100 mb-3">
-      <i class="fas fa-book me-1"></i>
-      {{ 'Documentation' | translate }}
-    </a>
-    
-    <a class="btn btn-dark btn-sm mb-0 w-100" 
-       [routerLink]="['/admin/settings']">
-      <i class="fas fa-cog me-1"></i>
-      {{ 'Settings' | translate }}
+     <a class="btn btn-dark btn-sm mb-0 w-100" 
+       (click)="logOut()">
+      <i class="fas fa-sign-out"></i>
+      {{ 'Deconnexion' | translate }}
     </a>
   </div>
 </aside>

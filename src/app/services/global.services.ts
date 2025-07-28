@@ -4,24 +4,39 @@ import { PaginateData } from "../models/paginate-data.model";
 import { ErrorServer } from "../models/error-server.model";
 import { MatSnackBar, MatSnackBarConfig } from "@angular/material/snack-bar";
 import { User } from "../models/user.model";
+import { Injectable, Injector } from "@angular/core";
+import { RoleService } from "./role.service";
+import { UserRole } from "../enums/roles.enum";
 
-
+@Injectable({
+  providedIn: 'root'
+})
 export class GlobalServices{
     headers!:{headers:HttpHeaders};
     currentUser!:User;
     emptyPaginate={ current_page:0,
         per_page:10}
     _nameMenue$=new BehaviorSubject<string>('');
+    private _roleService: RoleService | null = null;
+    
     get nameMenu$():Observable<string>{
         return this._nameMenue$.asObservable();
     }
 
-    constructor(protected http:HttpClient,private snackBar:MatSnackBar){
+    constructor(protected http:HttpClient,private snackBar:MatSnackBar, private injector?: Injector){
         this.handleError=this.handleError.bind(this)
         this.headers=this.getHearder()
         this.getCurrentUserBase()
         
         //this.getCurrentsTatisticsBase();
+    }
+    
+    // Méthode pour obtenir le RoleService de manière lazy
+    private getRoleService(): RoleService {
+        if (!this._roleService && this.injector) {
+            this._roleService = this.injector.get(RoleService);
+        }
+        return this._roleService!;
     }
     setNameMenue(name:string){
         this._nameMenue$.next(name);
@@ -38,8 +53,53 @@ export class GlobalServices{
             //this.roleCurrentUser=jsonData.user_roles[0].role.code;
             this.currentUser=jsonData //as CurrentUser;
            // this.roleCurrentUser=this.currentUser.user_roles.map(a=>a.role.code as RolesEnum) 
+           // Rafraîchir les rôles dans le RoleService
+           if (this.injector) {
+               this.getRoleService().refreshUserRoles();
+           }
         }
 
+    }
+
+    // Méthodes déléguées au RoleService pour la rétrocompatibilité
+    hasRole(role: UserRole): boolean {
+        return this.getRoleService().hasRole(role);
+    }
+
+    hasAnyRole(roles: UserRole[]): boolean {
+        return this.getRoleService().hasAnyRole(roles);
+    }
+
+    isSuperAdmin(): boolean {
+        return this.getRoleService().isSuperAdmin();
+    }
+
+    isAdmin(): boolean {
+        return this.getRoleService().isAdmin();
+    }
+
+    isVisitor(): boolean {
+        return this.getRoleService().isVisitor();
+    }
+
+    canCreate(): boolean {
+        return this.getRoleService().canCreate();
+    }
+
+    canModify(): boolean {
+        return this.getRoleService().canModify();
+    }
+
+    canDelete(): boolean {
+        return this.getRoleService().canDelete();
+    }
+
+    canManageUsers(): boolean {
+        return this.getRoleService().canManageUsers();
+    }
+
+    canRead(): boolean {
+        return this.getRoleService().canRead();
     }
     tokenType  = 'Bearer ';
     lastLoaded=0

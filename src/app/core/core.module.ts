@@ -10,6 +10,8 @@ import { LoginComponent } from './components/login/login.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from '../services/auth.service';
 import { RouterOutlet } from '@angular/router';
+import { CurrentUserComponent } from './components/current-user/current-user.component';
+import { SharedModule } from "../shared/shared.module";
 
 
 @NgModule({
@@ -17,7 +19,8 @@ import { RouterOutlet } from '@angular/router';
     SidebarLeftComponent,
     DashboardComponent,
     SidebarTopComponent,
-    LoginComponent
+    LoginComponent,
+    CurrentUserComponent
   ],
   imports: [
     CommonModule,
@@ -25,8 +28,9 @@ import { RouterOutlet } from '@angular/router';
     FormsModule,
     ReactiveFormsModule,
     RouterOutlet,
-    TranslateModule
-  ],
+    TranslateModule,
+    SharedModule
+],
   providers:[
     AuthService
   ]

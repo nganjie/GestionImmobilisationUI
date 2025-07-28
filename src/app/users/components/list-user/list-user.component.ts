@@ -11,6 +11,8 @@ import { FormBuilder, FormControl } from '@angular/forms';
 import { search, searchby, searchOption } from '../../../models/search-element.model';
 import { UserService } from '../../services/user.service';
 import { CreateUserComponent } from '../create-user/create-user.component';
+import { UserRole } from '../../../enums/roles.enum';
+import { RoleService } from '../../../services/role.service';
 
 @Component({
   selector: 'app-list-user',
@@ -39,13 +41,17 @@ export class ListUserComponent extends BaseComponent implements OnInit {
   currentSortBy: string = 'created_at';
   sortDirection: 'asc' | 'desc' = 'desc';
 
+  // Énumération des rôles pour le template
+  userRole = UserRole;
+
   constructor(
     private languageService: LanguageService,
     private userService: UserService,
     private modalService: NgbModal,
     private router: Router,
     private route: ActivatedRoute,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private roleService: RoleService
   ) {
     super();
   }

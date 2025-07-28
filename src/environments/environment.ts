@@ -1,11 +1,14 @@
 // This file can be replaced during build by using the `fileReplacements` array.
 // `ng build` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
+    import { name as appName, version } from '../../package.json';
 
 export const environment = {
   production: false,
   apiUrlFirst:"http://127.0.0.1:8000/api",
-  apiUrlSecond:"http://127.0.0.1:8000/api"
+  apiUrlSecond:"http://127.0.0.1:8000/api",
+  appName,
+  version
 };
 
 /*

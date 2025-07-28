@@ -36,7 +36,6 @@
     "SelectOfficeForEmployee": "Select office assignment for employee",
     "Cancel": "Cancel",
     "Loading": "Loading",
-    "User": "User",
     "Account": "Account",
     "Treasury": "Treasury",
     "CashDeposits": "CashDeposits",
@@ -75,7 +74,6 @@
     "Role":"Role",
     "display_name":"Display Name",
     "Kind":"Kind",
-    "CurrentUser":"Current User",
     "AccountNumber":"Account Number",
     "balance":"balance",
     "eBankingCode":"eBankingCode",
@@ -718,6 +716,18 @@
     "UserType": "User Type",
     "MemberSince": "Member Since",
     "RolesAndPermissions": "Roles and Permissions",
+    "AccessDenied": "Access Denied",
+    "AccessDeniedMessage": "You don't have the necessary permissions to access this page.",
+    "ContactAdminForAccess": "Contact an administrator to get access to this feature.",
+    "GoBack": "Go Back",
+    "GoToHomePage": "Go to Home Page",
+    "RequestedPage": "Requested Page",
+    "InsufficientPermissions": "Insufficient Permissions",
+    "UnauthorizedAction": "Unauthorized Action",
+    "VisitorRestrictedMessage": "This action is restricted for visitors.",
+    "AdminOnlyMessage": "This feature is reserved for administrators.",
+    "SuperAdminOnlyMessage": "This feature is reserved for super administrators.",
+    "RequiredRoles": "Required Roles",
     "UserTableHeaders": {
         "ID": "ID",
         "Username": "Username",
@@ -728,5 +738,40 @@
         "Status": "Status",
         "CreatedAt": "Created At",
         "Actions": "Actions"
-    }
+    },
+    "CurrentUser": {
+        "Title": "User Profile",
+        "Subtitle": "Your account information",
+        "PersonalInfo": "Personal Information",
+        "RolesPermissions": "Roles and Permissions",
+        "AccountInfo": "Account Information"
+    },
+    "Permission": {
+        "Read": "Read",
+        "Create": "Create",
+        "Update": "Update",
+        "Delete": "Delete"
+    },
+    "User": {
+        "FirstName": "First Name",
+        "LastName": "Last Name",
+        "Email": "Email",
+        "Verified": "Verified",
+        "NotVerified": "Not Verified",
+        "AdminStatus": "Administrator Status",
+        "Administrator": "Administrator",
+        "StandardUser": "Standard User",
+        "Roles": "Roles",
+        "NoRoles": "No roles assigned",
+        "CurrentPermissions": "Current Permissions",
+        "UserId": "User ID",
+        "CreatedAt": "Created At",
+        "LastUpdate": "Last Update"
+    },
+    "Common": {
+        "Refresh": "Refresh",
+        "Loading": "Loading",
+        "Error": "Error"
+    },
+    "ErrorLoadingUserData": "Error loading user data"
 }

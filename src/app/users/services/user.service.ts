@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Injector } from '@angular/core';
 import { GlobalServices } from '../../services/global.services';
 import { HttpClient } from '@angular/common/http';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -15,8 +15,8 @@ import { searchOption, exploseSearchOption } from '../../models/search-element.m
 })
 export class UserService extends GlobalServices {
 
-  constructor(private https:HttpClient,private snak :MatSnackBar,private router:Router){
-    super(https,snak)
+  constructor(private https:HttpClient,private snak :MatSnackBar,private router:Router, private injector_: Injector){
+    super(https,snak, injector_)
   }
   _users$:BehaviorSubject<User[]> = new BehaviorSubject<User[]>([]);
   get users$(){
@@ -92,4 +92,5 @@ export class UserService extends GlobalServices {
       })
     ).subscribe()
   }
+  
 }

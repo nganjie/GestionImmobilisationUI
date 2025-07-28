@@ -8,8 +8,21 @@
 /* Styles pour que les modals soient au-dessus de tous les éléments, y compris la sidebar */
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+/* Styles pour les snackbars d'erreur */
+.mat-snack-bar-container.error-snackbar {
+  background-color: #f44336 !important;
+  color: white !important;
+}
+
+.mat-snack-bar-container.error-snackbar .mat-simple-snackbar-action {
+  color: #ffeb3b !important;
+}
 ngb-modal-backdrop {
     z-index: 9998 !important;
+}
+.button-red{
+    background-color: #dc3545 !important;
 }
 
 .modal {
@@ -108,3 +121,73 @@ ngb-modal-backdrop {
     font-size: 10px; /* Taille du texte */
     padding: 8px 5px; 
 }
+
+/* Styles pour le composant de langue */
+.dropdown-language {
+  position: relative;
+  width: 40px;
+  user-select: none;
+}
+
+.dropdown-language-toggle {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  width: 40px;
+  border-radius: 6px;
+  background-color: transparent;
+  margin-left: 8px;
+}
+
+.dropdown-language-toggle img {
+  width: 32px;
+  height: 32px;
+}
+
+.dropdown-language-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  /*width: 40px;*/
+ background-color: #fff;
+  border-radius: 6px,0px;
+  z-index: 10;
+}
+
+.dropdown-language-item img {
+  width: 32px;
+  height: 32px;
+  padding: 2px;
+  cursor: pointer;
+  display: block;
+  margin-left: 8px;
+}
+
+.dropdown-language-item {
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  color: #fff;
+}
+
+.dropdown-language-item:hover {
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: yellow;
+}
+.profile-div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #f8f9fa;
+    cursor: pointer;
+}       

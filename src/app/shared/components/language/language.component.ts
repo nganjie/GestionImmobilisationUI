@@ -12,38 +12,54 @@ import { map, tap } from 'rxjs';
   styleUrl: './language.component.css'
 })
 export class LanguageComponent {
-  readonly languages = [
-    { value: 'en', label: 'English', img: 'img/english.png' }, 
-    { value: 'fr', label: 'French', img: 'img/french.png'}, 
+   currentFlag: string = 'en';
+  isOpen = false;
+
+  flags = [
+    { code: 'en', img: 'img/english.png', codeFlag: 'English' },
+    { code: 'fr', img: 'img/french.png', codeFlag: 'Francais' }
   ];
-  public language = this.languages[0];
-  constructor(private languageService:LanguageService,private router :Router,private icon: MatIconRegistry){}
+  constructor(private languageService: LanguageService,private router:Router) {
+      // Constructor logic if needed
+    }
   ngOnInit(): void {
-    let lang=this.languageService.getCurrentLanguage();
-    this.language = this.languages.find( langs => langs.value === lang)as { value: string, label: string, img: string} ;
+      this.currentFlag = this.languageService.getCurrentLanguage();
+    
   }
-  
-
-
-  selectLanguage(event:any) {
-    console.log('un monde de fou : ',event);
-    this.languageService.setLanguage(event)
-    window.location.reload()
-    //this.language = this.languages.find( lang => lang.value === value) as { value: string, label: string, img: string};
+    setEnLanguage(){
+      this.languageService.setLanguage('en')
+      //window.location.reload()
+    }
+    setFrLanguage(){
+      this.languageService.setLanguage('fr')
+      //window.location.reload()
+    }
+    isLanguage(lang:string):boolean{
+      return lang===this.languageService.getCurrentLanguage();
+    }
+    changeFlag(event: any) {
+      const selectedLanguage = event.target.value;
+      console.log('Selected language:', selectedLanguage);
+      this.languageService.setLanguage(selectedLanguage);
+      window.location.reload();
+    }
+  toggleDropdown() {
+    this.isOpen = !this.isOpen;
   }
-  logOut(){
+
+  selectLanguage(code: string) {
+    this.currentFlag = code;
+    this.languageService.setLanguage(code);
+    this.isOpen = false;
+    window.location.reload();
+    // ici tu peux ajouter la logique de changement de langue (i18n, etc.)
+  }
+
+  get currentFlagUrl(): string {
+    return this.flags.find(flag => flag.code === this.currentFlag)?.img || '';
+  }
+  logOut() {
     LogOut();
-    this.router.navigateByUrl('/login');
-  }
-  setEnLanguage(){
-    this.languageService.setLanguage('en')
-   // window.location.reload()
-  }
-  setFrLanguage(){
-    this.languageService.setLanguage('fr')
-    //window.location.reload()
-  }
-  isLanguage(lang:string):boolean{
-    return lang===this.languageService.getCurrentLanguage();
+    this.router.navigate(['/login']);
   }
 }

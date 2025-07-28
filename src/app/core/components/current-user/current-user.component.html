@@ -1,0 +1,252 @@
+<app-base nameOption="Immobilisations">
+    <!-- Container avec les classes Argon Dashboard -->
+<div class="container-fluid py-4">
+  <div class="row">
+    <div class="col-12">
+      <!-- Card principale -->
+      <div class="card shadow-lg border-0">
+        <!-- Header de la card -->
+        <div class="card-header bg-gradient-primary">
+          <div class="d-flex align-items-center">
+            <div class="icon icon-lg icon-shape bg-white shadow border-radius-md me-3">
+              <i class="material-icons opacity-10 text-primary">person</i>
+            </div>
+            <div>
+              <h6 class="text-white mb-0">{{ 'CurrentUser.Title' | translate }}</h6>
+              <p class="text-white text-sm mb-0 opacity-8">{{ 'CurrentUser.Subtitle' | translate }}</p>
+            </div>
+            <!-- Bouton refresh -->
+            <div class="ms-auto">
+              <button class="btn btn-sm btn-white" 
+                      (click)="refreshUserData()"
+                      [disabled]="isLoading"
+                      type="button">
+                <i class="material-icons text-sm" 
+                   [class.fa-spin]="isLoading">{{ isLoading ? 'hourglass_empty' : 'refresh' }}</i>
+                <span class="ms-1">{{ 'Common.Refresh' | translate }}</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Corps de la card -->
+        <div class="card-body p-4">
+          
+          <!-- Indicateur de chargement -->
+          <div *ngIf="isLoading" class="text-center py-5">
+            <div class="spinner-border text-primary" role="status">
+              <span class="visually-hidden">{{ 'Common.Loading' | translate }}...</span>
+            </div>
+            <p class="text-muted mt-3">{{ 'Common.Loading' | translate }}...</p>
+          </div>
+
+          <!-- Message d'erreur -->
+          <div *ngIf="error && !isLoading" class="alert alert-danger d-flex align-items-center" role="alert">
+            <i class="material-icons me-2">error</i>
+            <div>
+              <strong>{{ 'Common.Error' | translate }}:</strong>
+              {{ error | translate }}
+            </div>
+          </div>
+
+          <!-- Informations utilisateur -->
+          <div *ngIf="currentUser && !isLoading && !error">
+            <div class="row">
+              
+              <!-- Section informations personnelles -->
+              <div class="col-lg-6 col-md-12 mb-4">
+                <div class="card h-100 border-0 shadow-sm">
+                  <div class="card-header bg-light border-bottom">
+                    <h6 class="mb-0 text-primary">
+                      <i class="material-icons text-sm me-2">person_outline</i>
+                      {{ 'CurrentUser.PersonalInfo' | translate }}
+                    </h6>
+                  </div>
+                  <div class="card-body">
+                    <!-- Avatar et nom -->
+                    <div class="text-center mb-4">
+                      <div class="avatar avatar-xl position-relative mx-auto">
+                        <div class="avatar-img bg-gradient-primary d-flex align-items-center justify-content-center rounded-circle">
+                          <span class="text-white font-weight-bold text-lg">
+                            {{ currentUser.first_name.charAt(0) }}{{ currentUser.last_name.charAt(0) }}
+                          </span>
+                        </div>
+                      </div>
+                      <h5 class="mt-3 mb-1">{{ getFullName() }}</h5>
+                      <p class="text-muted text-sm mb-0">{{ currentUser.email }}</p>
+                    </div>
+
+                    <!-- Détails -->
+                    <div class="row">
+                      <div class="col-6">
+                        <div class="info-item mb-3">
+                          <small class="text-muted">{{ 'User.FirstName' | translate }}</small>
+                          <p class="mb-0 font-weight-bold">{{ currentUser.first_name }}</p>
+                        </div>
+                      </div>
+                      <div class="col-6">
+                        <div class="info-item mb-3">
+                          <small class="text-muted">{{ 'User.LastName' | translate }}</small>
+                          <p class="mb-0 font-weight-bold">{{ currentUser.last_name }}</p>
+                        </div>
+                      </div>
+                      <div class="col-12">
+                        <div class="info-item mb-3">
+                          <small class="text-muted">{{ 'User.Email' | translate }}</small>
+                          <div class="d-flex align-items-center">
+                            <p class="mb-0 font-weight-bold me-2">{{ currentUser.email }}</p>
+                            <span *ngIf="isEmailVerified()" 
+                                  class="badge bg-success text-xs">
+                              <i class="material-icons text-xs">verified</i>
+                              {{ 'User.Verified' | translate }}
+                            </span>
+                            <span *ngIf="!isEmailVerified()" 
+                                  class="badge bg-warning text-xs">
+                              <i class="material-icons text-xs">pending</i>
+                              {{ 'User.NotVerified' | translate }}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Section rôles et permissions -->
+              <div class="col-lg-6 col-md-12 mb-4">
+                <div class="card h-100 border-0 shadow-sm">
+                  <div class="card-header bg-light border-bottom">
+                    <h6 class="mb-0 text-primary">
+                      <i class="material-icons text-sm me-2">security</i>
+                      {{ 'CurrentUser.RolesPermissions' | translate }}
+                    </h6>
+                  </div>
+                  <div class="card-body">
+                    <!-- Statut admin -->
+                    <div class="mb-4">
+                      <small class="text-muted">{{ 'User.AdminStatus' | translate }}</small>
+                      <div class="mt-1">
+                        <span [class]="isAdmin() ? 'badge bg-success' : 'badge bg-secondary'">
+                          <i class="material-icons text-xs me-1">
+                            {{ isAdmin() ? 'admin_panel_settings' : 'person' }}
+                          </i>
+                          {{ isAdmin() ? ('User.Administrator' | translate) : ('User.StandardUser' | translate) }}
+                        </span>
+                      </div>
+                    </div>
+
+                    <!-- Rôles -->
+                    <div class="mb-4">
+                      <small class="text-muted">{{ 'User.Roles' | translate }}</small>
+                      <div class="mt-2">
+                        <div *ngIf="getRoleNames().length > 0; else noRoles">
+                          <span *ngFor="let roleName of getRoleNames()" 
+                                class="badge me-2 mb-2"
+                                [class.bg-danger]="roleName === 'SuperAdmin'"
+                                [class.bg-warning]="roleName === 'Admin'"
+                                [class.bg-info]="roleName === 'Visitor'">
+                            <i class="material-icons text-xs me-1">security</i>
+                            {{ roleName }}
+                          </span>
+                        </div>
+                        <ng-template #noRoles>
+                          <span class="badge bg-light text-dark">{{ 'User.NoRoles' | translate }}</span>
+                        </ng-template>
+                      </div>
+                    </div>
+
+                    <!-- Permissions actuelles -->
+                    <div class="mb-3">
+                      <small class="text-muted">{{ 'User.CurrentPermissions' | translate }}</small>
+                      <div class="mt-2">
+                        <div class="row text-center">
+                          <div class="col-3">
+                            <div class="d-flex flex-column align-items-center">
+                              <i class="material-icons text-success" 
+                                 *ngIf="roleService.canRead(); else cannotRead">visibility</i>
+                              <ng-template #cannotRead>
+                                <i class="material-icons text-muted">visibility_off</i>
+                              </ng-template>
+                              <small class="text-xs mt-1">{{ 'Permission.Read' | translate }}</small>
+                            </div>
+                          </div>
+                          <div class="col-3">
+                            <div class="d-flex flex-column align-items-center">
+                              <i class="material-icons text-success" 
+                                 *ngIf="roleService.canCreate(); else cannotCreate">add</i>
+                              <ng-template #cannotCreate>
+                                <i class="material-icons text-muted">block</i>
+                              </ng-template>
+                              <small class="text-xs mt-1">{{ 'Permission.Create' | translate }}</small>
+                            </div>
+                          </div>
+                          <div class="col-3">
+                            <div class="d-flex flex-column align-items-center">
+                              <i class="material-icons text-success" 
+                                 *ngIf="roleService.canModify(); else cannotUpdate">edit</i>
+                              <ng-template #cannotUpdate>
+                                <i class="material-icons text-muted">block</i>
+                              </ng-template>
+                              <small class="text-xs mt-1">{{ 'Permission.Update' | translate }}</small>
+                            </div>
+                          </div>
+                          <div class="col-3">
+                            <div class="d-flex flex-column align-items-center">
+                              <i class="material-icons text-success" 
+                                 *ngIf="roleService.canDelete(); else cannotDelete">delete</i>
+                              <ng-template #cannotDelete>
+                                <i class="material-icons text-muted">block</i>
+                              </ng-template>
+                              <small class="text-xs mt-1">{{ 'Permission.Delete' | translate }}</small>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Section informations compte -->
+              <div class="col-12">
+                <div class="card border-0 shadow-sm">
+                  <div class="card-header bg-light border-bottom">
+                    <h6 class="mb-0 text-primary">
+                      <i class="material-icons text-sm me-2">info</i>
+                      {{ 'CurrentUser.AccountInfo' | translate }}
+                    </h6>
+                  </div>
+                  <div class="card-body">
+                    <div class="row">
+                      <div class="col-md-4">
+                        <div class="info-item">
+                          <small class="text-muted">{{ 'User.UserId' | translate }}</small>
+                          <p class="mb-0 font-weight-bold">{{ currentUser.id }}</p>
+                        </div>
+                      </div>
+                      <div class="col-md-4">
+                        <div class="info-item">
+                          <small class="text-muted">{{ 'User.CreatedAt' | translate }}</small>
+                          <p class="mb-0 font-weight-bold">{{ getFormattedCreationDate() }}</p>
+                        </div>
+                      </div>
+                      <div class="col-md-4">
+                        <div class="info-item">
+                          <small class="text-muted">{{ 'User.LastUpdate' | translate }}</small>
+                          <p class="mb-0 font-weight-bold">{{ currentUser.updated_at | date:'short' }}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</app-base>

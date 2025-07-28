@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, Injector } from '@angular/core';
 import { Form, FormGroup } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
@@ -19,8 +19,8 @@ import { Employeeimmo } from '../models/employee-immo-detail.model';
 })
 export class EmployeeService extends GlobalServices {
 
-  constructor(private https:HttpClient,private snak :MatSnackBar,private router:Router){
-    super(https,snak)
+  constructor(private https:HttpClient,private snak :MatSnackBar,private router:Router, private injector_: Injector){
+    super(https,snak, injector_)
   }
   _employees$=new BehaviorSubject<EmployeeDetail[]>([])
   get employees$():Observable<EmployeeDetail[]>{

@@ -15,6 +15,7 @@ import { HttpClient } from '@angular/common/http';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { createTranslateLoader } from '../app.module';
 import { NgSelectModule } from '@ng-select/ng-select';
+import { RouterModule } from '@angular/router';
 
 
 
@@ -34,6 +35,7 @@ import { NgSelectModule } from '@ng-select/ng-select';
     MatSelectModule,
     MatFormFieldModule,
     NgSelectModule,
+    RouterModule,
     TranslateModule.forRoot({
       loader:{
         provide:TranslateLoader,

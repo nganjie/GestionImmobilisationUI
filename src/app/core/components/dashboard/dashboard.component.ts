@@ -1,7 +1,12 @@
-import { Component, NgZone, OnInit } from '@angular/core';
+import { Component, InjectionToken, NgZone, OnInit } from '@angular/core';
 import { AuthService } from '../../../services/auth.service';
 import { Observable } from 'rxjs';
 import { Router } from '@angular/router';
+import { RoleService } from '../../../services/role.service';
+import { UserRole } from '../../../enums/roles.enum';
+import { LogOut } from '../../../models/data-server.model';
+import { environment } from '../../../../environments/environment';
+import { LanguageService } from '../../../services/language/language.service';
 
 interface MenuItem {
   id: string;
@@ -12,6 +17,7 @@ interface MenuItem {
   children?: MenuItem[];
   external?: boolean;
   href?: string;
+  requiredRoles?: UserRole[]; // Ajout pour la gestion des rôles
 }
 
 interface MenuSection {
@@ -29,6 +35,8 @@ export class DashboardComponent implements OnInit{
   nameMenu$!: Observable<string>;
   isSidebarCollapsed = false;
   activeSubmenu: string | null = null;
+  filteredMenuSections: MenuSection[] = []; // Menu filtré selon les rôles
+  appName !:string
 
   // Configuration du menu
   menuSections: MenuSection[] = [
@@ -38,7 +46,8 @@ export class DashboardComponent implements OnInit{
           id: 'dashboard',
           label: 'Dashboard',
           icon: 'ni ni-tv-2',
-          route: '/admin/dashboard'
+          route: '/admin/dashboard',
+          requiredRoles: [UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.VISITOR]
         }
       ]
     },
@@ -49,12 +58,14 @@ export class DashboardComponent implements OnInit{
           label: 'Users',
           icon: 'ni ni-single-02',
           route: '/admin/users',
+          requiredRoles: [UserRole.SUPER_ADMIN], // Seul SuperAdmin peut gérer les utilisateurs
           children: [
             {
               id: 'users-list',
               label: 'All Users',
               icon: 'ni ni-bullet-list-67',
-              route: '/admin/users' 
+              route: '/admin/users',
+              requiredRoles: [UserRole.SUPER_ADMIN]
             }
           ]
         },
@@ -63,31 +74,36 @@ export class DashboardComponent implements OnInit{
           label: 'Immobilisations',
           icon: 'ni ni-archive-2',
           route: '/admin/immobilisations',
-          badge: 12, // Exemple de badge
+          badge: 12,
+          requiredRoles: [UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.VISITOR], // Tous peuvent voir
           children: [
             {
               id: 'immobilisations-list',
               label: 'AllImmobilisations',
               icon: 'ni ni-bullet-list-67',
-              route: '/admin/immobilisations'
+              route: '/admin/immobilisations',
+              requiredRoles: [UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.VISITOR]
             },
             {
               id: 'categories',
               label: 'Categories',
               icon: 'ni ni-tag',
-              route: '/admin/immobilisations/categories'
+              route: '/admin/immobilisations/categories',
+              requiredRoles: [UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.VISITOR]
             },
             {
               id: 'suppliers',
               label: 'Suppliers',
               icon: 'ni ni-delivery-fast',
-              route: '/admin/immobilisations/fournisseurs'
+              route: '/admin/immobilisations/fournisseurs',
+              requiredRoles: [UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.VISITOR]
             },
             {
               id: 'structures',
               label: 'Structures',
               icon: 'ni ni-collection',
-              route: '/admin/immobilisations/structures'
+              route: '/admin/immobilisations/structures',
+              requiredRoles: [UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.VISITOR]
             }
           ]
         },
@@ -96,30 +112,35 @@ export class DashboardComponent implements OnInit{
           label: 'Employees',
           icon: 'ni ni-circle-08',
           route: '/admin/employees',
+          requiredRoles: [UserRole.SUPER_ADMIN, UserRole.ADMIN], // Admin et SuperAdmin seulement
           children: [
             {
               id: 'employees',
               label: 'employees',
               icon: 'ni ni-circle-08',
-              route: '/admin/employees'
+              route: '/admin/employees',
+              requiredRoles: [UserRole.SUPER_ADMIN, UserRole.ADMIN]
             },
             {
               id: 'buildings',
               label: 'Building',
               icon: 'ni ni-building',
-              route: '/admin/employees/buildings'
+              route: '/admin/employees/buildings',
+              requiredRoles: [UserRole.SUPER_ADMIN, UserRole.ADMIN]
             },
             {
               id: 'offices',
               label: 'Offices',
               icon: 'ni ni-shop',
-              route: '/admin/employees/offices'
+              route: '/admin/employees/offices',
+              requiredRoles: [UserRole.SUPER_ADMIN, UserRole.ADMIN]
             },
             {
               id: 'transfers',
               label: 'Transfers',
               icon: 'ni ni-shop',
-              route: '/admin/employees/transfers'
+              route: '/admin/employees/transfers',
+              requiredRoles: [UserRole.SUPER_ADMIN, UserRole.ADMIN]
             }
           ]
         },
@@ -128,36 +149,42 @@ export class DashboardComponent implements OnInit{
           label: 'Reformes',
           icon: 'ni ni-settings-gear-65',
           route: '/admin/reformes',
+          requiredRoles: [UserRole.SUPER_ADMIN, UserRole.ADMIN], // Admin et SuperAdmin seulement
           children: [
             {
               id: 'entreprises',
               label: 'Entreprises',
               icon: 'ni ni-building',
-              route: '/admin/reformes/entreprises'
+              route: '/admin/reformes/entreprises',
+              requiredRoles: [UserRole.SUPER_ADMIN, UserRole.ADMIN]
             },
             {
               id: 'buyers',
               label: 'buyers',
               icon: 'ni ni-basket',
-              route: '/admin/reformes/buyers'
+              route: '/admin/reformes/buyers',
+              requiredRoles: [UserRole.SUPER_ADMIN, UserRole.ADMIN]
             },
             {
               id: 'brokens',
               label: 'brokens',
               icon: 'ni ni-notification-70',
-              route: '/admin/reformes/brokens'
+              route: '/admin/reformes/brokens',
+              requiredRoles: [UserRole.SUPER_ADMIN, UserRole.ADMIN]
             },
             {
               id: 'cessions',
               label: 'cessions',
               icon: 'ni ni-delivery-fast',
-              route: '/admin/reformes/cessions'
+              route: '/admin/reformes/cessions',
+              requiredRoles: [UserRole.SUPER_ADMIN, UserRole.ADMIN]
             },
             {
               id: 'sales',
               label: 'sales',
               icon: 'ni ni-money-coins',
-              route: '/admin/reformes/sales'
+              route: '/admin/reformes/sales',
+              requiredRoles: [UserRole.SUPER_ADMIN, UserRole.ADMIN]
             },
           ]
         },
@@ -166,78 +193,41 @@ export class DashboardComponent implements OnInit{
       label: 'Inventories',
       icon: 'ni ni-settings-gear-65',
       route: '/admin/inventories',
+      requiredRoles: [UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.VISITOR], // Tous peuvent voir les inventaires
       children: [
         {
           id: 'inventories',
           label: 'all inventories',
           icon: 'ni ni-chart-pie-35',
-          route: '/admin/inventories'
+          route: '/admin/inventories',
+          requiredRoles: [UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.VISITOR]
         },
         {
           id: 'missing-inventories',
           label: 'missing inventories',
           icon: 'ni ni-settings-gear-65',
-          route: '/admin/inventories/missing-inventory'
+          route: '/admin/inventories/missing-inventory',
+          requiredRoles: [UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.VISITOR]
         },
          {
           id: 'broken-inventories',
           label: 'broken inventories',
           icon: 'ni ni-settings-gear-65',
-          route: '/admin/inventories/broken-inventory'
+          route: '/admin/inventories/broken-inventory',
+          requiredRoles: [UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.VISITOR]
         }
       ]
     },
-      ]
-    },
-    
-    {
-      title: 'QuickAccess',
-      items: [
-        {
-          id: 'reports',
-          label: 'Reports',
-          icon: 'ni ni-chart-pie-35',
-          route: '/admin/reports'
-        },
-        {
-          id: 'settings',
-          label: 'Settings',
-          icon: 'ni ni-settings-gear-65',
-          route: '/admin/settings'
-        }
-      ]
-    },
-    {
-      title: 'AccountPages',
-      items: [
-        {
-          id: 'profile',
-          label: 'Profile',
-          icon: 'ni ni-single-02',
-          route: '/admin/profile'
-        },
-        {
-          id: 'notifications',
-          label: 'Notifications',
-          icon: 'ni ni-bell-55',
-          route: '/admin/notifications',
-          badge: 3
-        },
-        {
-          id: 'help',
-          label: 'Help',
-          icon: 'ni ni-support-16',
-          external: true,
-          href: 'https://help.gestionimmo.com'
-        }
       ]
     }
   ];
 
   constructor(
+    languageService: LanguageService,
     private authService: AuthService,
     private ngZone: NgZone,
-    private router: Router
+    private router: Router,
+    private roleService: RoleService
   ) {
     window.addEventListener('storage', (event) => {
       if (event.key === 'nameMenu') {
@@ -250,11 +240,44 @@ export class DashboardComponent implements OnInit{
   }
 
   ngOnInit(): void {
+    this.appName=environment.appName;
     this.nameMenu$ = this.authService.nameMenu$;
+    this.filterMenuByRole(); // Filtrer le menu selon les rôles
     this.authService.setNameMenue('Dashboard');
     
     // Auto-expand le menu actuel basé sur la route
     this.expandActiveMenu();
+    
+    // S'abonner aux changements de rôles pour refilter le menu
+    this.roleService.currentUserRoles$.subscribe(() => {
+      this.filterMenuByRole();
+    });
+  }
+
+
+  /**
+   * Filtrer le menu selon les rôles de l'utilisateur
+   */
+  private filterMenuByRole(): void {
+    this.filteredMenuSections = this.menuSections.map(section => ({
+      ...section,
+      items: section.items.filter(item => this.hasRequiredRole(item))
+        .map(item => ({
+          ...item,
+          children: item.children ? item.children.filter(child => this.hasRequiredRole(child)) : undefined
+        }))
+    })).filter(section => section.items.length > 0);
+  }
+
+  /**
+   * Vérifier si l'utilisateur a les rôles requis pour un élément de menu
+   */
+  private hasRequiredRole(item: MenuItem): boolean {
+    if (!item.requiredRoles || item.requiredRoles.length === 0) {
+      return true; // Si aucun rôle requis, accessible à tous
+    }
+    
+    return this.roleService.hasAnyRole(item.requiredRoles);
   }
 
   // Gestion des sous-menus
@@ -307,5 +330,9 @@ export class DashboardComponent implements OnInit{
            (item.children ? item.children.some(child => 
              child.route ? currentRoute.includes(child.route) : false
            ) : false);
+  }
+  logOut(){
+    LogOut();
+    this.router.navigate(['/login']);
   }
 }
