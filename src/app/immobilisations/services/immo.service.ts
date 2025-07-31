@@ -75,7 +75,7 @@ export class ImmoService extends GlobalServices {
       catchError(error => {
         this.setLoadStatus(false);
         this.setSnackMesage('Error loading immobilisations for employee', 'btn-danger');
-        return [];
+        return error;
       })
     ).subscribe()
 
@@ -224,7 +224,7 @@ export class ImmoService extends GlobalServices {
           this.setSnackMesage('Employee create successfully')
           this.setConfirmSubmit(true)
         }else{
-          this.setSnackMesage(`${data.error}`,'btn-warning');
+          this.setSnackMesage(`${data.error}`,'custom-error-snackbar');
         }
       })
     ).subscribe()
@@ -240,7 +240,7 @@ export class ImmoService extends GlobalServices {
           this.setSnackMesage('Categorie Updated successfully')
           this.setConfirmSubmit(true)
         }else{
-          this.setSnackMesage(`${data.error}`,'btn-warning');
+          this.setSnackMesage(`${data.error}`,'custom-error-snackbar');
         }
       })
     ).subscribe()
@@ -257,7 +257,7 @@ export class ImmoService extends GlobalServices {
           this.setConfirmSubmit(true)
           this.setLoadStatus(true)
         }else{
-          this.setSnackMesage(`${data.error}`,'btn-warning');
+          this.setSnackMesage(`${data.error}`,'custom-error-snackbar');
         }
       })
     ).subscribe()
@@ -274,7 +274,7 @@ export class ImmoService extends GlobalServices {
           this.setConfirmSubmit(true)
           this.setLoadStatus(true)
         }else{
-          this.setSnackMesage(`${data.error}`,'btn-warning');
+          this.setSnackMesage(`${data.error}`,'custom-error-snackbar');
         }
       })
     ).subscribe()
@@ -291,7 +291,8 @@ export class ImmoService extends GlobalServices {
           this.setConfirmSubmit(true)
           this.setLoadStatus(true)
         }else{
-          this.setSnackMesage(`${data.error}`,'btn-warning');
+          console.log(data.error)
+          this.setSnackMesage(`${data.error}`,'custom-error-snackbar');
         }
       })
     ).subscribe()
@@ -308,7 +309,7 @@ export class ImmoService extends GlobalServices {
           this.setConfirmSubmit(true)
           this.setLoadStatus(true)
         }else{
-          this.setSnackMesage(`${data.error}`,'btn-warning');
+          this.setSnackMesage(`${data.error}`,'custom-error-snackbar');
         }
       })
     ).subscribe()
@@ -325,8 +326,14 @@ export class ImmoService extends GlobalServices {
           this.setConfirmSubmit(true)
           this.setLoadStatus(true)
         }else{
-          this.setSnackMesage(`${data.error}`,'btn-warning');
+          this.setSnackMesage(`${data.error}`,'custom-error-snackbar');
         }
+      }),
+      catchError(error => {
+        this.setLoadStatus(false);
+        console.log(error)
+       // this.setSnackMesage('Error creating structure', 'btn-danger');
+        throw error;
       })
     ).subscribe()
   }
@@ -342,7 +349,7 @@ export class ImmoService extends GlobalServices {
           this.setConfirmSubmit(true)
           this.setLoadStatus(true)
         }else{
-          this.setSnackMesage(`${data.error}`,'btn-warning');
+          this.setSnackMesage(`${data.error}`,'custom-error-snackbar');
         }
       })
     ).subscribe()

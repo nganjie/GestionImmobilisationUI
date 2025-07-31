@@ -164,10 +164,16 @@
     </div>
 
     <!-- Error Display -->
-    <div *ngIf="error$ | async as error" class="alert alert-danger" role="alert">
-      <i class="fas fa-exclamation-triangle me-2"></i>
-      {{error.message}}
-    </div>
+     @if(error$ | async; as error)
+     {
+      @if(error.status){
+        <div class="alert alert-danger" role="alert">
+         <i class="fas fa-exclamation-triangle me-2"></i>
+         {{error.message}}
+       </div>
+      }
+       
+     }
   </form>
 </div>
 

@@ -1,12 +1,14 @@
-import { Component, InjectionToken, NgZone, OnInit } from '@angular/core';
+import { Component, InjectionToken, NgZone, OnInit, OnDestroy } from '@angular/core';
 import { AuthService } from '../../../services/auth.service';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { Router } from '@angular/router';
 import { RoleService } from '../../../services/role.service';
 import { UserRole } from '../../../enums/roles.enum';
 import { LogOut } from '../../../models/data-server.model';
 import { environment } from '../../../../environments/environment';
 import { LanguageService } from '../../../services/language/language.service';
+import { SidebarService, SidebarConfig } from '../../services/sidebar.service';
+import { takeUntil } from 'rxjs/operators';
 
 interface MenuItem {
   id: string;
@@ -31,8 +33,22 @@ interface MenuSection {
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'
 })
-export class DashboardComponent implements OnInit{
+export class DashboardComponent implements OnInit, OnDestroy{
   nameMenu$!: Observable<string>;
+  private destroy$ = new Subject<void>();
+  
+  // Propriétés du sidebar avec le nouveau service
+  sidebarConfig$!: Observable<SidebarConfig>;
+  isMobile$!: Observable<boolean>;
+  isTablet$!: Observable<boolean>;
+  isDesktop$!: Observable<boolean>;
+  sidebarClasses$!: Observable<string>;
+  shouldShowContent$!: Observable<boolean>;
+  contentMargin$!: Observable<number>;
+  sidebarHeight$!: Observable<string>;
+  sidebarTop$!: Observable<number>;
+  
+  // Propriétés de compatibilité (pour ne pas casser le template existant)
   isSidebarCollapsed = false;
   activeSubmenu: string | null = null;
   filteredMenuSections: MenuSection[] = []; // Menu filtré selon les rôles
@@ -62,7 +78,7 @@ export class DashboardComponent implements OnInit{
           children: [
             {
               id: 'users-list',
-              label: 'All Users',
+              label: 'Users',
               icon: 'ni ni-bullet-list-67',
               route: '/admin/users',
               requiredRoles: [UserRole.SUPER_ADMIN]
@@ -74,7 +90,6 @@ export class DashboardComponent implements OnInit{
           label: 'Immobilisations',
           icon: 'ni ni-archive-2',
           route: '/admin/immobilisations',
-          badge: 12,
           requiredRoles: [UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.VISITOR], // Tous peuvent voir
           children: [
             {
@@ -227,7 +242,8 @@ export class DashboardComponent implements OnInit{
     private authService: AuthService,
     private ngZone: NgZone,
     private router: Router,
-    private roleService: RoleService
+    private roleService: RoleService,
+    private sidebarService: SidebarService // Injection du nouveau service
   ) {
     window.addEventListener('storage', (event) => {
       if (event.key === 'nameMenu') {
@@ -252,6 +268,29 @@ export class DashboardComponent implements OnInit{
     this.roleService.currentUserRoles$.subscribe(() => {
       this.filterMenuByRole();
     });
+    
+    // Initialisation du nouveau service sidebar
+    this.sidebarConfig$ = this.sidebarService.sidebarConfig$;
+    this.isMobile$ = this.sidebarService.isMobile$;
+    this.isTablet$ = this.sidebarService.isTablet$;
+    this.isDesktop$ = this.sidebarService.isDesktop$;
+    this.sidebarClasses$ = this.sidebarService.sidebarClasses$;
+    this.shouldShowContent$ = this.sidebarService.shouldShowContent$;
+    this.contentMargin$ = this.sidebarService.contentMargin$;
+    this.sidebarHeight$ = this.sidebarService.sidebarHeight$;
+    this.sidebarTop$ = this.sidebarService.sidebarTop$;
+    
+    // Maintenir la compatibilité avec l'ancien système
+    this.sidebarService.isOpen$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(isOpen => {
+        this.isSidebarCollapsed = !isOpen;
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
 
@@ -289,9 +328,9 @@ export class DashboardComponent implements OnInit{
     return this.activeSubmenu === menuId;
   }
 
-  // Gestion du sidebar
+  // Gestion du sidebar - Nouvelle implémentation avec le service
   toggleSidebar(): void {
-    this.isSidebarCollapsed = !this.isSidebarCollapsed;
+    this.sidebarService.toggle();
   }
 
   // Navigation

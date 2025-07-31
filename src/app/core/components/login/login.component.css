@@ -1,0 +1,124 @@
+/* Styles personnalisés pour moderniser la page de login */
+
+.card-plain {
+  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.input-group-outline {
+  position: relative;
+  margin-bottom: 1.5rem;
+}
+
+.input-group-outline .form-label {
+  position: absolute;
+  top: 0.5rem;
+  left: 0.75rem;
+  font-size: 0.875rem;
+  color: #67748e;
+  background: transparent;
+  transition: all 0.2s ease;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.input-group-outline .form-control {
+  background: transparent;
+  border: 1px solid #d2d6da;
+  border-radius: 0.5rem;
+  padding: 0.75rem;
+  transition: all 0.15s ease;
+}
+
+.input-group-outline .form-control:focus {
+  border-color: #5e72e4;
+  box-shadow: 0 3px 9px rgba(50, 50, 93, 0.1), 0 3px 4px rgba(0, 0, 0, 0.08);
+}
+
+.input-group-outline .form-control:focus + .form-label,
+.input-group-outline .form-control:not(:placeholder-shown) + .form-label {
+  transform: translateY(-1.5rem) scale(0.85);
+  color: #5e72e4;
+  background: white;
+  padding: 0 0.25rem;
+}
+
+.btn.bg-gradient-primary {
+  background: linear-gradient(310deg, #7928ca 0%, #ff0080 100%);
+  border: none;
+  box-shadow: 0 4px 7px -1px rgba(0, 0, 0, 0.11), 0 2px 4px -1px rgba(0, 0, 0, 0.07);
+  transform: perspective(999px) rotateX(0deg) translate3d(0, 0, 0);
+  transition: all 0.15s ease;
+}
+
+.btn.bg-gradient-primary:hover {
+  transform: perspective(999px) rotateX(7deg) translate3d(0px, -4px, 5px);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.text-gradient {
+  background: linear-gradient(310deg, #7928ca 0%, #ff0080 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.alert-danger {
+  background: linear-gradient(310deg, #f53939 0%, #fbcf33 100%);
+  border: none;
+  color: white;
+}
+
+.page-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  position: relative;
+}
+
+.page-header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="white" opacity="0.05"/><circle cx="75" cy="75" r="1" fill="white" opacity="0.05"/><circle cx="50" cy="10" r="0.5" fill="white" opacity="0.03"/><circle cx="20" cy="80" r="0.5" fill="white" opacity="0.03"/><circle cx="80" cy="20" r="0.5" fill="white" opacity="0.03"/></pattern></defs><rect width="100%" height="100%" fill="url(%23grain)"/></svg>');
+}
+
+/* Animation pour l'apparition de la carte */
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.card-plain {
+  animation: slideInUp 0.6s ease-out;
+}
+
+/* Responsive amélioré */
+@media (max-width: 991.98px) {
+  .page-header .col-6 {
+    display: none !important;
+  }
+  
+  .card-plain {
+    margin: 2rem auto;
+  }
+}
+
+/* Effets de focus améliorés */
+.form-control:focus {
+  outline: none;
+  border-color: #5e72e4;
+  box-shadow: 0 0 0 0.2rem rgba(94, 114, 228, 0.25);
+}
+
+/* Loader personnalisé */
+.spinner-border {
+  color: #5e72e4;
+}

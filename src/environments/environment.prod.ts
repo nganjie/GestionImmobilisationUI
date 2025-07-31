@@ -1,5 +1,8 @@
+    import { name as appName, version } from '../../package.json';
 export const environment = {
   production: true,
-  apiUrlFirst:"http://127.0.0.1:8000/api",
-  apiUrlSecond:"http://127.0.0.1:8000/api"
+  apiUrlFirst:"http://localhost:8088/api",
+  apiUrlSecond:"http://localhost:8088/api",
+  appName,
+    version
 };

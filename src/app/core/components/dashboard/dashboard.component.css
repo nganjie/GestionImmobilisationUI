@@ -1,25 +1,214 @@
-/* ===== PERSONNALISATIONS SPÉCIFIQUES AU DASHBOARD ===== */
+/* ===== SYSTÈME DE SIDEBAR RESPONSIF MODERNE ===== */
 
-/* Variables pour les dimensions du sidebar */
+/* Variables pour les dimensions et animations */
 :root {
   --sidebar-width: 280px;
   --sidebar-collapsed-width: 80px;
   --transition-duration: 0.3s;
+  --sidebar-z-index: 99999; /* Augmenté pour être sûr d'être au-dessus */
+  --sidebar-mobile-z-index: 999999; /* Z-index spécial pour mobile */
+  --backdrop-z-index: 99998;
 }
 
-/* Sidebar collapsé */
-.sidenav.sidenav-collapsed {
-  width: var(--sidebar-collapsed-width);
+/* Styles de base du sidebar */
+.sidenav {
+  transition: all var(--transition-duration) cubic-bezier(0.25, 0.8, 0.25, 1);
+  will-change: transform, width;
 }
 
-/* Contenu principal adaptatif */
+/* États du sidebar selon les breakpoints */
+.sidenav-mobile {
+  position: fixed !important;
+  z-index: var(--sidebar-mobile-z-index) !important;
+  transform: translateX(-100%);
+  width: var(--sidebar-width) !important;
+  height: 100vh !important;
+  top: 0 !important;
+  left: 0 !important;
+  margin: 0 !important;
+  border-radius: 0 !important;
+}
+
+.sidenav-mobile[data-opened="true"],
+.sidenav-mobile.show {
+  transform: translateX(0) !important;
+}
+
+/* Forcer l'affichage sur mobile */
+@media (max-width: 991.98px) {
+  .sidenav-mobile.show {
+    transform: translateX(0) !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+  
+  /* Surmonter les styles Argon Dashboard existants */
+  aside.sidenav-mobile {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: var(--sidebar-width) !important;
+    height: 100vh !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
+    z-index: var(--sidebar-mobile-z-index) !important;
+  }
+  
+  aside.sidenav-mobile:not(.show) {
+    transform: translateX(-100%) !important;
+  }
+  
+  aside.sidenav-mobile.show {
+    transform: translateX(0) !important;
+    z-index: var(--sidebar-mobile-z-index) !important;
+  }
+  
+  /* S'assurer que le contenu principal n'interfère pas */
+  .main-content {
+    z-index: 1 !important;
+    position: relative !important;
+  }
+  
+  /* Force le z-index du sidebar avec des sélecteurs très spécifiques */
+  aside#sidenav-main.sidenav-mobile {
+    z-index: 999999 !important;
+  }
+  
+  aside#sidenav-main.sidenav-mobile.show {
+    z-index: 999999 !important;
+  }
+  
+  /* S'assurer qu'aucun élément Argon Dashboard n'interfère */
+  .main-content,
+  .main-content *,
+  .navbar,
+  .navbar * {
+    z-index: auto !important;
+  }
+  
+  .main-content {
+    z-index: 1 !important;
+  }
+}
+
+.sidenav-tablet {
+  position: fixed !important;
+  top: 0;
+  left: 0;
+  transform: translateX(0);
+  width: var(--sidebar-width) !important;
+  height: 100vh;
+  margin: 0 !important;
+}
+
+.sidenav-tablet.sidenav-collapsed {
+  width: var(--sidebar-collapsed-width) !important;
+}
+
+.sidenav-desktop {
+  position: fixed !important;
+  top: 0;
+  left: 0;
+  transform: translateX(0);
+  width: var(--sidebar-width) !important;
+  height: 100vh;
+  margin: 0 !important;
+}
+
+.sidenav-desktop.sidenav-collapsed {
+  width: var(--sidebar-collapsed-width) !important;
+}
+
+/* Backdrop pour mobile */
+.sidebar-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: var(--backdrop-z-index) !important;
+  backdrop-filter: blur(2px);
+  transition: opacity var(--transition-duration) ease;
+}
+
+/* Ajustements du contenu principal */
 .main-content {
-  margin-left: var(--sidebar-width);
-  transition: margin-left var(--transition-duration) ease;
+  transition: margin-left var(--transition-duration) cubic-bezier(0.25, 0.8, 0.25, 1);
+  /* Le margin-left est maintenant géré dynamiquement via [style.margin-left.px] */
+  min-height: 100vh;
+  position: relative;
 }
 
-.main-content.main-content-expanded {
-  margin-left: var(--sidebar-collapsed-width);
+.main-content-mobile {
+  margin-left: 0 !important;
+}
+
+/* Styles pour les éléments du sidebar collapsé */
+.sidenav-collapsed .nav-link-text,
+.sidenav-collapsed .navbar-brand span,
+.sidenav-collapsed .badge,
+.sidenav-collapsed .fa-chevron-down,
+.sidenav-collapsed .fa-external-link-alt {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--transition-duration) ease;
+}
+
+.sidenav-collapsed .nav-item .nav-link {
+  justify-content: center;
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+}
+
+.sidenav-collapsed .icon {
+  margin-right: 0 !important;
+}
+
+/* Animation pour le collapse des sous-menus */
+.sidenav-collapsed .collapse {
+  display: none !important;
+}
+
+/* Hover effects pour desktop collapsed */
+.sidenav-desktop.sidenav-collapsed:hover {
+  width: var(--sidebar-width) !important;
+  box-shadow: 0 8px 26px -4px rgba(20, 20, 20, 0.25);
+}
+
+.sidenav-desktop.sidenav-collapsed:hover .nav-link-text,
+.sidenav-desktop.sidenav-collapsed:hover .navbar-brand span,
+.sidenav-desktop.sidenav-collapsed:hover .badge,
+.sidenav-desktop.sidenav-collapsed:hover .fa-chevron-down,
+.sidenav-desktop.sidenav-collapsed:hover .fa-external-link-alt {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.sidenav-desktop.sidenav-collapsed:hover .nav-item .nav-link {
+  justify-content: flex-start;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+.sidenav-desktop.sidenav-collapsed:hover .icon {
+  margin-right: 0.5rem !important;
+}
+
+.sidenav-desktop.sidenav-collapsed:hover .collapse {
+  display: block !important;
+}
+
+/* Styles pour les titres de section */
+.sidenav-collapsed .nav-item h6 {
+  display: none;
+}
+
+/* Animation smooth pour les éléments */
+.sidenav .icon,
+.sidenav .nav-link-text,
+.sidenav .badge {
+  transition: all var(--transition-duration) ease;
 }
 
 /* Animation des chevrons pour les sous-menus */
@@ -29,4 +218,325 @@
 
 .transition-all {
   transition: all var(--transition-duration) ease;
+}
+
+/* Responsive breakpoints */
+@media (max-width: 1199.98px) {
+  .main-content {
+    margin-left: 0 !important;
+  }
+}
+
+@media (max-width: 991.98px) {
+  .sidenav {
+    position: fixed !important;
+    z-index: var(--sidebar-z-index);
+    transform: translateX(-100%);
+    width: var(--sidebar-width) !important;
+    height: 100vh;
+    top: 0 !important;
+    left: 0 !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
+  }
+  
+  .sidenav[data-opened="true"] {
+    transform: translateX(0);
+  }
+  
+  .main-content {
+    margin-left: 0 !important;
+  }
+}
+
+@media (max-width: 767.98px) {
+  :root {
+    --sidebar-width: 300px;
+  }
+}
+
+@media (max-width: 575.98px) {
+  :root {
+    --sidebar-width: 280px;
+  }
+}
+
+/* Améliorations visuelles */
+.sidenav-mobile .sidenav-header {
+  padding: 1rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.sidenav-collapsed .sidenav-header {
+  padding: 1rem 0.5rem;
+}
+
+/* Animation des icônes de navigation */
+.nav-link .fas.fa-chevron-down {
+  transition: transform var(--transition-duration) ease;
+}
+
+/* Accessibilité */
+@media (prefers-reduced-motion: reduce) {
+  .sidenav,
+  .main-content,
+  .sidebar-backdrop,
+  .nav-link .fas,
+  .icon,
+  .nav-link-text,
+  .badge {
+    transition: none !important;
+  }
+}
+
+/* Focus states pour l'accessibilité */
+.sidenav .nav-link:focus {
+  outline: 2px solid #5e72e4;
+  outline-offset: 2px;
+}
+
+.sidenav .btn:focus {
+  outline: 2px solid #5e72e4;
+  outline-offset: 2px;
+}
+
+/* États de chargement */
+.sidenav.loading {
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+/* Indicateur visuel pour les modes */
+.sidenav[data-mode="over"]::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: -2px;
+  width: 2px;
+  height: 100%;
+  background: linear-gradient(180deg, #5e72e4 0%, #825ee4 100%);
+  opacity: 0.8;
+}
+
+/* Animation d'entrée */
+@keyframes slideInLeft {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.sidenav-mobile[data-opened="true"] {
+  animation: slideInLeft 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+/* ===== STYLES POUR LA RÉDUCTION DE HAUTEUR ===== */
+
+/* Header du sidebar avec styles collapsés */
+.sidenav-header {
+  transition: all var(--transition-duration) cubic-bezier(0.25, 0.8, 0.25, 1);
+  padding: 1rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.sidenav-header-collapsed {
+  padding: 0.5rem;
+  border-bottom: none;
+}
+
+.sidenav-header-collapsed .navbar-brand {
+  justify-content: center;
+  margin: 0;
+}
+
+.sidenav-header-collapsed .navbar-brand-img {
+  width: 20px !important;
+  height: 20px !important;
+}
+
+.sidenav-header-collapsed .navbar-brand span {
+  display: none;
+}
+
+/* Bouton de toggle repositionné pour la version collapsée */
+.sidenav-header-collapsed .btn {
+  position: relative !important;
+  margin: 0.25rem 0 0 0 !important;
+}
+
+/* Animation spécifique pour la hauteur du sidebar */
+aside {
+  overflow: hidden;
+  transition: all var(--transition-duration) cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+/* États de hauteur pour desktop seulement */
+@media (min-width: 1200px) {
+  .sidenav-desktop:not([data-opened="true"]) {
+    /* Hauteur réduite quand collapsé sur desktop */
+    border-radius: 15px !important;
+    margin: 20px !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  }
+  
+  .sidenav-desktop[data-opened="true"] {
+    /* Hauteur complète quand ouvert sur desktop */
+    border-radius: 0 !important;
+    margin: 0 !important;
+    top: 0 !important;
+  }
+}
+
+/* Ajustement du contenu de navigation pour la hauteur réduite */
+.sidenav-desktop:not([data-opened="true"]) .navbar-nav {
+  overflow-y: auto;
+  max-height: calc(200px - 80px); /* 200px - header height */
+  padding-bottom: 0.5rem;
+}
+
+.sidenav-desktop[data-opened="true"] .navbar-nav {
+  overflow-y: auto;
+  max-height: calc(100vh - 80px); /* Full height - header */
+}
+
+/* Styles pour la scrollbar quand nécessaire */
+.sidenav-desktop .navbar-nav::-webkit-scrollbar {
+  width: 3px;
+}
+
+.sidenav-desktop .navbar-nav::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.sidenav-desktop .navbar-nav::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 3px;
+}
+
+.sidenav-desktop .navbar-nav::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+/* ===== BOUTON HAMBURGER POUR MOBILE ===== */
+
+/* Navbar mobile */
+.navbar-main {
+  background: rgba(255, 255, 255, 0.9) !important;
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  z-index: 1001 !important;
+}
+
+/* Bouton hamburger moderne */
+.navbar-toggler {
+  border: none !important;
+  background: rgba(0, 0, 0, 0.1) !important;
+  border-radius: 8px !important;
+  padding: 0.75rem !important;
+  width: 45px;
+  height: 45px;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-toggler:hover {
+  background: rgba(0, 0, 0, 0.15) !important;
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.navbar-toggler:focus {
+  box-shadow: 0 0 0 0.2rem rgba(108, 117, 125, 0.25) !important;
+  outline: none;
+}
+
+/* Icône hamburger animée */
+.navbar-toggler-icon {
+  width: 22px;
+  height: 18px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.navbar-toggler-bar {
+  width: 100%;
+  height: 3px;
+  background-color: #495057;
+  border-radius: 2px;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  transform-origin: center;
+}
+
+.navbar-toggler-bar.bar1 {
+  transform: translateY(0);
+}
+
+.navbar-toggler-bar.bar2 {
+  opacity: 1;
+}
+
+.navbar-toggler-bar.bar3 {
+  transform: translateY(0);
+}
+
+/* Animation du hamburger lors du clic */
+.navbar-toggler[aria-expanded="true"] .navbar-toggler-bar.bar1 {
+  transform: translateY(7.5px) rotate(45deg);
+}
+
+.navbar-toggler[aria-expanded="true"] .navbar-toggler-bar.bar2 {
+  opacity: 0;
+}
+
+.navbar-toggler[aria-expanded="true"] .navbar-toggler-bar.bar3 {
+  transform: translateY(-7.5px) rotate(-45deg);
+}
+
+/* Texte dans la navbar mobile */
+.navbar-main .text-white {
+  color: #495057 !important;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+/* Responsiveness */
+@media (max-width: 991.98px) {
+  .navbar-main {
+    margin: 1rem !important;
+    border-radius: 15px !important;
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1001 !important;
+  }
+  
+  .main-content {
+    padding-top: 90px !important; /* Espace pour la navbar mobile */
+  }
+  
+  /* Assurer que la navbar est toujours visible sur mobile */
+  .navbar-main {
+    display: block !important;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .navbar-main {
+    margin: 0.5rem !important;
+  }
+  
+  .navbar-main .text-white {
+    font-size: 1rem;
+  }
 }

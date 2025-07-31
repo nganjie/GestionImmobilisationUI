@@ -75,10 +75,10 @@ export class CreateUserComponent implements OnInit {
       first_name: ['', [Validators.required]],
       last_name: ['', [Validators.required]],
       email: ['', [Validators.required, Validators.email]],
-      password: ['', passwordValidators],
-      password_confirmation: ['', passwordConfirmationValidators],
+      password: [null, passwordValidators],
+      password_confirmation: [null, passwordConfirmationValidators],
       is_admin: [0, [Validators.required]],
-      role_id: ['', [Validators.required]]
+      role_id: [null, [Validators.required]]
     }, { validators: this.isEditMode ? null : this.passwordMatchValidator });
   }
 

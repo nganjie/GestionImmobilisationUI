@@ -207,7 +207,7 @@
                               <span class="text-sm">{{ formatCurrency(item.immobilisation.unit_price || 0) }}</span>
                             </td>
                             <td>
-                              <span class="text-sm font-weight-bold text-warning">{{ formatCurrency((item.immobilisation.unit_price || 0) * (item.immobilisation.quantity || 0)) }}</span>
+                              <span class="text-sm font-weight-bold text-warning">{{ formatCurrency((item.immobilisation.unit_price || 0)) }}</span>
                             </td>
                             <td>
                               <span class="text-xs">{{ item.comment || '-' }}</span>
@@ -285,13 +285,13 @@
                               }
                             </td>
                             <td>
-                              <span class="text-sm font-weight-bold">{{ item.immobilisation.quantity }}</span>
+                              <span class="text-sm font-weight-bold">{{ 1}}</span>
                             </td>
                             <td>
                               <span class="text-sm">{{ formatCurrency(item.immobilisation.unit_price || 0) }}</span>
                             </td>
                             <td>
-                              <span class="text-sm font-weight-bold text-danger">{{ formatCurrency((item.immobilisation.unit_price || 0) * (item.immobilisation.quantity || 0)) }}</span>
+                              <span class="text-sm font-weight-bold text-danger">{{ formatCurrency((item.immobilisation.unit_price || 0) ) }}</span>
                             </td>
                             <td>
                               <span class="text-xs">{{ item.comment || '-' }}</span>
@@ -329,12 +329,7 @@
                 <p class="header-motto">PAIX-TRAVAIL-PATRIE</p>
                 <div class="separator-line-small"></div>
                 <p class="header-org">PORT AUTONOME DE DOUALA</p>
-                <p class="header-abbr">(PAD)</p>
-                <div class="separator-line-small"></div>
-                <p class="header-direction">DIRECTION GENERALE</p>
-                <div class="separator-line-small"></div>
-                <p class="header-department">DIRECTION DES AFFAIRES GENERALES</p>
-                <div class="separator-line-small"></div>
+
               </div>
             </div>
             <div class="col-6 text-center">
@@ -346,12 +341,6 @@
                 <p class="header-motto">{{ 'PeaceWorkFatherland' | translate }}</p>
                 <div class="separator-line-small"></div>
                 <p class="header-org">{{ 'PortAuthorityOfDouala' | translate }}</p>
-                <p class="header-abbr">(PAD)</p>
-                <div class="separator-line-small"></div>
-                <p class="header-office">{{ 'HeadOffice' | translate }}</p>
-                <div class="separator-line-small"></div>
-                <p class="header-department">{{ 'DirectorateOfCorporateAffairs' | translate }}</p>
-                <div class="separator-line-small"></div>
               </div>
             </div>
           </div>
@@ -406,7 +395,7 @@
                     <td>{{ getEmployeeName(item) || ('NotAssigned' | translate) }}</td>
                     <td>{{ item.immobilisation.quantity || 0 }}</td>
                     <td>{{ formatCurrency(item.immobilisation.unit_price || 0) }}</td>
-                    <td>{{ formatCurrency((item.immobilisation.unit_price || 0) * (item.immobilisation.quantity || 0)) }}</td>
+                    <td>{{ formatCurrency((item.immobilisation.unit_price || 0)) }}</td>
                     <td>{{ item.comment || '-' }}</td>
                   </tr>
                 }
@@ -449,7 +438,7 @@
                     <td>{{ getEmployeeName(item) || ('NotAssigned' | translate) }}</td>
                     <td>{{ item.immobilisation.quantity || 0 }}</td>
                     <td>{{ formatCurrency(item.immobilisation.unit_price || 0) }}</td>
-                    <td>{{ formatCurrency((item.immobilisation.unit_price || 0) * (item.immobilisation.quantity || 0)) }}</td>
+                    <td>{{ formatCurrency((item.immobilisation.unit_price || 0) ) }}</td>
                     <td>{{ item.comment || '-' }}</td>
                   </tr>
                 }

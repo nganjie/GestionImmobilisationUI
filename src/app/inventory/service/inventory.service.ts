@@ -12,6 +12,7 @@ import { environment } from '../../../environments/environment';
 import { PaginateData } from '../../models/paginate-data.model';
 import { exploseSearchOption, searchOption } from '../../models/search-element.model';
 import { FormGroup } from '@angular/forms';
+import { OfficeDetail } from '../../employees/models/office-detail.model';
 
 @Injectable({
   providedIn: 'root'
@@ -95,6 +96,26 @@ export class InventoryService extends GlobalServices {
       catchError(error => {
         this.setLoadStatus(false);
         this.setSnackMesage('Error creating inventory', 'btn-danger');
+        throw error;
+      })
+    );
+  }
+
+  validateInventoryOffice(officeId: string, isInventory: boolean): Observable<OfficeDetail> {
+    const header = this.getHearder();
+    //this.setLoadStatus(true);
+    
+    return this.http.put<ApiResponse<OfficeDetail>>(`${environment.apiUrlFirst}/admin/offices/validate-inventory/${officeId}`, { is_inventory: isInventory }, header).pipe(
+      map(data => {
+        //this.setLoadStatus(false);
+        if (data.success) {
+          this.setSnackMesage(data.message ?? 'Office inventory status updated successfully', 'btn-success');
+        }
+        return data.data!;
+      }),
+      catchError(error => {
+        this.setLoadStatus(false);
+        this.setSnackMesage('Error updating office inventory status', 'btn-danger');
         throw error;
       })
     );

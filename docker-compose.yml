@@ -1,0 +1,9 @@
+services:
+  gestiommoui:
+    image: nginx:latest
+    ports:
+      - "8089:80"
+    volumes:
+      - ./dist/gestionimmo-ui/browser:/usr/share/nginx/html:ro
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    restart: unless-stopped

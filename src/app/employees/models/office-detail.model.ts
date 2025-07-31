@@ -10,6 +10,7 @@ export interface OfficeDetail {
     num_office: string;
     status: OfficeStatusEnum;
     num_etage: number;
+    is_inventory: boolean;
     created_at: string;
     updated_at: string;
     building: BuildingDetail;

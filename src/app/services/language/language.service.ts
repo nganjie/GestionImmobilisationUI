@@ -1,5 +1,6 @@
 import { Injectable } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
+import { Observable } from "rxjs";
 
 @Injectable()
 
@@ -38,5 +39,8 @@ export class LanguageService{
     instant(key:string){
         //this.translate.use('fr')
         return this.translate.instant(key);
+    }
+    getTranslation(key:string):Observable<string>{
+        return this.translate.get(key);
     }
 }

@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
+import { LayoutModule } from '@angular/cdk/layout';
 
 import { CoreRoutingModule } from './core-routing.module';
 import { SidebarLeftComponent } from './components/sidebar-left/sidebar-left.component';
@@ -29,7 +30,8 @@ import { SharedModule } from "../shared/shared.module";
     ReactiveFormsModule,
     RouterOutlet,
     TranslateModule,
-    SharedModule
+    SharedModule,
+    LayoutModule
 ],
   providers:[
     AuthService

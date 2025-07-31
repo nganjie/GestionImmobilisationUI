@@ -1,14 +1,47 @@
 <!-- Header avec les classes Argon Dashboard -->
-<div class="min-height-300 bg-dark position-absolute w-100"></div>
+<div class="no-print min-height-300 bg-dark position-absolute w-100"></div>
 
-<!-- Sidebar avec les classes Argon Dashboard -->
-<aside class="sidenav bg-white navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-4 shadow-lg"
-       [class.sidenav-collapsed]="isSidebarCollapsed"
-       id="sidenav-main">
+<!-- Bouton hamburger pour mobile -->
+<nav class="no-print navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl position-sticky blur shadow-blur mt-4 left-auto top-1 z-index-sticky"
+     *ngIf="(isMobile$ | async) && !(sidebarConfig$ | async)?.opened">
+  <div class="container-fluid py-1 px-3">
+    <button class="navbar-toggler shadow-none ms-2"
+            type="button"
+            (click)="toggleSidebar()"
+            [attr.aria-label]="'Ouvrir le menu'">
+      <span class="navbar-toggler-icon">
+        <span class="navbar-toggler-bar bar1"></span>
+        <span class="navbar-toggler-bar bar2"></span>
+        <span class="navbar-toggler-bar bar3"></span>
+      </span>
+    </button>
+    
+    <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4">
+      <div class="ms-md-auto pe-md-3 d-flex align-items-center">
+        <span class="text-white font-weight-bold">{{ appName | translate }}</span>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- Sidebar avec le nouveau système responsif et hauteur dynamique -->
+<aside [ngClass]="sidebarClasses$ | async"
+       [class.show]="(isMobile$ | async) && (sidebarConfig$ | async)?.opened"
+       class="no-print bg-white navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-4 shadow-lg"
+       id="sidenav-main"
+       [attr.data-mode]="(sidebarConfig$ | async)?.mode"
+       [attr.data-opened]="(sidebarConfig$ | async)?.opened"
+       [style.height]="(sidebarHeight$ | async)"
+       [style.top.px]="(sidebarTop$ | async)"
+       [style.z-index]="(isMobile$ | async) ? '999999' : 'auto'">
   
   <!-- Header du sidebar -->
-  <div class="sidenav-header">
-    <i class="fas fa-times p-3 cursor-pointer text-secondary opacity-5 position-absolute end-0 top-0 d-none d-xl-none" 
+  <div class="sidenav-header"
+       [class.sidenav-header-collapsed]="!(sidebarConfig$ | async)?.opened && !(isMobile$ | async)">
+    <!-- Bouton de fermeture pour mobile -->
+    <i class="fas fa-times p-3 cursor-pointer text-secondary opacity-5 position-absolute end-0 top-0" 
+       [class.d-none]="!(isMobile$ | async)"
+       (click)="toggleSidebar()"
        aria-hidden="true" id="iconSidenav"></i>
     
     <a class="navbar-brand m-0 d-flex align-items-center" [routerLink]="['/admin/dashboard']">
@@ -17,17 +50,19 @@
            class="navbar-brand-img h-100" 
            alt="GestionImmo Logo">
       <span class="ms-2 font-weight-bold text-gradient text-primary" 
-            [class.d-none]="isSidebarCollapsed">
+            [class.d-none]="(shouldShowContent$ | async)">
         {{ appName | translate }}
       </span>
     </a>
     
-    <!-- Bouton de collapse -->
-    <button class="btn btn-link text-dark p-0 position-absolute end-0 top-0 mt-3 me-3 d-xl-block d-none"
+    <!-- Bouton de collapse pour desktop -->
+    <button class="btn btn-link text-dark p-0 position-absolute end-0 top-0 mt-3 me-3"
+            [class.d-none]="(isMobile$ | async)"
             (click)="toggleSidebar()"
-            type="button">
+            type="button"
+            [attr.aria-label]="'Toggle sidebar'">
       <i class="material-icons opacity-10" 
-         [class]="isSidebarCollapsed ? 'fa fa-chevron-right' : 'fa fa-chevron-left'"></i>
+         [class]="(sidebarConfig$ | async)?.opened ? 'fa fa-chevron-left' : 'fa fa-chevron-right'"></i>
     </button>
   </div>
 
@@ -41,7 +76,7 @@
       <ng-container *ngFor="let section of filteredMenuSections; let sectionIndex = index">
         
         <!-- Titre de section -->
-        <li class="nav-item mt-3" *ngIf="section.title && !isSidebarCollapsed">
+        <li class="nav-item mt-3" *ngIf="section.title && !(shouldShowContent$ | async)">
           <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-6">
             {{ section.title | translate }}
           </h6>
@@ -61,20 +96,20 @@
                 <i [class]="item.icon + ' text-dark text-sm opacity-10'"></i>
               </div>
               
-              <span class="nav-link-text ms-1" [class.d-none]="isSidebarCollapsed">
+              <span class="nav-link-text ms-1" [class.d-none]="(shouldShowContent$ | async)">
                 {{ item.label | translate }}
               </span>
               
               <!-- Badge -->
               <span class="badge badge-sm bg-gradient-primary ms-auto me-2" 
-                    *ngIf="item.badge && !isSidebarCollapsed">
+                    *ngIf="item.badge && !(shouldShowContent$ | async)">
                 {{ item.badge }}
               </span>
               
               <!-- Icône d'expansion -->
               <i class="fas fa-chevron-down ms-auto transition-all duration-200"
                  [class.rotate-180]="isSubmenuActive(item.id)"
-                 [class.d-none]="isSidebarCollapsed"></i>
+                 [class.d-none]="(shouldShowContent$ | async)"></i>
             </a>
             
             <!-- Sous-menu -->
@@ -84,7 +119,7 @@
                   <a class="nav-link text-sm py-2"
                      [routerLink]="child.route"
                      routerLinkActive="active"
-                     [class.d-none]="isSidebarCollapsed">
+                     [class.d-none]="(shouldShowContent$ | async)">
                     
                     <div class="icon icon-shape icon-xs border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                       <i [class]="child.icon + ' text-dark text-xs opacity-10'"></i>
@@ -114,13 +149,13 @@
                 <i [class]="item.icon + ' text-dark text-sm opacity-10'"></i>
               </div>
               
-              <span class="nav-link-text ms-1" [class.d-none]="isSidebarCollapsed">
+              <span class="nav-link-text ms-1" [class.d-none]="(shouldShowContent$ | async)">
                 {{ item.label | translate }}
               </span>
               
               <!-- Badge -->
               <span class="badge badge-sm bg-gradient-primary ms-auto" 
-                    *ngIf="item.badge && !isSidebarCollapsed">
+                    *ngIf="item.badge && !(shouldShowContent$ | async)">
                 {{ item.badge }}
               </span>
             </a>
@@ -134,12 +169,12 @@
                 <i [class]="item.icon + ' text-dark text-sm opacity-10'"></i>
               </div>
               
-              <span class="nav-link-text ms-1" [class.d-none]="isSidebarCollapsed">
+              <span class="nav-link-text ms-1" [class.d-none]="(shouldShowContent$ | async)">
                 {{ item.label | translate }}
               </span>
               
               <i class="fas fa-external-link-alt ms-auto text-xs opacity-6" 
-                 [class.d-none]="isSidebarCollapsed"></i>
+                 [class.d-none]="(shouldShowContent$ | async)"></i>
             </a>
           </ng-container>
         </li>
@@ -148,9 +183,7 @@
   </div>
 
   <!-- Footer du sidebar -->
-  <div class="sidenav-footer mx-3" [class.d-none]="isSidebarCollapsed">
-
-    
+  <div class="sidenav-footer mx-3" [class.d-none]="(shouldShowContent$ | async)">
      <a class="btn btn-dark btn-sm mb-0 w-100" 
        (click)="logOut()">
       <i class="fas fa-sign-out"></i>
@@ -159,8 +192,14 @@
   </div>
 </aside>
 
-<!-- Contenu principal -->
+<!-- Backdrop pour mobile -->
+<div class="sidebar-backdrop" 
+     *ngIf="(isMobile$ | async) && (sidebarConfig$ | async)?.opened"
+     (click)="toggleSidebar()"></div>
+
+<!-- Contenu principal avec margin dynamique -->
 <main class="main-content position-relative border-radius-lg"
-      [class.main-content-expanded]="isSidebarCollapsed">
+      [style.margin-left.px]="(contentMargin$ | async)"
+      [class.main-content-mobile]="(isMobile$ | async)">
   <router-outlet></router-outlet>
 </main>

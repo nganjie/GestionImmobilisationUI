@@ -108,13 +108,13 @@ export class ReportInventoryComponent implements OnInit {
     
     this.missingItems.forEach(item => {
       if (item.immobilisation && item.immobilisation.unit_price && item.immobilisation.quantity) {
-        total += item.immobilisation.unit_price * item.immobilisation.quantity;
+        total += item.immobilisation.unit_price ;
       }
     });
     
     this.brokenItems.forEach(item => {
       if (item.immobilisation && item.immobilisation.unit_price && item.immobilisation.quantity) {
-        total += item.immobilisation.unit_price * item.immobilisation.quantity;
+        total += item.immobilisation.unit_price;
       }
     });
     

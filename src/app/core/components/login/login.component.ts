@@ -20,6 +20,7 @@ export class LoginComponent implements OnInit{
   loginError!:Observable<boolean>;
   _error$!:Observable<ErrorServer>;
   errorMessage='';
+  showPassword = false;
 
   constructor(private formBuilder:FormBuilder,private authService:AuthService,private router:Router){}
   ngOnInit(): void {
@@ -55,5 +56,13 @@ export class LoginComponent implements OnInit{
   onSubmit():void{
     this.btnSubmit=true
     this.authService.autentificate(this.userName.value,this.password.value);
+  }
+
+  togglePasswordVisibility(): void {
+    this.showPassword = !this.showPassword;
+    const passwordInput = document.getElementById('passwordInput') as HTMLInputElement;
+    if (passwordInput) {
+      passwordInput.type = this.showPassword ? 'text' : 'password';
+    }
   }
 }

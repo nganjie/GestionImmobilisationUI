@@ -116,7 +116,8 @@ export class EmployeeService extends GlobalServices {
   }
   getOfficesFullFromServer(searchOptions:searchOption[]=[]){
     const header =this.getHearder();
-    this.http.get<ApiResponse<OfficeDetail[]>>(`${environment.apiUrlFirst}/admin/offices/full-all?`,header).pipe(
+    let search=exploseSearchOption(searchOptions);
+    this.http.get<ApiResponse<OfficeDetail[]>>(`${environment.apiUrlFirst}/admin/offices/full-all?${search}`,header).pipe(
       map(data=>{
         console.log(data)
         this._offices$.next(data.data??[]);
@@ -157,7 +158,7 @@ export class EmployeeService extends GlobalServices {
           this.setConfirmSubmit(true)
           this.setLoadStatus(true)
         }else{
-          this.setSnackMesage(`${data.error}`,'btn-warning');
+          this.setSnackMesage(`${data.error}`,'custom-error-snackbar');
         }
       })
     ).subscribe()
@@ -174,7 +175,7 @@ export class EmployeeService extends GlobalServices {
           this.setConfirmSubmit(true)
           this.setLoadStatus(true)
         }else{
-          this.setSnackMesage(`${data.error}`,'btn-warning');
+          this.setSnackMesage(`${data.error}`,'custom-error-snackbar');
         }
       })
     ).subscribe()
@@ -191,7 +192,7 @@ export class EmployeeService extends GlobalServices {
           this.setConfirmSubmit(true)
           this.setLoadStatus(true)
         }else{
-          this.setSnackMesage(`${data.error}`,'btn-warning');
+          this.setSnackMesage(`${data.error}`,'custom-error-snackbar');
         }
       })
     ).subscribe()
@@ -208,7 +209,7 @@ export class EmployeeService extends GlobalServices {
           this.setConfirmSubmit(true)
           this.setLoadStatus(true)
         }else{
-          this.setSnackMesage(`${data.error}`,'btn-warning');
+          this.setSnackMesage(`${data.error}`,'custom-error-snackbar');
         }
       })
     ).subscribe()
@@ -225,7 +226,7 @@ export class EmployeeService extends GlobalServices {
           this.setConfirmSubmit(true)
           this.setLoadStatus(true)
         }else{
-          this.setSnackMesage(`${data.error}`,'btn-warning');
+          this.setSnackMesage(`${data.error}`,'custom-error-snackbar');
         }
       })
     ).subscribe()
@@ -242,7 +243,7 @@ export class EmployeeService extends GlobalServices {
           this.setConfirmSubmit(true)
           this.setLoadStatus(true)
         }else{
-          this.setSnackMesage(`${data.error}`,'btn-warning');
+          this.setSnackMesage(`${data.error}`,'custom-error-snackbar');
         }
       })
     ).subscribe()
@@ -259,7 +260,7 @@ export class EmployeeService extends GlobalServices {
           this.setConfirmSubmit(true);
         }
         else{
-          this.setSnackMesage(`${data.error}`,'btn-warning');
+          this.setSnackMesage(`${data.error}`,'custom-error-snackbar');
         }
       }),
       catchError(this.handleError)
@@ -314,7 +315,7 @@ export class EmployeeService extends GlobalServices {
           this.setConfirmSubmit(true);
         }
         else{
-          this.setSnackMesage(`${data.error}`,'btn-warning');
+          this.setSnackMesage(`${data.error}`,'custom-error-snackbar');
         }
       }),
       catchError(this.handleError)

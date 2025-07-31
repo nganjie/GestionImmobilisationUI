@@ -7,7 +7,7 @@ import { RouterOutlet } from '@angular/router';
 import { CoreModule } from './core/core.module';
 import { AuthService } from './services/auth.service';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
-import { HttpClient, provideHttpClient } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClient, HttpClientModule, provideHttpClient } from '@angular/common/http';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { LanguageService } from './services/language/language.service';
@@ -16,6 +16,7 @@ import { BarcodeScannerLivestreamModule } from "ngx-barcode-scanner";
 import { RoleManagementModule } from './modules/role-management.module';
 import { RoleGuard } from './guards/role.guard';
 import { APP_NAME } from './app-name.token';
+import { ErrorInterceptorService } from './services/error-interceptor.interceptor';
 
 export function createTranslateLoader(http:HttpClient){
   return new TranslateHttpLoader(http,'./i18n/','.json');
@@ -30,6 +31,7 @@ export function createTranslateLoader(http:HttpClient){
     RouterOutlet,
     CoreModule,
     RoleManagementModule,
+    HttpClientModule,
     TranslateModule.forRoot({
       loader:{
         provide:TranslateLoader,
@@ -45,9 +47,7 @@ export function createTranslateLoader(http:HttpClient){
     AuthService,
     LanguageService,
     RoleGuard,
-    provideHttpClient(),
-    provideAnimationsAsync(),
-    { provide: APP_NAME, useValue: 'MyAwesomeAngularApp' }
+     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptorService, multi: true },
   ],
   bootstrap: [AppComponent]
 })

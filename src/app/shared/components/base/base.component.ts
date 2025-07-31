@@ -13,4 +13,8 @@ export class BaseComponent {
   constructor(){
     //this.nameMenu.update(value=>'name');
   }
+  toggleSidebar() {
+    // Logique pour basculer l'état de la barre latérale
+    console.log('Sidebar toggled');
+  }
 }

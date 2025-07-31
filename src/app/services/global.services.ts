@@ -164,14 +164,17 @@ export class GlobalServices{
         this._loading$.next(loading);
     }
     
-    setSnackMesage(message:string,color:string='btn-primary'){
-        let config = new MatSnackBarConfig();
-      config.duration=5000;
-      config.panelClass=[color]
+    setSnackMesage(message:string,color:string='success-snackbar'){
+
       this.snackBar.open(
         message,
         "Close",
-        config
+        {
+          duration: 5000,
+          panelClass: [color],
+          horizontalPosition: 'center',
+          verticalPosition: 'top'
+        }
       );
       console.log('popup modal')
 

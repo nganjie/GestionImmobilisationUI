@@ -242,11 +242,6 @@
                 <p class="header-motto">PAIX-TRAVAIL-PATRIE</p>
                 <div class="separator-line-small"></div>
                 <p class="header-org">PORT AUTONOME DE DOUALA</p>
-                <p class="header-abbr">(PAD)</p>
-                <div class="separator-line-small"></div>
-                <p class="header-direction">DIRECTION GENERALE</p>
-                <div class="separator-line-small"></div>
-                <p class="header-department">DIRECTION DES AFFAIRES GENERALES</p>
                 <div class="separator-line-small"></div>
               </div>
             </div>
@@ -259,11 +254,6 @@
                 <p class="header-motto">PEACE-WORK-FATHERLAND</p>
                 <div class="separator-line-small"></div>
                 <p class="header-org">PORT AUTHORITY OF DOUALA</p>
-                <p class="header-abbr">(PAD)</p>
-                <div class="separator-line-small"></div>
-                <p class="header-office">HEAD OFFICE</p>
-                <div class="separator-line-small"></div>
-                <p class="header-department">DIRECTORATE OF CORPORATE AFFAIRS</p>
                 <div class="separator-line-small"></div>
               </div>
             </div>
@@ -305,7 +295,7 @@
               <p><strong>Email:</strong> {{employee.user.email}}</p>
               <p><strong>{{"Office"|translate}}:</strong> {{employee.office && employee.office.name || (('NotAssigned'|translate))}}</p>
               <p><strong>{{"Building"|translate}}:</strong> {{employee.office && employee.office.building && employee.office.building.name || (('NotSpecified'|translate))}}</p>
-              <p><strong>{{"Floor"|translate}}:</strong> {{employee.office && employee.office.num_etage || (('NotSpecified'|translate))}}</p>
+              <p><strong>{{"Floor"|translate}}:</strong> {{ employee.office.num_etage}}</p>
             </div>
           </div>
         </div>
@@ -355,13 +345,12 @@
 
         <!-- Signatures -->
         <div class="fiche-signatures mt-5">
-          <div class="row">
+          <div class="d-flex justify-content-between">
             <div class="col-4 text-center">
               <div class="signature-box">
                 <p class="signature-title">{{"TheHolder"|translate}}</p>
                 <div class="signature-line"></div>
                 <p class="signature-name">{{employee.first_name}} {{employee.last_name}}</p>
-                <p class="signature-date">{{"Date"|translate}}: ___________</p>
               </div>
             </div>
             <div class="col-4 text-center">
@@ -369,7 +358,6 @@
                 <p class="signature-title">{{"AssetManager"|translate}}</p>
                 <div class="signature-line"></div>
                 <p class="signature-name">________________________</p>
-                <p class="signature-date">{{"Date"|translate}}: ___________</p>
               </div>
             </div>
           </div>

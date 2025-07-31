@@ -3,7 +3,7 @@ import { GlobalServices } from '../../services/global.services';
 import { HttpClient } from '@angular/common/http';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
-import { BehaviorSubject, catchError, map } from 'rxjs';
+import { BehaviorSubject, catchError, map, Observable, of } from 'rxjs';
 import { Role, User } from '../../models/user.model';
 import { environment } from '../../../environments/environment';
 import { ApiPaginatedResponse, ApiResponse } from '../../models/data-server.model';
@@ -58,7 +58,7 @@ export class UserService extends GlobalServices {
           this.setSnackMesage(data.message,'btn-success');
           this.setConfirmSubmit(true)
         }else{
-          this.setSnackMesage(`${data.error}`,'btn-warning');
+          this.setSnackMesage(`${data.error}`,'custom-error-snackbar');
         }
       })
     ).subscribe()
@@ -75,10 +75,21 @@ export class UserService extends GlobalServices {
           this.setSnackMesage(data.message,'btn-success');
           this.setConfirmSubmit(true)
         }else{
-          this.setSnackMesage(`${data.error}`,'btn-warning');
+          this.setSnackMesage(`${data.error}`,'custom-error-snackbar');
         }
       })
     ).subscribe()
+  }
+  getUserDetail(id:string):Observable<User>{
+    const header =this.getHearder();
+    this.setLoadStatus(true)
+   return  this.http.get<ApiResponse<User>>(`${environment.apiUrlFirst}/admin/users/detail/${id}`,header).pipe(
+      map(data=>{
+        this.setLoadStatus(false)
+        console.log(data)
+        return data.data as User;
+      })
+    );
   }
 
   getRolesFromServer(){

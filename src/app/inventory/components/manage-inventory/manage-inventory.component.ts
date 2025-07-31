@@ -34,6 +34,8 @@ export class ManageInventoryComponent extends BaseComponent implements OnInit {
   buildings$!: Observable<BuildingDetail[]>;
   offices$!: Observable<OfficeDetail[]>;
   employees$!: Observable<EmployeeDetail[]>;
+  currentOffice?: OfficeDetail;
+  dataOffices: OfficeDetail[] = [];
 
   // Pagination
   paginateData$!: Observable<PaginateData>;
@@ -96,12 +98,33 @@ export class ManageInventoryComponent extends BaseComponent implements OnInit {
     this.employeeService.getBuildingsFullFromServer();
     this.loadImmobilisations();
   }
+  toggleOfficeSelection(event: any): void {
+    event.preventDefault(); // Empêche la propagation de l'événement pour éviter les conflits avec d'autres événements
+    console.log('Office selection toggled:', event.target.checked);
+    if(this.currentOffice){
+      let data=this.inventoryService.validateInventoryOffice(this.currentOffice.id, event.target.checked);
+      data.subscribe(
+        (response) => {
+          console.log('Office validation response:', response);
+          this.currentOffice=response // Mettre à jour l'état local
+         // this.applyFilters(); // Recharger les données pour refléter le changement
+        },
+        (error) => {
+          console.error('Error validating office:', error);
+        }
+      );
+    }
+
+  }
 
   setupObservables(): void {
     this.loading$ = this.immoService.loading$;
     this.immobilisations$ = this.immoService.immobilisations$;
     this.buildings$ = this.employeeService.buildings$;
     this.offices$ = this.employeeService.offices$;
+    this.offices$.subscribe(offices => {
+      this.dataOffices = offices;
+    });
     this.employees$ = this.employeeService.employees$;
     this.paginateData$ = this.immoService.paginateData$;
     
@@ -145,6 +168,7 @@ export class ManageInventoryComponent extends BaseComponent implements OnInit {
       
       const buildingId = this.buildingCtrl.value;
       if (buildingId && floor !== null && floor !== undefined) {
+        console.log(`Loading offices for building ${buildingId} and floor ${floor}`);
         this.loadOfficesForBuildingAndFloor(buildingId, floor);
       } else {
         this.employeeService.getOfficesFullFromServer([]);
@@ -162,6 +186,7 @@ export class ManageInventoryComponent extends BaseComponent implements OnInit {
       } else {
         this.employeeService.getEmployeeFullFromServer([]);
       }
+      this.currentOffice = this.dataOffices.find(office => office.id === officeId);
       this.applyFilters();
     });
 

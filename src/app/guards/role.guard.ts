@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { RoleService } from '../services/role.service';
 import { UserRole } from '../enums/roles.enum';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { TranslateService } from '@ngx-translate/core';
+import { LanguageService } from '../services/language/language.service';
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +15,7 @@ export class RoleGuard implements CanActivate {
     private roleService: RoleService,
     private router: Router,
     private snackBar: MatSnackBar,
-    private translateService: TranslateService
+    private LanguageService: LanguageService
   ) {}
 
   canActivate(
@@ -48,19 +48,20 @@ export class RoleGuard implements CanActivate {
       
       let message = '';
       if (requiredRoles.includes(UserRole.SUPER_ADMIN) && requiredRoles.length === 1) {
-        message = this.translateService.instant('SuperAdminOnlyMessage');
+        message = 'SuperAdminOnlyMessage';
       } else if (requiredRoles.includes(UserRole.SUPER_ADMIN) && requiredRoles.includes(UserRole.ADMIN)) {
-        message = this.translateService.instant('AdminOnlyMessage');
+        message = 'AdminOnlyMessage';
       } else {
-        message = this.translateService.instant('InsufficientPermissions') + 
-                 ` (${this.translateService.instant('RequiredRoles')}: ${roleNames})`;
+        message = 'InsufficientPermissions' + 
+                 ` (RequiredRoles: ${roleNames})`;
       }
-      
-      this.snackBar.open(message, this.translateService.instant('Close'), {
-        duration: 5000,
-        panelClass: ['error-snackbar'],
-        horizontalPosition: 'end',
-        verticalPosition: 'top'
+      this.LanguageService.getTranslation(message).subscribe(translatedMessage => {
+        this.snackBar.open(translatedMessage, 'Close', {
+          duration: 5000,
+          panelClass: ['error-snackbar'],
+          horizontalPosition: 'end',
+          verticalPosition: 'top'
+        });
       });
       
       // Retourner à la page précédente ou au dashboard
