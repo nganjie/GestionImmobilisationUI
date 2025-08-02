@@ -1,5 +1,5 @@
 services:
-  gestiommoui:
+  gestionimmo-ui:
     image: nginx:latest
     ports:
       - "8089:80"
