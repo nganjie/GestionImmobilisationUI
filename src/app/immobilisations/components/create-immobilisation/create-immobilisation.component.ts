@@ -142,8 +142,8 @@ export class CreateImmobilisationComponent implements OnInit{
     }else{
        this.immoForm=this.formBuilder.group({
       name:['',Validators.required],
-      mark:['',Validators.required],
-      model:['',Validators.required],
+      mark:[''],
+      model:[''],
       quantity:['',Validators.required],
       unit_price:['',Validators.required],
       num_bon_commande:['',Validators.required],

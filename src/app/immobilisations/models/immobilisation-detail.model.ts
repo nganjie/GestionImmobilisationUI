@@ -9,8 +9,8 @@ export interface ImmobilisationDetail {
     fournisseur_id: string
     code: string
     name: string
-    mark: string
-    model: string
+    mark?: string
+    model?: string
     quantity: number
     unit_price: number
     status: ImmobilisationStatusEnum
