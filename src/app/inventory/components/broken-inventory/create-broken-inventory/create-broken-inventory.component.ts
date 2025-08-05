@@ -60,7 +60,8 @@ export class CreateBrokenInventoryComponent implements OnInit {
 
   loadData(): void {
     this.loading$ = this.inventoryService.loading$;
-    
+    this.inventoryService.setLoadStatus(false);
+
     // Charger les inventaires actifs
     this.inventories$ = this.inventoryService.getActiveInventoriesFromServer();
     

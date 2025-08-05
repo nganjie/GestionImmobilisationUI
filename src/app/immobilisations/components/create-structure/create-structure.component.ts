@@ -23,6 +23,7 @@ export class CreateStructureComponent implements OnInit{
   constructor(private languageSservice:LanguageService,@Optional() private readonly activeModal:NgbActiveModal,private formBuilder:FormBuilder,private immoService:ImmoService){}
   ngOnInit(): void {
     this.loading$=this.immoService.loading$
+     this.immoService.setLoadStatus(false);
     this.initForm()
   }
   confirm():void{

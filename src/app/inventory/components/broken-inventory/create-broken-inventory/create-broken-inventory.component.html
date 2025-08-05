@@ -112,7 +112,7 @@
     type="button" 
     class="btn btn-primary" 
     (click)="onSubmit()"
-    [disabled]="!brokenInventoryForm.valid || (loading$ | async)"
+    [disabled]="!brokenInventoryForm.valid"
   >
     @if(loading$ | async) {
       <span class="spinner-border spinner-border-sm me-2" role="status"></span>

@@ -32,6 +32,7 @@ export class CreateEntrepriseComponent implements OnInit {
 
   ngOnInit(): void {
     this.loading$ = this.reformeService.loading$;
+    this.reformeService.setLoadStatus(false);
     this.initForm();
   }
 

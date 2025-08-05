@@ -9,7 +9,7 @@
 </div>
 
 <div class="modal-body">
-  @if(isLoading) {
+  @if(loading$ | async) {
     <div class="text-center py-4">
       <app-custom-spinner></app-custom-spinner>
       <p class="text-muted mt-3">{{"Loading"|translate}}...</p>
@@ -152,10 +152,8 @@
   <button
     type="button"
     class="btn btn-primary"
-    (click)="onSubmit()"
-    [disabled]="missingInventoryForm.invalid || isLoading"
-  >
-    @if(isLoading) {
+    (click)="onSubmit()"  >
+    @if(loading$ | async) {
       <i class="fas fa-spinner fa-spin me-2"></i>
     } @else {
       <i class="fas fa-save me-2"></i>

@@ -41,6 +41,7 @@ export class CreateInventoryComponent implements OnInit {
 
   ngOnInit(): void {
     this.loading$ = this.inventoryService.loading$;
+    this.inventoryService.setLoadStatus(false);
     this.isEdit = !!this.inventoryId;
     this.initForm();
 

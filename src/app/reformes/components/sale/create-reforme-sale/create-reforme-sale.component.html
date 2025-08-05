@@ -143,7 +143,7 @@
   <button 
     type="submit" 
     class="btn btn-success" 
-    [disabled]="!reformeSaleForm.valid || btnSubmit || (loading$ | async)"
+    [disabled]="!reformeSaleForm.valid || btnSubmit"
     (click)="submitForm()">
     <span *ngIf="loading$ | async" class="spinner-border spinner-border-sm me-2" role="status">
       <span class="visually-hidden">{{ 'Loading' | translate }}...</span>

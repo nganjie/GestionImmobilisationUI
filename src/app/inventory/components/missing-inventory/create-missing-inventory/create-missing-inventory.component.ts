@@ -28,7 +28,7 @@ export class CreateMissingInventoryComponent implements OnInit {
   @Input() preSelectedImmobilisationId: string | null = null; // Pour manage-inventory
 
   missingInventoryForm!: FormGroup;
-  isLoading: boolean = false;
+  loading$!: Observable<boolean>;
   isEditMode: boolean = false;
   currentMissingInventory!: MissingInventoryDetail;
 
@@ -65,6 +65,8 @@ export class CreateMissingInventoryComponent implements OnInit {
   }
 
   initForm(): void {
+    this.loading$ = this.inventoryService.loading$;
+    this.inventoryService.setLoadStatus(false);
     this.confirmSubmit$ = this.inventoryService.confirmSubmit$;
     this.confirmSubmit$.subscribe((confirm) => {
       if (confirm) {
@@ -115,16 +117,14 @@ export class CreateMissingInventoryComponent implements OnInit {
   }
 
   loadMissingInventoryData(): void {
-    this.isLoading = true;
+
     this.inventoryService.getMissingInventoryDetailFromServer(this.missingInventoryId).subscribe({
       next: (missingInventory) => {
         this.currentMissingInventory = missingInventory;
         this.populateForm(missingInventory);
-        this.isLoading = false;
       },
       error: (error) => {
         console.error('Erreur lors du chargement des données:', error);
-        this.isLoading = false;
       }
     });
   }
@@ -141,7 +141,6 @@ export class CreateMissingInventoryComponent implements OnInit {
 
   onSubmit(): void {
     if (this.missingInventoryForm.valid) {
-      this.isLoading = true;
       const formData = this.missingInventoryForm.value;
       console.log('Form Data:', formData);
       const request$ = this.isEditMode

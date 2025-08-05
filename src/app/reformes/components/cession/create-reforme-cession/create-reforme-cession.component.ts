@@ -38,6 +38,7 @@ export class CreateReformeCessionComponent implements OnInit {
 
   ngOnInit(): void {
     this.loading$ = this.reformeService.loading$;
+    this.reformeService.setLoadStatus(false);
     this.immobilisations$ = this.immoService.immobilisations$;
     this.entreprises$ = this.reformeService.entreprises$;
     this.initForm();

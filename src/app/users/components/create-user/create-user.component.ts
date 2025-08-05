@@ -41,6 +41,7 @@ export class CreateUserComponent implements OnInit {
     this.isEditMode = !!this.userId || !!this.userToEdit;
     
     this.loading$ = this.userService.loading$;
+    this.userService.setLoadStatus(false);
     this.roles$ = this.userService.roles$;
     this.confirmSubmit$ = this.userService.confirmSubmit$;
     this.error$ = this.userService.error$;

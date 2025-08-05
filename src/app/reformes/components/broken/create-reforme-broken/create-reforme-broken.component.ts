@@ -36,6 +36,7 @@ export class CreateReformeBrokenComponent implements OnInit {
 
   ngOnInit(): void {
     this.loading$ = this.reformeService.loading$;
+    this.reformeService.setLoadStatus(false);
     this.immobilisations$ = this.immoService.immobilisations$;
     this.initForm();
     this.loadImmobilisations();

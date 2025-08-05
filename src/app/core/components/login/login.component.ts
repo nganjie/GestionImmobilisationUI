@@ -25,6 +25,7 @@ export class LoginComponent implements OnInit{
   constructor(private formBuilder:FormBuilder,private authService:AuthService,private router:Router){}
   ngOnInit(): void {
     this.loading$=this.authService.loading$;
+    this.authService.setLoadStatus(false);
     this._error$=this.authService.error$;
     this._error$.subscribe(
       (b)=>{

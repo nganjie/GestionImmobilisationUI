@@ -38,6 +38,7 @@ export class CreateReformeSaleComponent implements OnInit {
 
   ngOnInit(): void {
     this.loading$ = this.reformeService.loading$;
+    this.reformeService.setLoadStatus(false);
     this.immobilisations$ = this.immoService.immobilisations$;
     this.buyers$ = this.reformeService.buyers$;
     this.initForm();

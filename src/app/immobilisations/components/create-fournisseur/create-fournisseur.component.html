@@ -140,7 +140,7 @@
       <button type="button" 
               class="btn btn-outline-secondary flex-fill" 
               (click)="dismiss()"
-              [disabled]="loading$ | async">
+              >
         <i class="fas fa-times me-2"></i>
         {{"Cancel" | translate}}
       </button>
@@ -149,7 +149,7 @@
               class="btn flex-fill"
               [class]="fournisseurId ? 'btn-warning' : 'btn-primary'"
               (click)="submitForm()"
-              [disabled]="loading$ | async">
+              >
         @if(loading$ | async) {
           <div class="spinner-border spinner-border-sm me-2" role="status">
             <span class="visually-hidden">{{"Loading" | translate}}</span>
