@@ -14,6 +14,8 @@ import { CreateBrokenInventoryComponent } from '../create-broken-inventory/creat
 import { searchby, searchOption } from '../../../../models/search-element.model';
 import { InventoryStatusEnum } from '../../../../enums/inventory-status.enum';
 import { BarcodeScannerLivestreamComponent } from 'ngx-barcode-scanner';
+import { ExportService, ExportColumn } from '../../../../services/export.service';
+import { ExportFormat } from '../../../../shared/components/export-buttons/export-buttons.component';
 
 @Component({
   selector: 'app-list-broken-inventory',
@@ -59,12 +61,13 @@ export class ListBrokenInventoryComponent extends BaseComponent implements OnIni
   Math = Math;
 
   constructor(
-    private languageService: LanguageService,
+    public languageService: LanguageService,
     private inventoryService: InventoryService,
     private modalService: NgbModal,
     private router: Router,
     private formBuilder: FormBuilder,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private exportService: ExportService
   ) {
     super();
   }
@@ -337,5 +340,35 @@ export class ListBrokenInventoryComponent extends BaseComponent implements OnIni
 
   onStarted(event: boolean) {
     console.log('started :', event);
+  }
+
+  // Propriétés et méthodes d'exportation
+  exportColumns: ExportColumn[] = [
+    { key: 'immobilisation.name', label: 'Immobilisation', translateKey: 'export.immobilisationName' },
+    { key: 'immobilisation.code_barre', label: 'Code Barre', translateKey: 'export.barcode' },
+    { key: 'immobilisation.category.name', label: 'Catégorie', translateKey: 'export.category' },
+    { key: 'office.name', label: 'Bureau', translateKey: 'export.office' },
+    { key: 'office.building.name', label: 'Bâtiment', translateKey: 'export.building' },
+    { key: 'status', label: 'Statut', translateKey: 'export.status' },
+    { key: 'reported_at', label: 'Signalé le', translateKey: 'export.reportedAt' },
+    { key: 'damage_description', label: 'Description des Dommages', translateKey: 'export.damageDescription' },
+    { key: 'estimated_repair_cost', label: 'Coût de Réparation Estimé', translateKey: 'export.estimatedRepairCost' },
+    { key: 'comment', label: 'Commentaire', translateKey: 'export.comment' },
+    { key: 'user.first_name', label: 'Créé par (Prénom)', translateKey: 'export.createdByFirstName' },
+    { key: 'user.last_name', label: 'Créé par (Nom)', translateKey: 'export.createdByLastName' },
+    { key: 'created_at', label: 'Date de Création', translateKey: 'export.createdAt' }
+  ];
+
+  onBeforeExport(event: { format: ExportFormat, data: any[] }): void {
+    console.log(`Début de l'export ${event.format} avec ${event.data.length} éléments`);
+    console.log('Données à exporter:', event.data);
+  }
+
+  onAfterExport(event: { format: ExportFormat, success: boolean }): void {
+    if (event.success) {
+      console.log(`Export ${event.format} réussi`);
+    } else {
+      console.error(`Erreur lors de l'export ${event.format}`);
+    }
   }
 }

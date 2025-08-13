@@ -10,6 +10,8 @@ import { EmployeeService } from '../../services/employee.service';
 import { CreateOfficeComponent } from '../create-office/create-office.component';
 import { FormBuilder, FormControl } from '@angular/forms';
 import { search, searchby, searchOption } from '../../../models/search-element.model';
+import { ExportService, ExportColumn } from '../../../services/export.service';
+import { ExportFormat } from '../../../shared/components/export-buttons/export-buttons.component';
 
 @Component({
   selector: 'app-list-office',
@@ -44,10 +46,11 @@ export class ListOfficeComponent extends BaseComponent implements OnInit {
   availableFloors: number[] = [];
   
   constructor(
-    private languageService:LanguageService,
+    public languageService:LanguageService,
     private employeeService:EmployeeService,
     private modalService:NgbModal,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private exportService: ExportService
   ){
     super();
     console.log('init constructor')
@@ -287,6 +290,32 @@ export class ListOfficeComponent extends BaseComponent implements OnInit {
     }
     console.log(arr);
     this.pageArray=arr;
+  }
+
+  // Propriétés et méthodes d'exportation
+  exportColumns: ExportColumn[] = [
+    { key: 'name', label: 'Nom', translateKey: 'export.name' },
+    { key: 'num_office', label: 'Numéro Bureau', translateKey: 'export.officeNumber' },
+    { key: 'num_etage', label: 'Numéro Étage', translateKey: 'export.floorNumber' },
+    { key: 'status', label: 'Statut', translateKey: 'export.status' },
+    { key: 'is_inventory', label: 'Inventorié', translateKey: 'export.isInventoried' },
+    { key: 'building.name', label: 'Bâtiment', translateKey: 'export.building' },
+    { key: 'user.first_name', label: 'Créé par (Prénom)', translateKey: 'export.createdByFirstName' },
+    { key: 'user.last_name', label: 'Créé par (Nom)', translateKey: 'export.createdByLastName' },
+    { key: 'created_at', label: 'Date de Création', translateKey: 'export.createdAt' }
+  ];
+
+  onBeforeExport(event: { format: ExportFormat, data: any[] }): void {
+    console.log(`Début de l'export ${event.format} avec ${event.data.length} éléments`);
+    console.log('Données à exporter:', event.data);
+  }
+
+  onAfterExport(event: { format: ExportFormat, success: boolean }): void {
+    if (event.success) {
+      console.log(`Export ${event.format} réussi`);
+    } else {
+      console.error(`Erreur lors de l'export ${event.format}`);
+    }
   }
 
 }

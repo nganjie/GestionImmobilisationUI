@@ -30,10 +30,18 @@
       <p class="text-sm text-secondary mb-0">{{"ManageSaleAssetsForReform"|translate}}</p>
     </div>
     <div class="col-lg-4 col-md-6 col-12 text-end">
-      <button class="btn btn-success btn-sm mb-0" (click)="openCreateModal()">
-        <i class="fas fa-plus me-2"></i>
-        {{"AddU"|translate}} {{"Immobilisation"|translate}}
-      </button>
+      <app-export-buttons 
+          [data]="sales || []" 
+          [columns]="exportColumns"
+          [filename]="'export.filename.sales' | translate"
+          [title]="'export.title.sales' | translate"
+          (beforeExport)="onBeforeExport($event)"
+          (afterExport)="onAfterExport($event)">
+        </app-export-buttons>
+        <button class="btn btn-success btn-sm mb-0" (click)="openCreateModal()">
+          <i class="fas fa-plus me-2"></i>
+          {{"AddU"|translate}} {{"Immobilisation"|translate}}
+        </button>
     </div>
   </div>
 

@@ -10,6 +10,8 @@ import { LanguageService } from '../../../services/language/language.service';
 import { CreateFournisseurComponent } from '../create-fournisseur/create-fournisseur.component';
 import { FormBuilder, FormControl } from '@angular/forms';
 import { search, searchby, searchOption } from '../../../models/search-element.model';
+import { ExportService, ExportColumn } from '../../../services/export.service';
+import { ExportFormat } from '../../../shared/components/export-buttons/export-buttons.component';
 
 @Component({
   selector: 'app-list-fournisseur',
@@ -36,7 +38,7 @@ export class ListFournisseurComponent extends BaseComponent implements OnInit {
   currentSortBy: string = 'created_at';
   sortDirection: string = 'desc';
   
-  constructor(private languageService:LanguageService,private immoService:ImmoService,private modalService:NgbModal, private formBuilder: FormBuilder){
+  constructor(public languageService:LanguageService,private immoService:ImmoService,private modalService:NgbModal, private formBuilder: FormBuilder, private exportService: ExportService){
     super();
     
     console.log('init constructor')
@@ -221,6 +223,29 @@ export class ListFournisseurComponent extends BaseComponent implements OnInit {
    */
   deleteFournisseur(id: string) {
    this.immoService.deleteFournisseur(id);
+  }
+
+  // Propriétés et méthodes d'exportation
+  exportColumns: ExportColumn[] = [
+    { key: 'raison_social', label: 'Raison Sociale', translateKey: 'export.raisonSociale' },
+    { key: 'adresse', label: 'Adresse', translateKey: 'export.adresse' },
+    { key: 'nui', label: 'NUI', translateKey: 'export.nui' },
+    { key: 'user.first_name', label: 'Créé par (Prénom)', translateKey: 'export.createdByFirstName' },
+    { key: 'user.last_name', label: 'Créé par (Nom)', translateKey: 'export.createdByLastName' },
+    { key: 'created_at', label: 'Date de Création', translateKey: 'export.createdAt' }
+  ];
+
+  onBeforeExport(event: { format: ExportFormat, data: any[] }): void {
+    console.log(`Début de l'export ${event.format} avec ${event.data.length} éléments`);
+    console.log('Données à exporter:', event.data);
+  }
+
+  onAfterExport(event: { format: ExportFormat, success: boolean }): void {
+    if (event.success) {
+      console.log(`Export ${event.format} réussi`);
+    } else {
+      console.error(`Erreur lors de l'export ${event.format}`);
+    }
   }
 
 }

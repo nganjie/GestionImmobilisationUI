@@ -9,10 +9,18 @@
       <p class="text-sm text-secondary mb-0">{{"ManageBuyersForReforms"|translate}}</p>
     </div>
     <div class="col-lg-4 col-md-6 col-12 text-end">
-      <button class="btn btn-primary btn-sm mb-0" (click)="createBuyer()">
-        <i class="fas fa-plus me-2"></i>
-        {{"Add"|translate}} {{"Buyer"|translate}}
-      </button>
+      <app-export-buttons 
+          [data]="(buyers$ | async) || []" 
+          [columns]="exportColumns"
+          [filename]="'export.filename.buyers' | translate"
+          [title]="'export.title.buyers' | translate"
+          (beforeExport)="onBeforeExport($event)"
+          (afterExport)="onAfterExport($event)">
+        </app-export-buttons>
+        <button class="btn btn-primary btn-sm mb-0" (click)="createBuyer()">
+          <i class="fas fa-plus me-2"></i>
+          {{"Add"|translate}} {{"Buyer"|translate}}
+        </button>
     </div>
   </div>
 
@@ -68,18 +76,7 @@
             <div class="col-lg-6 col-7">
               <h6 class="mb-0">{{"BuyersList"|translate}}</h6>
             </div>
-            <div class="col-lg-6 col-5 text-end">
-              <div class="dropdown">
-                <button class="btn btn-sm btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                  <i class="fas fa-download me-1"></i>{{"Export"|translate}}
-                </button>
-                <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" ><i class="fas fa-file-excel me-2"></i>Excel</a></li>
-                  <li><a class="dropdown-item" ><i class="fas fa-file-pdf me-2"></i>PDF</a></li>
-                  <li><a class="dropdown-item" ><i class="fas fa-file-csv me-2"></i>CSV</a></li>
-                </ul>
-              </div>
-            </div>
+            
           </div>
         </div>
         <div class="card-body px-0 pt-0 pb-2">

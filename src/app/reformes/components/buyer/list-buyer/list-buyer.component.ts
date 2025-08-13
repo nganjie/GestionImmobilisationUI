@@ -11,6 +11,8 @@ import { BuyerDetail } from '../../../models/buyer-detail';
 import { ReformeService } from '../../../services/reforme.service';
 import { CreateBuyerComponent } from '../create-buyer/create-buyer.component';
 import { BaseComponent } from '../../../../shared/components/base/base.component';
+import { ExportService, ExportColumn } from '../../../../services/export.service';
+import { ExportFormat } from '../../../../shared/components/export-buttons/export-buttons.component';
 
 @Component({
   selector: 'app-list-buyer',
@@ -38,12 +40,13 @@ export class ListBuyerComponent extends BaseComponent implements OnInit {
   endDate: string = '';
 
   constructor(
-    private languageService: LanguageService,
+    public languageService: LanguageService,
     private reformService: ReformeService,
     private modalService: NgbModal,
     private router: Router,
     private formBuilder: FormBuilder,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private exportService: ExportService
   ) {
     super();
   }
@@ -206,5 +209,33 @@ export class ListBuyerComponent extends BaseComponent implements OnInit {
 
   getFullName(buyer: BuyerDetail): string {
     return `${buyer.first_name} ${buyer.last_name}`;
+  }
+
+  // Propriétés et méthodes d'exportation
+  exportColumns: ExportColumn[] = [
+    { key: 'first_name', label: 'Prénom', translateKey: 'export.firstName' },
+    { key: 'last_name', label: 'Nom', translateKey: 'export.lastName' },
+    { key: 'email', label: 'Email', translateKey: 'export.email' },
+    { key: 'telephone', label: 'Téléphone', translateKey: 'export.telephone' },
+    { key: 'adresse', label: 'Adresse', translateKey: 'export.adresse' },
+    { key: 'entreprise', label: 'Entreprise', translateKey: 'export.company' },
+    { key: 'secteur_activite', label: 'Secteur d\'Activité', translateKey: 'export.sector' },
+    { key: 'status', label: 'Statut', translateKey: 'export.status' },
+    { key: 'user.first_name', label: 'Créé par (Prénom)', translateKey: 'export.createdByFirstName' },
+    { key: 'user.last_name', label: 'Créé par (Nom)', translateKey: 'export.createdByLastName' },
+    { key: 'created_at', label: 'Date de Création', translateKey: 'export.createdAt' }
+  ];
+
+  onBeforeExport(event: { format: ExportFormat, data: any[] }): void {
+    console.log(`Début de l'export ${event.format} avec ${event.data.length} éléments`);
+    console.log('Données à exporter:', event.data);
+  }
+
+  onAfterExport(event: { format: ExportFormat, success: boolean }): void {
+    if (event.success) {
+      console.log(`Export ${event.format} réussi`);
+    } else {
+      console.error(`Erreur lors de l'export ${event.format}`);
+    }
   }
 }

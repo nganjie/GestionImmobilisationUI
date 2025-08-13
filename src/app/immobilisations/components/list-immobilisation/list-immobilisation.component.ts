@@ -15,6 +15,8 @@ import { ListImmobilisationStatusEnum } from '../../../enums/immobilisation-stat
 import { BarcodeScannerLivestreamComponent } from 'ngx-barcode-scanner';
 import { UserRole } from '../../../enums/roles.enum';
 import { HavePermission } from '../../../models/data-server.model';
+import { ExportService, ExportColumn } from '../../../services/export.service';
+import { ExportFormat } from '../../../shared/components/export-buttons/export-buttons.component';
 
 
 @Component({
@@ -57,7 +59,7 @@ export class ListImmobilisationComponent extends BaseComponent implements OnInit
   // Date filter
   startDate: string = '';
   endDate: string = '';
-  constructor(private languageService:LanguageService,private immoService:ImmoService,private modalService:NgbModal, private router: Router,private formBuilder: FormBuilder,private route:ActivatedRoute){
+  constructor(private languageService:LanguageService,private immoService:ImmoService,private modalService:NgbModal, private router: Router,private formBuilder: FormBuilder,private route:ActivatedRoute, private exportService: ExportService){
     super();
 
   }
@@ -407,6 +409,61 @@ export class ListImmobilisationComponent extends BaseComponent implements OnInit
     this.structureCtrl.setValue('');
     
     this.applyFilters();
+  }
+
+  // Propriétés et méthodes d'exportation
+  exportColumns: ExportColumn[] = [
+    { key: 'code', label: 'Code', translateKey: 'export.code' },
+    { key: 'name', label: 'Designation', translateKey: 'export.designation' },
+    { key: 'categorie.name', label: 'Catégorie', translateKey: 'export.category' },
+    { key: 'mark', label: 'Marque', translateKey: 'export.mark' },
+    { key: 'model', label: 'Modèle', translateKey: 'export.model' },
+    { key: 'structure.name', label: 'Structure', translateKey: 'export.structure' },
+    { key: 'date_of_receipt', label: 'Date Réception', translateKey: 'export.receptionDate' },
+    { key: 'created_at', label: 'Date Création', translateKey: 'export.createdAt' },
+    { key: 'unit_price', label: 'Prix Unitaire', translateKey: 'export.unitPrice' },
+    { key: 'quantity', label: 'Quantité', translateKey: 'export.quantity' },
+    { key: 'fournisseur.raison_social', label: 'Fournisseur', translateKey: 'export.supplier' },
+    { key: 'status', label: 'Statut', translateKey: 'export.status' }
+  ];
+
+  onExport(format: ExportFormat): void {
+    // Obtenir les données actuelles de l'observable
+    this.immobilisations$.subscribe(data => {
+      const exportOptions = {
+        filename: 'Liste_Immobilisations',
+        title: 'Liste des Immobilisations',
+        columns: this.exportColumns,
+        data: data
+      };
+
+      switch (format) {
+        case 'csv':
+          this.exportService.exportToCSV(exportOptions);
+          break;
+        case 'excel':
+          this.exportService.exportToExcel(exportOptions);
+          break;
+        case 'pdf':
+          this.exportService.exportToPDF(exportOptions);
+          break;
+      }
+    }).unsubscribe();
+  }
+
+  onBeforeExport(event: { format: ExportFormat, data: any[] }): void {
+    console.log(`Début de l'export ${event.format} avec ${event.data.length} éléments`);
+    // Ici on peut ajouter des traitements avant l'export (loading, validation, etc.)
+  }
+
+  onAfterExport(event: { format: ExportFormat, success: boolean }): void {
+    if (event.success) {
+      console.log(`Export ${event.format} réussi`);
+      // Ici on peut ajouter des notifications de succès
+    } else {
+      console.error(`Erreur lors de l'export ${event.format}`);
+      // Ici on peut ajouter des notifications d'erreur
+    }
   }
 
 }

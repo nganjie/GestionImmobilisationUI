@@ -29,6 +29,17 @@
     </div>
 
     <div class="col-lg-4 col-md-6 col-12 text-end">
+      <!-- Boutons d'export -->
+      <app-export-buttons 
+        [data]="(immobilisations$ | async) || []"
+        [columns]="exportColumns"
+        [filename]="'export.filename.immobilisations' | translate"
+        [title]="'export.title.immobilisations' | translate"
+        [disabled]="(immobilisations$ | async)?.length === 0"
+        (beforeExport)="onBeforeExport($event)"
+        (afterExport)="onAfterExport($event)"
+        class="me-2">
+      </app-export-buttons>
       
       <button class="btn btn-outline-info btn-sm mb-0 me-2" routerLink="generate-barcodes">
         <i class="fas fa-barcode me-2"></i>
@@ -139,18 +150,7 @@
             <div class="col-lg-6 col-7">
               <h6 class="mb-0">{{"ImmobilisationsList"|translate}}</h6>
             </div>
-            <div class="col-lg-6 col-5 text-end">
-              <div class="dropdown">
-                <button class="btn btn-sm btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                  <i class="fas fa-download me-1"></i>{{"Export"|translate}}
-                </button>
-                <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" ><i class="fas fa-file-excel me-2"></i>Excel</a></li>
-                  <li><a class="dropdown-item" ><i class="fas fa-file-pdf me-2"></i>PDF</a></li>
-                  <li><a class="dropdown-item" ><i class="fas fa-file-csv me-2"></i>CSV</a></li>
-                </ul>
-              </div>
-            </div>
+            
           </div>
         </div>
         <div class="card-body px-0 pt-0 pb-2">

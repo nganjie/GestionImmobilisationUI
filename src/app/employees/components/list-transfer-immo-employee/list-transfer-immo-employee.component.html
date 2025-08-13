@@ -23,10 +23,18 @@
       <p class="text-sm text-secondary mb-0">{{"ManageAssetTransfers"|translate}}</p>
     </div>
     <div class="col-lg-4 col-md-6 col-12 text-end">
-      <button class="btn btn-primary btn-sm mb-0" routerLink="/admin/employees/transfers/create">
-        <i class="fas fa-plus me-2"></i>
-        {{"CreateTransfer"|translate}}
-      </button>
+      <app-export-buttons 
+          [data]="(transfers$ | async) || []" 
+          [columns]="exportColumns"
+          [filename]="'export.filename.transfers' | translate"
+          [title]="'export.title.transfers' | translate"
+          (beforeExport)="onBeforeExport($event)"
+          (afterExport)="onAfterExport($event)">
+        </app-export-buttons>
+        <button class="btn btn-primary btn-sm mb-0" routerLink="/admin/employees/transfers/create">
+          <i class="fas fa-plus me-2"></i>
+          {{"CreateTransfer"|translate}}
+        </button>
     </div>
   </div>
 

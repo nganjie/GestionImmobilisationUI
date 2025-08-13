@@ -13,6 +13,8 @@ import { FormBuilder, FormControl } from '@angular/forms';
 import { search, searchby, searchOption } from '../../../models/search-element.model';
 import { OfficeDetail } from '../../models/office-detail.model';
 import { AddImmobilisationToEmployeeComponent } from '../add-immobilisation-to-employee/add-immobilisation-to-employee.component';
+import { ExportService, ExportColumn } from '../../../services/export.service';
+import { ExportFormat } from '../../../shared/components/export-buttons/export-buttons.component';
 
 @Component({
   selector: 'app-list-employee',
@@ -47,7 +49,7 @@ export class ListEmployeeComponent extends BaseComponent implements OnInit {
   availableDepartments: string[] = [];
   availableFunctions: string[] = [];
   
-  constructor(private languageService:LanguageService,private employeeService:EmployeeService,private modalService:NgbModal, private formBuilder: FormBuilder, private router: Router){
+  constructor(public languageService:LanguageService,private employeeService:EmployeeService,private modalService:NgbModal, private formBuilder: FormBuilder, private router: Router, private exportService: ExportService){
     super();
     
     console.log('init constructor')
@@ -314,6 +316,31 @@ export class ListEmployeeComponent extends BaseComponent implements OnInit {
       // Modal fermé sans action
       console.log('Modal dismissed');
     });
+  }
+
+  // Propriétés et méthodes d'exportation
+  exportColumns: ExportColumn[] = [
+    { key: 'first_name', label: 'Prénom', translateKey: 'export.firstName' },
+    { key: 'last_name', label: 'Nom', translateKey: 'export.lastName' },
+    { key: 'matricule', label: 'Matricule', translateKey: 'export.matricule' },
+    { key: 'fonction', label: 'Fonction', translateKey: 'export.fonction' },
+    { key: 'departement', label: 'Département', translateKey: 'export.departement' },
+    { key: 'office.name', label: 'Bureau', translateKey: 'export.office' },
+    { key: 'user.email', label: 'Email', translateKey: 'export.email' },
+    { key: 'created_at', label: 'Date de Création', translateKey: 'export.createdAt' }
+  ];
+
+  onBeforeExport(event: { format: ExportFormat, data: any[] }): void {
+    console.log(`Début de l'export ${event.format} avec ${event.data.length} éléments`);
+    console.log('Données à exporter:', event.data);
+  }
+
+  onAfterExport(event: { format: ExportFormat, success: boolean }): void {
+    if (event.success) {
+      console.log(`Export ${event.format} réussi`);
+    } else {
+      console.error(`Erreur lors de l'export ${event.format}`);
+    }
   }
 
 }

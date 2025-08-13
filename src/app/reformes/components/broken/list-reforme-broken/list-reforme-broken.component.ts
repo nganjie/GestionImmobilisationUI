@@ -12,6 +12,8 @@ import { ReformeService } from '../../../services/reforme.service';
 import { CreateReformeBrokenComponent } from '../create-reforme-broken/create-reforme-broken.component';
 import { BaseComponent } from '../../../../shared/components/base/base.component';
 import { BarcodeScannerLivestreamComponent } from 'ngx-barcode-scanner';
+import { ExportService, ExportColumn } from '../../../../services/export.service';
+import { ExportFormat } from '../../../../shared/components/export-buttons/export-buttons.component';
 
 @Component({
   selector: 'app-list-reforme-broken',
@@ -44,12 +46,13 @@ export class ListReformeBrokenComponent extends BaseComponent implements OnInit 
   endDate: string = '';
 
   constructor(
-    private languageService: LanguageService,
+    public languageService: LanguageService,
     private reformService: ReformeService,
     private modalService: NgbModal,
     private router: Router,
     private formBuilder: FormBuilder,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private exportService: ExportService
   ) {
     super();
   }
@@ -230,5 +233,34 @@ export class ListReformeBrokenComponent extends BaseComponent implements OnInit 
 
   onStarted(event: boolean) {
     console.log('started :', event);
+  }
+
+  // Propriétés et méthodes d'exportation
+  exportColumns: ExportColumn[] = [
+    { key: 'immobilisation.name', label: 'Immobilisation', translateKey: 'export.immobilisationName' },
+    { key: 'immobilisation.code_barre', label: 'Code Barre', translateKey: 'export.barcode' },
+    { key: 'immobilisation.category.name', label: 'Catégorie', translateKey: 'export.category' },
+    { key: 'damage_description', label: 'Description des Dommages', translateKey: 'export.damageDescription' },
+    { key: 'damage_level', label: 'Niveau de Dommage', translateKey: 'export.damageLevel' },
+    { key: 'estimated_repair_cost', label: 'Coût de Réparation Estimé', translateKey: 'export.estimatedRepairCost' },
+    { key: 'is_repairable', label: 'Réparable', translateKey: 'export.isRepairable' },
+    { key: 'reported_at', label: 'Signalé le', translateKey: 'export.reportedAt' },
+    { key: 'status', label: 'Statut', translateKey: 'export.status' },
+    { key: 'user.first_name', label: 'Créé par (Prénom)', translateKey: 'export.createdByFirstName' },
+    { key: 'user.last_name', label: 'Créé par (Nom)', translateKey: 'export.createdByLastName' },
+    { key: 'created_at', label: 'Date de Création', translateKey: 'export.createdAt' }
+  ];
+
+  onBeforeExport(event: { format: ExportFormat, data: any[] }): void {
+    console.log(`Début de l'export ${event.format} avec ${event.data.length} éléments`);
+    console.log('Données à exporter:', event.data);
+  }
+
+  onAfterExport(event: { format: ExportFormat, success: boolean }): void {
+    if (event.success) {
+      console.log(`Export ${event.format} réussi`);
+    } else {
+      console.error(`Erreur lors de l'export ${event.format}`);
+    }
   }
 }

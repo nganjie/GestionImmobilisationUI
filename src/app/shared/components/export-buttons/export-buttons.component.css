@@ -1,0 +1,55 @@
+.export-buttons-container {
+  align-items: center;
+}
+
+.export-buttons-container button {
+  transition: all 0.2s ease-in-out;
+}
+
+.export-buttons-container button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.export-buttons-container button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.export-buttons-container button i {
+  font-size: 0.9em;
+}
+
+/* Couleurs spécifiques par format */
+.export-buttons-container button:not(:disabled):hover {
+  border-color: #007bff;
+  background-color: #007bff;
+  color: white;
+}
+
+/* Animation de loading */
+.export-buttons-container button:disabled {
+  position: relative;
+}
+
+/*.export-buttons-container button:disabled::after {
+  content: '';
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  margin: auto;
+  border: 2px solid transparent;
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: button-loading-spinner 1s ease infinite;
+}*/
+
+@keyframes button-loading-spinner {
+  from {
+    transform: rotate(0turn);
+  }
+  to {
+    transform: rotate(1turn);
+  }
+}

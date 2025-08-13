@@ -13,6 +13,8 @@ import { EntrepriseDetail } from '../../../models/entreprise-detail.model';
 import { searchOption, search, searchby } from '../../../../models/search-element.model';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { CreateEntrepriseComponent } from '../create-entreprise/create-entreprise.component';
+import { ExportService, ExportColumn } from '../../../../services/export.service';
+import { ExportFormat } from '../../../../shared/components/export-buttons/export-buttons.component';
 
 @Component({
   selector: 'app-list-entreprise',
@@ -39,7 +41,7 @@ export class ListEntrepriseComponent extends BaseComponent {
   startDate: string = '';
   endDate: string = '';
 
-     constructor(private languageService:LanguageService,private reformService:ReformeService,private modalService:NgbModal, private router: Router,private formBuilder: FormBuilder,private route:ActivatedRoute){
+     constructor(public languageService:LanguageService,private reformService:ReformeService,private modalService:NgbModal, private router: Router,private formBuilder: FormBuilder,private route:ActivatedRoute, private exportService: ExportService){
     super();
   }
   ngOnInit(): void {
@@ -223,5 +225,33 @@ export class ListEntrepriseComponent extends BaseComponent {
       const target = event.target as HTMLInputElement;
       this.endDate = target.value;
       this.applyFilters();
+    }
+
+    // Propriétés et méthodes d'exportation
+    exportColumns: ExportColumn[] = [
+      { key: 'name', label: 'Nom', translateKey: 'export.name' },
+      { key: 'raison_sociale', label: 'Raison Sociale', translateKey: 'export.raisonSociale' },
+      { key: 'adresse', label: 'Adresse', translateKey: 'export.adresse' },
+      { key: 'contact', label: 'Contact', translateKey: 'export.contact' },
+      { key: 'email', label: 'Email', translateKey: 'export.email' },
+      { key: 'telephone', label: 'Téléphone', translateKey: 'export.telephone' },
+      { key: 'secteur_activite', label: 'Secteur d\'Activité', translateKey: 'export.sector' },
+      { key: 'status', label: 'Statut', translateKey: 'export.status' },
+      { key: 'user.first_name', label: 'Créé par (Prénom)', translateKey: 'export.createdByFirstName' },
+      { key: 'user.last_name', label: 'Créé par (Nom)', translateKey: 'export.createdByLastName' },
+      { key: 'created_at', label: 'Date de Création', translateKey: 'export.createdAt' }
+    ];
+
+    onBeforeExport(event: { format: ExportFormat, data: any[] }): void {
+      console.log(`Début de l'export ${event.format} avec ${event.data.length} éléments`);
+      console.log('Données à exporter:', event.data);
+    }
+
+    onAfterExport(event: { format: ExportFormat, success: boolean }): void {
+      if (event.success) {
+        console.log(`Export ${event.format} réussi`);
+      } else {
+        console.error(`Erreur lors de l'export ${event.format}`);
+      }
     }
 }

@@ -30,10 +30,18 @@
       <p class="text-sm text-secondary mb-0">{{"ManageCessionAssetsForReform"|translate}}</p>
     </div>
     <div class="col-lg-4 col-md-6 col-12 text-end">
-      <button class="btn btn-info btn-sm mb-0" (click)="createReformeCession()">
-        <i class="fas fa-plus me-2"></i>
-        {{"AddU"|translate}} {{"Immobilisation"|translate}}
-      </button>
+       <app-export-buttons 
+          [data]="(reformeCessions$ | async) || []" 
+          [columns]="exportColumns"
+          [filename]="'export.filename.cessions' | translate"
+          [title]="'export.title.cessions' | translate"
+          (beforeExport)="onBeforeExport($event)"
+          (afterExport)="onAfterExport($event)">
+        </app-export-buttons>
+        <button class="btn btn-info btn-sm mb-0" (click)="createReformeCession()">
+          <i class="fas fa-plus me-2"></i>
+          {{"AddU"|translate}} {{"Immobilisation"|translate}}
+        </button>
     </div>
   </div>
 

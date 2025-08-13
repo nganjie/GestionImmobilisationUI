@@ -17,6 +17,7 @@ import { createTranslateLoader } from '../app.module';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { RouterModule } from '@angular/router';
 import { RoleManagementModule } from '../modules/role-management.module';
+import { ExportButtonsComponent } from './components/export-buttons/export-buttons.component';
 
 
 
@@ -24,7 +25,8 @@ import { RoleManagementModule } from '../modules/role-management.module';
   declarations: [
     BaseComponent,
     CustomSpinnerComponent,
-    LanguageComponent
+    LanguageComponent,
+    ExportButtonsComponent
   ],
   imports: [
     CommonModule,
@@ -57,8 +59,8 @@ import { RoleManagementModule } from '../modules/role-management.module';
     MatProgressSpinnerModule,
     CustomSpinnerComponent,
     NgSelectModule,
-    RoleManagementModule
-    
+    RoleManagementModule,
+    ExportButtonsComponent
   ]
 })
 export class SharedModule { }

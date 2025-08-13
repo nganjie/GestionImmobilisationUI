@@ -9,6 +9,18 @@
       <p class="text-sm text-secondary mb-0">{{"ManageSystemUsers"|translate}}</p>
     </div>
     <div class="col-lg-4 col-md-6 col-12 text-end">
+      <!-- Boutons d'export -->
+      <app-export-buttons 
+        [data]="(users$ | async) || []"
+        [columns]="exportColumns"
+        [filename]="languageService.instant('export.filename.users')"
+        [title]="languageService.instant('export.title.users')"
+        [disabled]="(users$ | async)?.length === 0"
+        (beforeExport)="onBeforeExport($event)"
+        (afterExport)="onAfterExport($event)"
+        class="me-2">
+      </app-export-buttons>
+      
       <button *hasRole="userRole.SUPER_ADMIN" class="btn btn-primary btn-sm mb-0" (click)="openCreateModal()">
         <i class="fas fa-plus me-2"></i>
         {{"CreateUser"|translate}}

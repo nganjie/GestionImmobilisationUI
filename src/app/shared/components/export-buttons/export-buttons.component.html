@@ -1,0 +1,42 @@
+<div class="export-buttons-container d-flex gap-2">
+  <!-- Bouton CSV -->
+  <button
+    *ngIf="showCsv"
+    type="button"
+    [class]="buttonClass"
+    [disabled]="isLoading || !data.length"
+    (click)="exportData('csv')"
+    [attr.title]="'Exporter en CSV'"
+  >
+    <i [class]="getButtonIcon('csv')" class="me-1"></i>
+    {{ getButtonLabel('csv') }}
+  </button>
+
+  <!-- Bouton Excel -->
+  <button
+    *ngIf="showExcel"
+    type="button"
+    [class]="buttonClass"
+    [disabled]="isLoading || !data.length"
+    (click)="exportData('excel')"
+    [attr.title]="'Exporter en Excel'"
+  >
+    <i [class]="getButtonIcon('excel')" class="me-1"></i>
+    {{ getButtonLabel('excel') }}
+  </button>
+
+  <!-- Bouton PDF -->
+  <button
+    *ngIf="showPdf"
+    type="button"
+    [class]="buttonClass"
+    [disabled]="isLoading || !data.length"
+    (click)="exportData('pdf')"
+    [attr.title]="'Exporter en PDF'"
+  >
+    <i [class]="getButtonIcon('pdf')" class="me-1"></i>
+    {{ getButtonLabel('pdf') }}
+  </button>
+
+  <!-- Message si pas de données -->
+</div>

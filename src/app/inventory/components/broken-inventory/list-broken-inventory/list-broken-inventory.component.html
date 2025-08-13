@@ -19,6 +19,16 @@
       {{"scan a barcode"|translate}}
     </button>
   </div>
+  <div class="col-lg-4 col-md-6 col-12 text-end">
+                <app-export-buttons 
+                    [data]="(brokenInventories$ | async) || []" 
+                    [columns]="exportColumns"
+                    [filename]="'export.filename.brokenInventories' | translate"
+                    [title]="'export.title.brokenInventories' | translate"
+                    (beforeExport)="onBeforeExport($event)"
+                    (afterExport)="onAfterExport($event)">
+                  </app-export-buttons>
+              </div>
 
   <div class="container-fluid py-4">
     <!-- Header Section -->
@@ -31,24 +41,29 @@
                 <h6 class="mb-0 text-white">{{"InventoryBroken"|translate}}</h6>
                 <p class="text-sm mb-0 text-white opacity-8">{{"ManageBrokenItems"|translate}}</p>
               </div>
+              
+              
               <div class="col-lg-6 col-5 my-auto text-end">
-                <div class="dropdown float-lg-end pe-4">
-                  <a class="btn bg-gradient-light mb-0 dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                    <i class="fas fa-plus"></i>&nbsp;&nbsp;{{"Actions"|translate}}
-                  </a>
-                  <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" (click)="createBrokenInventory()">
-                      <i class="fas fa-plus me-2"></i>{{"AddBrokenItem"|translate}}
-                    </a></li>
-                    <li><hr class="dropdown-divider"></li>
-                    <li><a class="dropdown-item" routerLink="../">
-                      <i class="fas fa-clipboard-list me-2"></i>{{"BackToInventories"|translate}}
-                    </a></li>
-                    <li><hr class="dropdown-divider"></li>
-                    <li><a class="dropdown-item" (click)="resetFilters()">
-                      <i class="fas fa-filter me-2"></i>{{"ResetFilters"|translate}}
-                    </a></li>
-                  </ul>
+                <div class="d-flex gap-2 justify-content-end">
+                  
+                  <div class="dropdown float-lg-end pe-4">
+                    <a class="btn bg-gradient-light mb-0 dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                      <i class="fas fa-plus"></i>&nbsp;&nbsp;{{"Actions"|translate}}
+                    </a>
+                    <ul class="dropdown-menu">
+                      <li><a class="dropdown-item" (click)="createBrokenInventory()">
+                        <i class="fas fa-plus me-2"></i>{{"AddBrokenItem"|translate}}
+                      </a></li>
+                      <li><hr class="dropdown-divider"></li>
+                      <li><a class="dropdown-item" routerLink="../">
+                        <i class="fas fa-clipboard-list me-2"></i>{{"BackToInventories"|translate}}
+                      </a></li>
+                      <li><hr class="dropdown-divider"></li>
+                      <li><a class="dropdown-item" (click)="resetFilters()">
+                        <i class="fas fa-filter me-2"></i>{{"ResetFilters"|translate}}
+                      </a></li>
+                    </ul>
+                  </div>
                 </div>
               </div>
             </div>

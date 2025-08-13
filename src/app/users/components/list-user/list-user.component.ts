@@ -13,6 +13,8 @@ import { UserService } from '../../services/user.service';
 import { CreateUserComponent } from '../create-user/create-user.component';
 import { UserRole } from '../../../enums/roles.enum';
 import { RoleService } from '../../../services/role.service';
+import { ExportService, ExportColumn } from '../../../services/export.service';
+import { ExportFormat } from '../../../shared/components/export-buttons/export-buttons.component';
 
 @Component({
   selector: 'app-list-user',
@@ -45,13 +47,14 @@ export class ListUserComponent extends BaseComponent implements OnInit {
   userRole = UserRole;
 
   constructor(
-    private languageService: LanguageService,
+    public languageService: LanguageService,
     private userService: UserService,
     private modalService: NgbModal,
     private router: Router,
     private route: ActivatedRoute,
     private formBuilder: FormBuilder,
-    private roleService: RoleService
+    private roleService: RoleService,
+    private exportService: ExportService
   ) {
     super();
   }
@@ -200,5 +203,44 @@ export class ListUserComponent extends BaseComponent implements OnInit {
     this.roleCtrl.setValue('');
     this.statusCtrl.setValue('');
     this.applyFilters();
+  }
+
+  // Propriétés et méthodes d'exportation
+  exportColumns: ExportColumn[] = [
+    { key: 'first_name', label: 'Prénom', translateKey: 'export.firstName' },
+    { key: 'last_name', label: 'Nom', translateKey: 'export.lastName' },
+    { key: 'email', label: 'Email', translateKey: 'export.email' },
+    { key: 'roles.0.name', label: 'Rôle', translateKey: 'export.role' },
+    { key: 'email_verified_at', label: 'Vérifié', translateKey: 'export.verified' },
+    { key: 'created_at', label: 'Date de Création', translateKey: 'export.createdAt' }
+  ];
+
+  onBeforeExport(event: { format: ExportFormat, data: any[] }): void {
+    console.log(`Début de l'export ${event.format} avec ${event.data.length} éléments`);
+    console.log('Données à exporter:', event.data);
+    console.log('Colonnes d\'export:', this.exportColumns);
+    
+    // Tester la première ligne pour voir les valeurs extraites
+    if (event.data.length > 0) {
+      console.log('Test première ligne:');
+      this.exportColumns.forEach(col => {
+        const value = this.getTestValue(event.data[0], col.key);
+        console.log(`${col.key} -> ${value}`);
+      });
+    }
+  }
+
+  private getTestValue(obj: any, path: string): any {
+    return path.split('.').reduce((current, key) => {
+      return current && current[key] !== undefined ? current[key] : null;
+    }, obj);
+  }
+
+  onAfterExport(event: { format: ExportFormat, success: boolean }): void {
+    if (event.success) {
+      console.log(`Export ${event.format} réussi`);
+    } else {
+      console.error(`Erreur lors de l'export ${event.format}`);
+    }
   }
 }

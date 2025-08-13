@@ -12,6 +12,8 @@ import { LanguageService } from '../../../services/language/language.service';
 import { EmployeeService } from '../../services/employee.service';
 import { Employeeimmo } from '../../models/employee-immo-detail.model';
 import { EmployeeDetail } from '../../models/employee-detail.model';
+import { ExportService, ExportColumn } from '../../../services/export.service';
+import { ExportFormat } from '../../../shared/components/export-buttons/export-buttons.component';
 
 @Component({
   selector: 'app-list-transfer-immo-employee',
@@ -46,11 +48,12 @@ export class ListTransferImmoEmployeeComponent extends BaseComponent implements 
   currentCodeBare='';
 
   constructor(
-    private languageService: LanguageService,
+    public languageService: LanguageService,
     private employeeService: EmployeeService,
     private modalService: NgbModal,
     private formBuilder: FormBuilder,
-    public router: Router
+    public router: Router,
+    private exportService: ExportService
   ) {
     super();
   }
@@ -200,5 +203,33 @@ export class ListTransferImmoEmployeeComponent extends BaseComponent implements 
     this.employeeService.getTransfersFromServer(this.paginateData, this.getSearchOptions());
     
     return event;
+  }
+
+  // Propriétés et méthodes d'exportation
+  exportColumns: ExportColumn[] = [
+    { key: 'immobilisation.name', label: 'Immobilisation', translateKey: 'export.immobilisationName' },
+    { key: 'immobilisation.code_barre', label: 'Code Barre', translateKey: 'export.barcode' },
+    { key: 'fromEmployee.first_name', label: 'Employé Expéditeur (Prénom)', translateKey: 'export.fromEmployeeFirstName' },
+    { key: 'fromEmployee.last_name', label: 'Employé Expéditeur (Nom)', translateKey: 'export.fromEmployeeLastName' },
+    { key: 'toEmployee.first_name', label: 'Employé Destinataire (Prénom)', translateKey: 'export.toEmployeeFirstName' },
+    { key: 'toEmployee.last_name', label: 'Employé Destinataire (Nom)', translateKey: 'export.toEmployeeLastName' },
+    { key: 'status', label: 'Statut', translateKey: 'export.status' },
+    { key: 'transferred_at', label: 'Date de Transfert', translateKey: 'export.transferredAt' },
+    { key: 'user.first_name', label: 'Créé par (Prénom)', translateKey: 'export.createdByFirstName' },
+    { key: 'user.last_name', label: 'Créé par (Nom)', translateKey: 'export.createdByLastName' },
+    { key: 'created_at', label: 'Date de Création', translateKey: 'export.createdAt' }
+  ];
+
+  onBeforeExport(event: { format: ExportFormat, data: any[] }): void {
+    console.log(`Début de l'export ${event.format} avec ${event.data.length} éléments`);
+    console.log('Données à exporter:', event.data);
+  }
+
+  onAfterExport(event: { format: ExportFormat, success: boolean }): void {
+    if (event.success) {
+      console.log(`Export ${event.format} réussi`);
+    } else {
+      console.error(`Erreur lors de l'export ${event.format}`);
+    }
   }
 }

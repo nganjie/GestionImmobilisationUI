@@ -67,12 +67,7 @@ export class DetailImmobilisationComponent implements OnInit, OnDestroy {
   }
 
   deleteImmobilisation(): void {
-    if (this.immoId && this.immobilisation) {
-      if (confirm(this.translateService.instant('ConfirmDelete'))) {
-        // Implémenter la suppression
-        console.log('Suppression de l\'immobilisation:', this.immoId);
-      }
-    }
+    this.immoService.deleteImmo(this.immoId as string);
   }
 
   duplicateImmobilisation(): void {

@@ -14,6 +14,8 @@ import { CreateInventoryComponent } from '../create-inventory/create-inventory.c
 import { searchby, searchOption } from '../../../../models/search-element.model';
 import { InventoryTypeEnum, ListInventoryTypeEnum } from '../../../../enums/inventory-type.enum';
 import { BarcodeScannerLivestreamComponent } from 'ngx-barcode-scanner';
+import { ExportService, ExportColumn } from '../../../../services/export.service';
+import { ExportFormat } from '../../../../shared/components/export-buttons/export-buttons.component';
 
 @Component({
   selector: 'app-list-inventory',
@@ -53,12 +55,13 @@ export class ListInventoryComponent extends BaseComponent implements OnInit {
   endDate: string = '';
 
   constructor(
-    private languageService: LanguageService,
+    public languageService: LanguageService,
     private inventoryService: InventoryService,
     private modalService: NgbModal,
     private router: Router,
     private formBuilder: FormBuilder,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private exportService: ExportService
   ) {
     super();
   }
@@ -300,5 +303,29 @@ export class ListInventoryComponent extends BaseComponent implements OnInit {
 
   onStarted(event: boolean) {
     console.log('started :', event);
+  }
+
+  // Propriétés et méthodes d'exportation
+  exportColumns: ExportColumn[] = [
+    { key: 'name', label: 'Nom', translateKey: 'export.name' },
+    { key: 'type', label: 'Type', translateKey: 'export.type' },
+    { key: 'description', label: 'Description', translateKey: 'export.description' },
+    { key: 'end_date', label: 'Date de Fin', translateKey: 'export.endDate' },
+    { key: 'user.first_name', label: 'Créé par (Prénom)', translateKey: 'export.createdByFirstName' },
+    { key: 'user.last_name', label: 'Créé par (Nom)', translateKey: 'export.createdByLastName' },
+    { key: 'created_at', label: 'Date de Création', translateKey: 'export.createdAt' }
+  ];
+
+  onBeforeExport(event: { format: ExportFormat, data: any[] }): void {
+    console.log(`Début de l'export ${event.format} avec ${event.data.length} éléments`);
+    console.log('Données à exporter:', event.data);
+  }
+
+  onAfterExport(event: { format: ExportFormat, success: boolean }): void {
+    if (event.success) {
+      console.log(`Export ${event.format} réussi`);
+    } else {
+      console.error(`Erreur lors de l'export ${event.format}`);
+    }
   }
 }
