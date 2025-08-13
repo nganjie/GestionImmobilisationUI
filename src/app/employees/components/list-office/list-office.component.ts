@@ -201,10 +201,7 @@ export class ListOfficeComponent extends BaseComponent implements OnInit {
   }
 
   deleteOffice(officeId: string): void {
-    console.log('Supprimer bureau:', officeId);
-    if (confirm('Êtes-vous sûr de vouloir supprimer ce bureau ?')) {
-      // this.employeeService.deleteOffice(officeId);
-    }
+    this.employeeService.deleteOffice(officeId);
   }
 
   /**

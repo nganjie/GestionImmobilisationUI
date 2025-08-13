@@ -54,7 +54,8 @@ export class EmployeeService extends GlobalServices {
           per_page:data.data?.per_page??1,
           total:data.data?.total??1,
         })
-      })
+      }),
+      catchError(this.handleError)
     ).subscribe()
   }
   getEmployeeFullFromServer(searchOptions:searchOption[]=[]){
@@ -63,7 +64,8 @@ export class EmployeeService extends GlobalServices {
       map(data=>{
         console.log(data)
         this._employees$.next(data.data??[]);
-      })
+      }),
+      catchError(this.handleError)
     ).subscribe()
   }
   getBuildingsFromServer(paginateD:PaginateData=this.emptyPaginate,searchOptions:searchOption[]=[]){
@@ -82,7 +84,8 @@ export class EmployeeService extends GlobalServices {
           per_page:data.data?.per_page??1,
           total:data.data?.total??1,
         })
-      })
+      }),
+      catchError(this.handleError)
     ).subscribe()
   }
   getBuildingsFullFromServer(searchOptions:searchOption[]=[]){
@@ -91,7 +94,8 @@ export class EmployeeService extends GlobalServices {
       map(data=>{
         console.log(data)
         this._buildings$.next(data.data??[]);
-      })
+      }),
+      catchError(this.handleError)
     ).subscribe()
   }
   getOfficesFromServer(paginateD:PaginateData=this.emptyPaginate,searchOptions:searchOption[]=[]){
@@ -316,6 +320,65 @@ export class EmployeeService extends GlobalServices {
         }
         else{
           this.setSnackMesage(`${data.error}`,'custom-error-snackbar');
+        }
+      }),
+      catchError(this.handleError)
+    ).subscribe();
+  }
+
+  deleteEmployee(id: string) {
+    const header = this.getHearder();
+    this.setLoadStatus(true);
+    this.http.delete<ApiResponse<void>>(`${environment.apiUrlFirst}/admin/employees/delete/${id}`, header).pipe(
+      map(data => {
+        this.setLoadStatus(false);
+        console.log(data);
+        if (data.success) {
+          this.setSnackMesage(data.message, 'btn-success');
+          this.setConfirmSubmit(true);
+          this.getEmployeeFromServer();
+        }
+        else {
+          this.setSnackMesage(`${data.error}`, 'custom-error-snackbar');
+        }
+      }),
+      catchError(this.handleError)
+    ).subscribe();
+  }
+  deleteOffice(id: string) {
+    const header = this.getHearder();
+    this.setLoadStatus(true);
+    this.http.delete<ApiResponse<void>>(`${environment.apiUrlFirst}/admin/offices/delete/${id}`, header).pipe(
+      map(data => {
+        this.setLoadStatus(false);
+        console.log(data);
+        if (data.success) {
+          this.setSnackMesage(data.message, 'btn-success');
+          this.setConfirmSubmit(true);
+          this.getOfficesFromServer();
+        }
+        else {
+          this.setSnackMesage(`${data.error}`, 'custom-error-snackbar');
+        }
+      }),
+      catchError(this.handleError)
+    ).subscribe();
+  }
+
+  deleteBuilding(id: string) {
+    const header = this.getHearder();
+    this.setLoadStatus(true);
+    this.http.delete<ApiResponse<void>>(`${environment.apiUrlFirst}/admin/buildings/delete/${id}`, header).pipe(
+      map(data => {
+        this.setLoadStatus(false);
+        console.log(data);
+        if (data.success) {
+          this.setSnackMesage(data.message, 'btn-success');
+          this.setConfirmSubmit(true);
+          this.getBuildingsFromServer();
+        }
+        else {
+          this.setSnackMesage(`${data.error}`, 'custom-error-snackbar');
         }
       }),
       catchError(this.handleError)

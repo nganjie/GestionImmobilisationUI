@@ -52,7 +52,8 @@ export class ImmoService extends GlobalServices {
           per_page:data.data?.per_page??1,
           total:data.data?.total??1,
         })
-      })
+      }),
+      catchError(this.handleError)
     ).subscribe()
   }
   getImmoEmployeeFromServer(employeeId:string,paginateD:PaginateData=this.emptyPaginate,searchOptions:searchOption[]=[]){
@@ -72,11 +73,7 @@ export class ImmoService extends GlobalServices {
           total:data.data?.total??1,
         })
       }),
-      catchError(error => {
-        this.setLoadStatus(false);
-        this.setSnackMesage('Error loading immobilisations for employee', 'btn-danger');
-        return error;
-      })
+      catchError(this.handleError)
     ).subscribe()
 
   }
@@ -89,7 +86,8 @@ export class ImmoService extends GlobalServices {
         this.setLoadStatus(false);
         console.log(data)
         this._immobilisations$.next(data.data??[]);
-      })
+      }),
+      catchError(this.handleError)
     ).subscribe()
   }
   getCategoriesFromServer(paginateD:PaginateData=this.emptyPaginate,searchOptions:searchOption[]=[]){
@@ -108,7 +106,8 @@ export class ImmoService extends GlobalServices {
           per_page:data.data?.per_page??1,
           total:data.data?.total??1,
         })
-      })
+      }),
+      catchError(this.handleError)
     ).subscribe()
   }
   getCategoriesFullFromServer(searchOptions:searchOption[]=[]){
@@ -120,7 +119,8 @@ export class ImmoService extends GlobalServices {
         this.setLoadStatus(false);
         console.log(data)
         this._categories$.next(data.data??[]);
-      })
+      }),
+      catchError(this.handleError)
     ).subscribe()
   }
   getStructuresFromServer(paginateD:PaginateData=this.emptyPaginate,searchOptions:searchOption[]=[]){
@@ -139,8 +139,8 @@ export class ImmoService extends GlobalServices {
           per_page:data.data?.per_page??1,
           total:data.data?.total??1,
         })
-      })
-
+      }),
+      catchError(this.handleError)
     ).subscribe()
   }
   getStructuresFullFromServer(searchOptions:searchOption[]=[]){
@@ -151,8 +151,8 @@ export class ImmoService extends GlobalServices {
         this.setLoadStatus(false);
         console.log(data)
         this._structures$.next(data.data??[]);
-      })
-
+      }),
+      catchError(this.handleError)
     ).subscribe()
   }
   getFournisseursFromServer(paginateD:PaginateData=this.emptyPaginate,searchOptions:searchOption[]=[]){
@@ -171,7 +171,8 @@ export class ImmoService extends GlobalServices {
           per_page:data.data?.per_page??1,
           total:data.data?.total??1,
         })
-      })
+      }),
+      catchError(this.handleError)
     ).subscribe()
   }
   getFournisseursFullFromServer(searchOptions:searchOption[]=[]){
@@ -182,35 +183,40 @@ export class ImmoService extends GlobalServices {
         this.setLoadStatus(false);
         console.log(data)
         this._fournisseurs$.next(data.data??[]);
-      })
+      }),
+      catchError(this.handleError)
     ).subscribe()
   }
   getImmoDetailFromServer(id:string):Observable<ImmobilisationDetail>{
     const header =this.getHearder();
     //this.setLoadStatus(true)
     return this.http.get<ApiResponse<ImmobilisationDetail>>(`${environment.apiUrlFirst}/admin/immo/immo/${id}`,header).pipe(
-      map(data => data.data as ImmobilisationDetail)
+      map(data => data.data as ImmobilisationDetail),
+      catchError(this.handleError)
     )
   }
   getCategorieDetailFromServer(id:string):Observable<Categorie>{
     const header =this.getHearder();
     //this.setLoadStatus(true)
     return this.http.get<ApiResponse<Categorie>>(`${environment.apiUrlFirst}/admin/immo/categories/${id}`,header).pipe(
-      map(data => data.data as Categorie)
+      map(data => data.data as Categorie),
+      catchError(this.handleError)
     )
   }
   getStructureDetailFromServer(id:string):Observable<Structure>{
     const header =this.getHearder();
     //this.setLoadStatus(true)
     return this.http.get<ApiResponse<Structure>>(`${environment.apiUrlFirst}/admin/immo/structures/${id}`,header).pipe(
-      map(data => data.data as Structure)
+      map(data => data.data as Structure),
+      catchError(this.handleError)
     )
   }
   getFournisseursDetailFromServer(id:string):Observable<Fournisseur>{
     const header =this.getHearder();
     //this.setLoadStatus(true)
     return this.http.get<ApiResponse<Fournisseur>>(`${environment.apiUrlFirst}/admin/immo/fournisseurs/${id}`,header).pipe(
-      map(data => data.data as Fournisseur)
+      map(data => data.data as Fournisseur),
+      catchError(this.handleError)
     )
   }
   createImmo(form:FormGroup){
@@ -221,12 +227,13 @@ export class ImmoService extends GlobalServices {
         this.setLoadStatus(false)
                 console.log(data)
         if(data.success){
-          this.setSnackMesage('Employee create successfully')
+          this.setSnackMesage(data.message)
           this.setConfirmSubmit(true)
         }else{
           this.setSnackMesage(`${data.error}`,'custom-error-snackbar');
         }
-      })
+      }),
+      catchError(this.handleError)
     ).subscribe()
   }
   updateImmo(form:FormGroup,id:string){
@@ -237,12 +244,13 @@ export class ImmoService extends GlobalServices {
         this.setLoadStatus(false)
                 console.log(data)
         if(data.success){
-          this.setSnackMesage('Categorie Updated successfully')
+          this.setSnackMesage(data.message)
           this.setConfirmSubmit(true)
         }else{
           this.setSnackMesage(`${data.error}`,'custom-error-snackbar');
         }
-      })
+      }),
+      catchError(this.handleError)
     ).subscribe()
   }
   createCategorie(form:FormGroup){
@@ -259,7 +267,8 @@ export class ImmoService extends GlobalServices {
         }else{
           this.setSnackMesage(`${data.error}`,'custom-error-snackbar');
         }
-      })
+      }),
+      catchError(this.handleError)
     ).subscribe()
   }
   updateCategorie(form:FormGroup,id:string){
@@ -276,7 +285,8 @@ export class ImmoService extends GlobalServices {
         }else{
           this.setSnackMesage(`${data.error}`,'custom-error-snackbar');
         }
-      })
+      }),
+      catchError(this.handleError)
     ).subscribe()
   }
   createFournisseur(form:FormGroup){
@@ -294,7 +304,8 @@ export class ImmoService extends GlobalServices {
           console.log(data.error)
           this.setSnackMesage(`${data.error}`,'custom-error-snackbar');
         }
-      })
+      }),
+      catchError(this.handleError)
     ).subscribe()
   }
   updateFournisseur(form:FormGroup,id:string){
@@ -311,7 +322,8 @@ export class ImmoService extends GlobalServices {
         }else{
           this.setSnackMesage(`${data.error}`,'custom-error-snackbar');
         }
-      })
+      }),
+      catchError(this.handleError)
     ).subscribe()
   }
   createStructure(form:FormGroup){
@@ -329,12 +341,7 @@ export class ImmoService extends GlobalServices {
           this.setSnackMesage(`${data.error}`,'custom-error-snackbar');
         }
       }),
-      catchError(error => {
-        this.setLoadStatus(false);
-        console.log(error)
-       // this.setSnackMesage('Error creating structure', 'btn-danger');
-        throw error;
-      })
+      catchError(this.handleError)
     ).subscribe()
   }
   updateStructure(form:FormGroup,id:string){
@@ -351,7 +358,81 @@ export class ImmoService extends GlobalServices {
         }else{
           this.setSnackMesage(`${data.error}`,'custom-error-snackbar');
         }
-      })
+      }),
+      catchError(this.handleError)
+    ).subscribe()
+  }
+  deleteImmo(id:string){
+    const header =this.getHearder();
+    this.setLoadStatus(true)
+    this.http.delete<ApiResponse<ImmobilisationDetail>>(`${environment.apiUrlFirst}/admin/immo/immo/delete/${id}`,header).pipe(
+      map(data=>{
+        this.setLoadStatus(false)
+                console.log(data)
+        if(data.success){
+          this.setSnackMesage(data.message)
+          this.setConfirmSubmit(true);
+          this.getImmoFromServer();
+        }else{
+          this.setSnackMesage(`${data.error}`,'custom-error-snackbar');
+        }
+      }),
+      catchError(this.handleError)
+    ).subscribe()
+  }
+  deleteCategorie(id:string){
+    const header =this.getHearder();
+    this.setLoadStatus(true)
+    this.http.delete<ApiResponse<any>>(`${environment.apiUrlFirst}/admin/immo/categories/delete/${id}`,header).pipe(
+      map(data=>{
+        this.setLoadStatus(false)
+                console.log(data)
+        if(data.success){
+          this.setSnackMesage(data.message)
+          this.setConfirmSubmit(true);
+          this.getCategoriesFromServer();
+        }else{
+          this.setSnackMesage(`${data.error}`,'custom-error-snackbar');
+        }
+      }),
+      catchError(this.handleError)
+    ).subscribe()
+  }
+  deleteStructure(id:string){
+    const header =this.getHearder();
+    this.setLoadStatus(true)
+    this.http.delete<ApiResponse<any>>(`${environment.apiUrlFirst}/admin/immo/structures/delete/${id}`,header).pipe(
+      map(data=>{
+        this.setLoadStatus(false)
+                console.log(data)
+        if(data.success){
+          this.setSnackMesage(data.message)
+          this.setConfirmSubmit(true);
+          this.getStructuresFromServer();
+        }else{
+          this.setSnackMesage(`${data.error}`,'custom-error-snackbar');
+        }
+      }),
+      catchError(this.handleError)
+    ).subscribe()
+  }
+  deleteFournisseur(id:string){
+    const header =this.getHearder();
+    this.setLoadStatus(true)
+    this.http.delete<ApiResponse<any>>(`${environment.apiUrlFirst}/admin/immo/fournisseurs/delete/${id}`,header).pipe(
+      map(data=>{
+        this.setLoadStatus(false)
+                console.log(data)
+        this.getFournisseursFromServer();
+        if(data.success){
+          this.setSnackMesage(data.message)
+          this.setConfirmSubmit(true);
+          
+        }else{
+          this.setSnackMesage(`${data.error}`,'custom-error-snackbar');
+        }
+      }),
+      catchError(this.handleError)
     ).subscribe()
   }
 }

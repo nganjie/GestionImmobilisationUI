@@ -13,6 +13,8 @@ import { FormBuilder, FormControl } from '@angular/forms';
 import { search, searchby, searchOption } from '../../../models/search-element.model';
 import { ListImmobilisationStatusEnum } from '../../../enums/immobilisation-status.enum';
 import { BarcodeScannerLivestreamComponent } from 'ngx-barcode-scanner';
+import { UserRole } from '../../../enums/roles.enum';
+import { HavePermission } from '../../../models/data-server.model';
 
 
 @Component({
@@ -100,7 +102,7 @@ export class ListImmobilisationComponent extends BaseComponent implements OnInit
     //this.setnameMenu('Immobilisations');
 
   }
-
+  
   /*ngAfterViewInit(): void {
     if (this.barcodeScanner && typeof this.barcodeScanner.start === 'function') {
       this.barcodeScanner.start();
@@ -114,6 +116,7 @@ export class ListImmobilisationComponent extends BaseComponent implements OnInit
       this.applyFilters();
     }
   }
+
   scanCodeBarre() {
     if (this.barcodeScanner && typeof this.barcodeScanner.start === 'function') {
       this.barcodeScanner.start();
@@ -245,10 +248,7 @@ export class ListImmobilisationComponent extends BaseComponent implements OnInit
    * Supprimer une immobilisation
    */
   deleteImmobilisation(id: string) {
-    if (confirm('Êtes-vous sûr de vouloir supprimer cette immobilisation ?')) {
-      // Logique de suppression
-      console.log('Delete immobilisation:', id);
-    }
+    this.immoService.deleteImmo(id);
   }
 
   /**

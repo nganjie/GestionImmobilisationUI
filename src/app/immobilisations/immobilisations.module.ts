@@ -57,7 +57,8 @@ import { BarcodeScannerLivestreamModule } from 'ngx-barcode-scanner';
     ),
     NgSelectModule,
     MatSelectModule,
-    BarcodeScannerLivestreamModule
+    BarcodeScannerLivestreamModule,
+    
 ],
 providers:[
   LanguageService,

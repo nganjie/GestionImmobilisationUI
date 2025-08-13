@@ -221,10 +221,7 @@ export class ListCategorieComponent extends BaseComponent implements OnInit {
    * Supprimer une catégorie
    */
   deleteCategorie(id: string) {
-    if (confirm('Êtes-vous sûr de vouloir supprimer cette catégorie ?')) {
-      // Logique de suppression à implémenter
-      console.log('Delete category:', id);
-    }
+    this.immoService.deleteCategorie(id);
   }
 
 }

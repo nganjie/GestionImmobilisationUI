@@ -1,3 +1,4 @@
+import { UserRole } from "../enums/roles.enum";
 import { PaginationDetail } from "./pagination-detail.model";
 
 
@@ -22,10 +23,7 @@ export interface ApiPaginatedResponse<T=any> {
     localStorage.removeItem("userApp")
   }
 
-  export function HavePermission():boolean{
-    let reponse=false;
-  return reponse
+  export function HavePermission(currentRoles:UserRole[],actionRole:UserRole[]):boolean{
+    return currentRoles.some(role => actionRole.includes(role));
 
     }
-    
- 

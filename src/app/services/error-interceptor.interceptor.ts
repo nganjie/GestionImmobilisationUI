@@ -17,7 +17,10 @@ export class ErrorInterceptorService implements HttpInterceptor {
           userFriendlyMessage = `Erreur client: ${error.error.message}`;
         } else {
           // Erreur côté serveur
-          switch (error.status) {
+          if(error.error.message){
+            userFriendlyMessage = `Erreur serveur: ${error.error.message}`;
+          }else{
+            switch (error.status) {
             case 0:
               userFriendlyMessage = 'Impossible de se connecter au serveur. Vérifiez votre connexion Internet.';
               break;
@@ -40,6 +43,8 @@ export class ErrorInterceptorService implements HttpInterceptor {
               userFriendlyMessage = `Erreur ${error.status}: ${error.statusText}`;
               break;
           }
+          }
+          
         }
         console.log('Error Interceptor:', userFriendlyMessage);
         this.injector.get(MatSnackBar).open(userFriendlyMessage, 'Close', {

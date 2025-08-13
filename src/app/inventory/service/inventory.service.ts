@@ -56,11 +56,7 @@ export class InventoryService extends GlobalServices {
           total: data.data?.total ?? 1,
         });
       }),
-      catchError(error => {
-        this.setLoadStatus(false);
-        this.setSnackMesage('Error loading inventories', 'btn-danger');
-        return of([]);
-      })
+      catchError(this.handleError)
     ).subscribe();
   }
 
@@ -73,11 +69,7 @@ export class InventoryService extends GlobalServices {
         this.setLoadStatus(false);
         return data.data!;
       }),
-      catchError(error => {
-        this.setLoadStatus(false);
-        this.setSnackMesage('Error loading inventory details', 'btn-danger');
-        throw error;
-      })
+      catchError(this.handleError)
     );
   }
 

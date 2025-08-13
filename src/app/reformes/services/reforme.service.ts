@@ -328,6 +328,35 @@ getReformeSaleFromServer(paginateD:PaginateData=this.emptyPaginate,searchOptions
     ).subscribe()
   }
 
-  
+  deleteEnterprise(enterpriseId: string) {
+    const header = this.getHearder();
+    this.setLoadStatus(true);
+    this.https.delete<ApiResponse<any>>(`${environment.apiUrlFirst}/admin/reformes/enterprise/${enterpriseId}`, header).pipe(
+      map(data => {
+        this.setLoadStatus(false);
+        if (data.success) {
+          this.setSnackMesage(data.message, 'success');
+          this.setConfirmSubmit(true);
+        } else {
+          this.setSnackMesage(data.error, 'btn-warning');
+        }
+      })
+    ).subscribe();
+  }
+  deleteBuyer(buyerId: string) {
+    const header = this.getHearder();
+    this.setLoadStatus(true);
+    this.https.delete<ApiResponse<any>>(`${environment.apiUrlFirst}/admin/reformes/buyer/${buyerId}`, header).pipe(
+      map(data => {
+        this.setLoadStatus(false);
+        if (data.success) {
+          this.setSnackMesage(data.message, 'success');
+          this.setConfirmSubmit(true);
+        } else {
+          this.setSnackMesage(data.error, 'btn-warning');
+        }
+      })
+    ).subscribe();
+  }
 
 }

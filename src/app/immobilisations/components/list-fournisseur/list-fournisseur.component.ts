@@ -220,10 +220,7 @@ export class ListFournisseurComponent extends BaseComponent implements OnInit {
    * Supprimer un fournisseur
    */
   deleteFournisseur(id: string) {
-    if (confirm('Êtes-vous sûr de vouloir supprimer ce fournisseur ?')) {
-      // Logique de suppression à implémenter
-      console.log('Delete supplier:', id);
-    }
+   this.immoService.deleteFournisseur(id);
   }
 
 }

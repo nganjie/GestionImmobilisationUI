@@ -184,10 +184,7 @@ export class ListBuyerComponent extends BaseComponent implements OnInit {
   }
 
   deleteBuyer(id: string): void {
-    if (confirm(this.languageService.instant('ConfirmDelete'))) {
-      // TODO: Implement delete functionality when available in service
-      console.log('Delete buyer with id:', id);
-    }
+    this.reformService.deleteBuyer(id);
   }
 
   onSearchChange(event: Event): void {

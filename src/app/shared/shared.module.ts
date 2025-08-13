@@ -16,6 +16,7 @@ import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { createTranslateLoader } from '../app.module';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { RouterModule } from '@angular/router';
+import { RoleManagementModule } from '../modules/role-management.module';
 
 
 
@@ -56,6 +57,7 @@ import { RouterModule } from '@angular/router';
     MatProgressSpinnerModule,
     CustomSpinnerComponent,
     NgSelectModule,
+    RoleManagementModule
     
   ]
 })

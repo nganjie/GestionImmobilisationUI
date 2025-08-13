@@ -14,6 +14,7 @@ import { UserRole } from "../enums/roles.enum";
 export class GlobalServices{
     headers!:{headers:HttpHeaders};
     currentUser!:User;
+    roleCurrentUser!:UserRole[];
     emptyPaginate={ current_page:0,
         per_page:10}
     _nameMenue$=new BehaviorSubject<string>('');
@@ -30,7 +31,13 @@ export class GlobalServices{
         
         //this.getCurrentsTatisticsBase();
     }
-    
+    getRolesCurrentUser():UserRole[]{
+        if(this.currentUser && this.currentUser.roles){
+            return this.currentUser.roles.map(role => role.name as UserRole);
+        }
+        return [];
+    }
+
     // Méthode pour obtenir le RoleService de manière lazy
     private getRoleService(): RoleService {
         if (!this._roleService && this.injector) {
@@ -183,9 +190,9 @@ export class GlobalServices{
         this.setLoadStatus(false);
         console.log('handleError',error);
         if(error.status==400){
-            this._error$.next({status:false,message:error.error.title})
+            this._error$.next({status:false,message:error.error.message})
         }else{
-            this._error$.next({status:false,message:error.error.error})
+            this._error$.next({status:false,message:error.error.message})
         }
        
         let errorMessage = '';

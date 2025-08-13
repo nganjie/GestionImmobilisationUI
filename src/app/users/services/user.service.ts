@@ -60,7 +60,8 @@ export class UserService extends GlobalServices {
         }else{
           this.setSnackMesage(`${data.error}`,'custom-error-snackbar');
         }
-      })
+      }),
+      catchError(this.handleError)
     ).subscribe()
   }
 
@@ -77,7 +78,8 @@ export class UserService extends GlobalServices {
         }else{
           this.setSnackMesage(`${data.error}`,'custom-error-snackbar');
         }
-      })
+      }),
+      catchError(this.handleError)
     ).subscribe()
   }
   getUserDetail(id:string):Observable<User>{
@@ -88,7 +90,8 @@ export class UserService extends GlobalServices {
         this.setLoadStatus(false)
         console.log(data)
         return data.data as User;
-      })
+      }),
+      catchError(this.handleError)
     );
   }
 
@@ -100,7 +103,8 @@ export class UserService extends GlobalServices {
         this.setLoadStatus(false);
         console.log(data)
         this._roles$.next(data.data??[]);
-      })
+      }),
+      catchError(this.handleError)
     ).subscribe()
   }
   

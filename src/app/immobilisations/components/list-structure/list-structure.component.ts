@@ -219,10 +219,7 @@ export class ListStructureComponent extends BaseComponent implements OnInit {
    * Supprimer une structure
    */
   deleteStructure(id: string) {
-    if (confirm('Êtes-vous sûr de vouloir supprimer cette structure ?')) {
-      // Logique de suppression à implémenter
-      console.log('Delete structure:', id);
-    }
+    this.immoService.deleteStructure(id);
   }
 
 }

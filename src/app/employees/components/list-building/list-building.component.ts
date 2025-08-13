@@ -190,10 +190,7 @@ export class ListBuildingComponent extends BaseComponent implements OnInit {
   }
 
   deleteBuilding(buildingId: string): void {
-    console.log('Supprimer building:', buildingId);
-    if (confirm('Êtes-vous sûr de vouloir supprimer ce bâtiment ?')) {
-      // this.employeeService.deleteBuilding(buildingId);
-    }
+    this.employeeService.deleteBuilding(buildingId);
   }
 
   /**

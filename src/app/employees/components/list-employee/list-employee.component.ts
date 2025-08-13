@@ -289,8 +289,7 @@ export class ListEmployeeComponent extends BaseComponent implements OnInit {
   }
 
   deleteEmployee(employeeId: string): void {
-    // TODO: Implement delete functionality
-    console.log('Delete employee:', employeeId);
+    this.employeeService.deleteEmployee(employeeId);
   }
 
   // Ouvrir le modal d'assignation d'immobilisations

@@ -205,7 +205,7 @@ export class ListEntrepriseComponent extends BaseComponent {
     }
 
     deleteEntreprise(id: string): void {
-      // Implement delete logic
+      this.reformService.deleteEnterprise(id);
     }
 
     onSearchChange(event: Event): void {
