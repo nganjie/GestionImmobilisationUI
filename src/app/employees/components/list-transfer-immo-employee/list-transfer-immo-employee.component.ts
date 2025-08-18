@@ -24,6 +24,7 @@ import { ExportFormat } from '../../../shared/components/export-buttons/export-b
 export class ListTransferImmoEmployeeComponent extends BaseComponent implements OnInit {
   loading$!: Observable<boolean>;
   itemsPerPage: number = 10;
+  pageArray:number[]=[];
   paginateData$!: Observable<PaginateData>;
   paginateData!: PaginateData;
   totaElement = 0;
@@ -104,6 +105,7 @@ export class ListTransferImmoEmployeeComponent extends BaseComponent implements 
     this.paginateData$.subscribe(data => {
       this.paginateData = data;
       this.totaElement = data.total ?? 0;
+      this.changeChoiceItemPage();
     });
 
     // Chargement initial
@@ -231,5 +233,25 @@ export class ListTransferImmoEmployeeComponent extends BaseComponent implements 
     } else {
       console.error(`Erreur lors de l'export ${event.format}`);
     }
+  }
+   changeChoiceItemPage(){
+    let arr:number[]=[];
+    console.log(this.pageArray)
+    if(this.totaElement<=2)
+    {
+      console.log('total',this.totaElement)
+      arr.push(this.totaElement)
+  
+    }else{
+      for(let i=1;i<this.totaElement/2;i++)
+        {
+          arr.push(i*2)
+        }
+        if(this.totaElement%2>0){
+          arr.push(this.totaElement)
+        }
+    }
+    console.log(arr);
+    this.pageArray=arr;
   }
 }

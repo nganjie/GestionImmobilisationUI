@@ -74,6 +74,12 @@ export class ListImmobilisationComponent extends BaseComponent implements OnInit
     this.categories$=this.immoService.categories$;
     this.fournisseurs$=this.immoService.fournisseurs$;
     this.structures$=this.immoService.structures$;
+    this.paginateData$=this.immoService.paginateData$;
+    this.paginateData$.subscribe((data) => {
+      this.paginateData = data;
+      this.totaElement=data.total ?? 0;
+      this.changeChoiceItemPage();
+    });
     this.immoService.getCategoriesFullFromServer();
     this.immoService.getStructuresFullFromServer();
     this.immoService.getFournisseursFullFromServer();
